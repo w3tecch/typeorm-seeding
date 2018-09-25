@@ -1,7 +1,10 @@
 {
   "name": "typeorm-seeding",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "TypeORM seeding",
+  "bin": {
+    "seed": "./lib/cli.js"
+  },
   "main": "dist/index.js",
   "module": "dist/index.es.js",
   "files": [
@@ -13,6 +16,14 @@
     "watch": "rollup -cw"
   },
   "license": "MIT",
+  "author": "w3tec.ch <info@w3tec.ch>",
+  "contributors": [
+    {
+      "name": "Gery Hirschfeld",
+      "email": "gery.hirschfeld@w3tec.ch",
+      "url": "https://github.com/hirsch88"
+    }
+  ],
   "devDependencies": {
     "rollup": "^0.66.2",
     "rollup-plugin-typescript2": "^0.17.0",
