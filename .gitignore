@@ -1,0 +1,21 @@
+### generated stuff ###
+dist
+lib
+es
+test/coverage
+
+### node ###
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+node_modules/
+.npm
+
+### vs code ###
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json

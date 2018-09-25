@@ -1,0 +1,21 @@
+{
+  "name": "typeorm-seeding",
+  "version": "1.0.0",
+  "description": "TypeORM seeding",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -cw"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "rollup": "^0.66.2",
+    "rollup-plugin-typescript2": "^0.17.0",
+    "typescript": "^3.0.3"
+  }
+}
