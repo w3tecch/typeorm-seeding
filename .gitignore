@@ -3,6 +3,7 @@ dist
 lib
 es
 test/coverage
+.rpt2_cache
 
 ### node ###
 logs
@@ -19,3 +20,7 @@ node_modules/
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+
+### templates ###
+tmp
+old

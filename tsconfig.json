@@ -2,10 +2,24 @@
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "./dist",
-    "module": "es6",
-    "noImplicitAny": true,
     "outDir": "./dist",
-    "target": "es5"
+    "target": "es6",
+    "module": "es6",
+    "noImplicitAny": false,
+    "importHelpers": true,
+    "strict": true,
+    "strictNullChecks": false,
+    "noImplicitThis": true,
+    "alwaysStrict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "esModuleInterop": true
   },
   "include": [
     "src/**/*"

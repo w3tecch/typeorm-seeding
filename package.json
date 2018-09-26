@@ -3,17 +3,18 @@
   "version": "0.0.0",
   "description": "TypeORM seeding",
   "bin": {
-    "seed": "./lib/cli.js"
+    "seed": "./dist/cli.js"
   },
-  "main": "dist/index.js",
-  "module": "dist/index.es.js",
+  "main": "dist/typeorm-seeding.js",
+  "module": "dist/typeorm-seeding.es.js",
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
+  "types": "dist/typeorm-seeding.d.ts",
   "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -cw"
+    "build": "npm run clean && rollup -c",
+    "watch": "rollup -cw",
+    "clean": "rimraf dist"
   },
   "license": "MIT",
   "author": "w3tec.ch <info@w3tec.ch>",
@@ -25,8 +26,12 @@
     }
   ],
   "devDependencies": {
+    "rimraf": "^2.6.2",
     "rollup": "^0.66.2",
     "rollup-plugin-typescript2": "^0.17.0",
+    "rollup-plugin-cli": "^0.1.5",
+    "tslint": "^5.11.0",
     "typescript": "^3.0.3"
-  }
+  },
+  "dependencies": {}
 }
