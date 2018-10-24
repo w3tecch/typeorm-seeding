@@ -17,20 +17,20 @@ export type Factory = <Entity, Settings>(entity: ObjectType<Entity>) => (setting
  * Seed are the class to create some data. Those seed are run by the cli.
  */
 export interface Seed {
-    seed(factory: Factory, connection: Connection): Promise<any>;
+  seed(factory: Factory, connection: Connection): Promise<any>;
 }
 
 /**
  * Constructor of the seed class
  */
 export interface SeedConstructor {
-    new(): Seed;
+  new(): Seed;
 }
 
 /**
  * Value of our EntityFactory state
  */
 export interface EntityFactoryDefinition<Entity, Settings> {
-    entity: ObjectType<Entity>;
-    factory: FactoryFunction<Entity, Settings>;
+  entity: ObjectType<Entity>;
+  factory: FactoryFunction<Entity, Settings>;
 }

@@ -8,14 +8,14 @@ import * as path from 'path';
 const importFactories = (files: string[]) => files.forEach(require);
 
 const loadFiles =
-    (filePattern: string) =>
-        (pathToFolder: string) =>
-            (successFn: (files: string[]) => void) =>
-                (failedFn: (error: any) => void) => {
-                    glob(path.join(process.cwd(), pathToFolder, filePattern), (error: any, files: string[]) => error
-                        ? failedFn(error)
-                        : successFn(files));
-                };
+  (filePattern: string) =>
+    (pathToFolder: string) =>
+      (successFn: (files: string[]) => void) =>
+        (failedFn: (error: any) => void) => {
+          glob(path.join(process.cwd(), pathToFolder, filePattern), (error: any, files: string[]) => error
+            ? failedFn(error)
+            : successFn(files));
+        };
 
 const loadFactoryFiles = loadFiles('**/*Factory{.js,.ts}');
 
@@ -24,16 +24,16 @@ const loadFactoryFiles = loadFiles('**/*Factory{.js,.ts}');
 // -------------------------------------------------------------------------
 
 export const loadEntityFactories = (pathToFolder: string): Promise<string[]> => {
-    return new Promise((resolve, reject) => {
-        loadFactoryFiles(pathToFolder)(files => {
-            importFactories(files);
-            resolve(files);
-        })(reject);
-    });
+  return new Promise((resolve, reject) => {
+    loadFactoryFiles(pathToFolder)(files => {
+      importFactories(files);
+      resolve(files);
+    })(reject);
+  });
 };
 
 export const loadSeeds = (pathToFolder: string): Promise<string[]> => {
-    return new Promise((resolve, reject) => {
-        loadFiles('**/*{.js,.ts}')(pathToFolder)(resolve)(reject);
-    });
+  return new Promise((resolve, reject) => {
+    loadFiles('**/*{.js,.ts}')(pathToFolder)(resolve)(reject);
+  });
 };
