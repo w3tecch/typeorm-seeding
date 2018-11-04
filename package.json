@@ -1,6 +1,6 @@
 {
   "name": "typeorm-seeding",
-  "version": "0.0.1",
+  "version": "1.0.0-beta",
   "description": "TypeORM seeding",
   "bin": {
     "seed": "./dist/cli.js"
