@@ -142,13 +142,9 @@ export class CreatePets implements SeedsInterface {
 }
 ```
 
-### 3. Run the seeder
+## ❯ Example
 
-The last step is the easiest, just hit the following command in your terminal, but be sure you are in the projects root folder.
-
-```bash
-yarn start db.seed
-```
+A good example is in the [express-typescript-boilerplate](https://github.com/w3tecch/express-typescript-boilerplate) repository.
 
 ## ❯ License
 
