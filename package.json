@@ -8,7 +8,8 @@
   "main": "dist/typeorm-seeding.js",
   "module": "dist/typeorm-seeding.es.js",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "types": "dist/typeorm-seeding.d.ts",
   "scripts": {
