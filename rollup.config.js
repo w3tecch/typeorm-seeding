@@ -37,36 +37,4 @@ export default [{
     globals(),
     builtins(),
   ],
-}, {
-  input: 'src/cli.ts',
-  output: [
-    {
-      file: pkg.bin.seed,
-      format: 'cjs',
-    }
-  ],
-  onwarn: function (warning, warn) {
-    if (warning.code === 'THIS_IS_UNDEFINED') {
-      return;
-    }
-    warn(warning);
-  },
-  external: [
-    ...Object.keys(pkg.dependencies || {}),
-    ...Object.keys(pkg.peerDependencies || {}),
-  ],
-  plugins: [
-    typescript({
-      typescript: require('typescript'),
-    }),
-    nodeResolve({
-      module: true,
-      jsnext: true,
-      main: true,
-    }),
-    commonjs(),
-    globals(),
-    builtins(),
-    cli(),
-  ],
 }]
