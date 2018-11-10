@@ -1,10 +1,10 @@
 import chalk from 'chalk';
 import commander from 'commander';
 import * as path from 'path';
-import { createConnection, getConnectionOptions } from 'typeorm';
 
 import { loadEntityFactories, runSeed, setConnection } from './typeorm-seeding';
 import { loadSeeds } from './importer';
+import { loadConnection } from './connection';
 
 // Cli helper
 commander
@@ -20,7 +20,7 @@ commander
 // Get cli parameter for a different factory path
 const factoryPath = (commander.factories)
   ? commander.factories
-  : 'src/database/';
+  : 'src/database/factories';
 
 // Get cli parameter for a different seeds path
 const seedsPath = (commander.seeds)
@@ -56,10 +56,8 @@ const run = async () => {
     chalk.blue.bold(`${factoryFiles.length} factories`, chalk.gray('&'), chalk.blue.bold(`${seedFiles.length} seeds`)));
 
   // Get database connection and pass it to the seeder
-  let connection;
   try {
-    const connectionOptions = await getConnectionOptions();
-    connection = await createConnection(connectionOptions);
+    const connection = await loadConnection();
     setConnection(connection);
   } catch (error) {
     return handleError(error);
