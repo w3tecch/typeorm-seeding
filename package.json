@@ -2,14 +2,10 @@
   "name": "typeorm-seeding",
   "version": "1.0.0-beta.4",
   "description": "TypeORM seeding",
-  "bin": {
-    "seed": "./dist/cli.js"
-  },
   "main": "dist/typeorm-seeding.js",
   "module": "dist/typeorm-seeding.es.js",
   "files": [
-    "dist",
-    "src"
+    "dist"
   ],
   "types": "dist/typeorm-seeding.d.ts",
   "scripts": {
