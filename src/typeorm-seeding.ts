@@ -10,6 +10,7 @@ import { getNameOfClass } from './utils';
 // -------------------------------------------------------------------------
 
 export * from './importer';
+export * from './connection';
 export { Factory, Seed } from './types';
 export { times } from './utils';
 
