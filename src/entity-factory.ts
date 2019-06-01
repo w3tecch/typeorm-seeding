@@ -94,7 +94,9 @@ export class EntityFactory<Entity, Settings> {
         ) {
           const subEntityFactory = entity[attribute]
           try {
-            entity[attribute] = await (subEntityFactory as any).make()
+            if (typeof (subEntityFactory as any).make === 'function') {
+              entity[attribute] = await (subEntityFactory as any).make();
+            }
           } catch (e) {
             throw new Error(`Could not make ${(subEntityFactory as any).name}`)
           }
