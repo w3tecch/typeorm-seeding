@@ -1,19 +1,18 @@
-import * as Faker from 'faker';
-import { Connection, ObjectType } from 'typeorm';
+import * as Faker from 'faker'
+import { Connection, ObjectType } from 'typeorm'
 
-import { FactoryFunction } from './types';
-import { isPromiseLike } from './utils';
+import { FactoryFunction } from './types'
+import { isPromiseLike } from './utils'
 
 export class EntityFactory<Entity, Settings> {
-
-  private mapFunction: (entity: Entity) => Promise<Entity>;
+  private mapFunction: (entity: Entity) => Promise<Entity>
 
   constructor(
     public name: string,
     public entity: ObjectType<Entity>,
     private factory: FactoryFunction<Entity, Settings>,
-    private settings?: Settings
-  ) { }
+    private settings?: Settings,
+  ) {}
 
   // -------------------------------------------------------------------------
   // Public API
@@ -23,9 +22,11 @@ export class EntityFactory<Entity, Settings> {
    * This function is used to alter the generated values of entity, before it
    * is persist into the database
    */
-  public map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Settings> {
-    this.mapFunction = mapFunction;
-    return this;
+  public map(
+    mapFunction: (entity: Entity) => Promise<Entity>,
+  ): EntityFactory<Entity, Settings> {
+    this.mapFunction = mapFunction
+    return this
   }
 
   /**
@@ -33,47 +34,47 @@ export class EntityFactory<Entity, Settings> {
    */
   public async make(): Promise<Entity> {
     if (this.factory) {
-      let entity = await this.resolveEntity(this.factory(Faker, this.settings));
+      let entity = await this.resolveEntity(this.factory(Faker, this.settings))
       if (this.mapFunction) {
-        entity = await this.mapFunction(entity);
+        entity = await this.mapFunction(entity)
       }
-      return entity;
+      return entity
     }
-    throw new Error('Could not found entity');
+    throw new Error('Could not found entity')
   }
 
   /**
    * Seed makes a new entity and does persist it
    */
   public async seed(): Promise<Entity> {
-    const connection: Connection = (global as any).seeder.connection;
+    const connection: Connection = (global as any).seeder.connection
     if (connection) {
-      const em = connection.createEntityManager();
+      const em = connection.createEntityManager()
       try {
-        const entity = await this.make();
-        return await em.save<Entity>(entity);
+        const entity = await this.make()
+        return await em.save<Entity>(entity)
       } catch (error) {
-        throw new Error('Could not save entity');
+        throw new Error('Could not save entity')
       }
     } else {
-      throw new Error('No db connection is given');
+      throw new Error('No db connection is given')
     }
   }
 
   public async makeMany(amount: number): Promise<Entity[]> {
-    const list = [];
+    const list = []
     for (let index = 0; index < amount; index++) {
-      list[index] = await this.make();
+      list[index] = await this.make()
     }
-    return list;
+    return list
   }
 
   public async seedMany(amount: number): Promise<Entity[]> {
-    const list = [];
+    const list = []
     for (let index = 0; index < amount; index++) {
-      list[index] = await this.seed();
+      list[index] = await this.seed()
     }
-    return list;
+    return list
   }
 
   // -------------------------------------------------------------------------
@@ -84,22 +85,24 @@ export class EntityFactory<Entity, Settings> {
     for (const attribute in entity) {
       if (entity.hasOwnProperty(attribute)) {
         if (isPromiseLike(entity[attribute])) {
-          entity[attribute] = await entity[attribute];
+          entity[attribute] = await entity[attribute]
         }
 
-        if (typeof entity[attribute] === 'object' && !(entity[attribute] instanceof Date)) {
-          const subEntityFactory = entity[attribute];
+        if (
+          typeof entity[attribute] === 'object' &&
+          !(entity[attribute] instanceof Date)
+        ) {
+          const subEntityFactory = entity[attribute]
           try {
             if (typeof (subEntityFactory as any).make === 'function') {
               entity[attribute] = await (subEntityFactory as any).make();
             }
           } catch (e) {
-            throw new Error(`Could not make ${(subEntityFactory as any).name}`);
+            throw new Error(`Could not make ${(subEntityFactory as any).name}`)
           }
         }
       }
     }
-    return entity;
+    return entity
   }
-
 }
