@@ -12,6 +12,11 @@ export type FactoryFunction<Entity, Settings> = (
 ) => Entity
 
 /**
+ * EntityProperty defines an object whose keys and values must be properties of the given Entity.
+ */
+export type EntityProperty<Entity> = { [Property in keyof Entity]?: Entity[Property] };
+
+/**
  * Factory gets the EntityFactory to the given Entity and pass the settings along
  */
 export type Factory = <Entity, Settings>(

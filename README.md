@@ -120,6 +120,17 @@ await factory(User)()
 ...
 ```
 
+To override specific properties in all the generated entities, you can send an additional object
+containing the properties that you want to override as the first argument in the `.make()`
+and `.seed()` methods, or as second argument in the `.makeMany()` and `.seedMany()` methods.
+
+```typescript
+...
+await factory(User)()
+    .createMany(10, { roles: ['admin'], firstName: 'John' });
+...
+```
+
 To deal with relations you can use the entity manager like this.
 
 ```typescript

@@ -1,7 +1,6 @@
 import * as Faker from 'faker'
 import { Connection, ObjectType } from 'typeorm'
-
-import { FactoryFunction } from './types'
+import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils'
 
 export class EntityFactory<Entity, Settings> {
@@ -32,12 +31,19 @@ export class EntityFactory<Entity, Settings> {
   /**
    * Make a new entity, but does not persist it
    */
-  public async make(): Promise<Entity> {
+  public async make(
+    overrideParams: EntityProperty<Entity> = {},
+  ): Promise<Entity> {
     if (this.factory) {
       let entity = await this.resolveEntity(this.factory(Faker, this.settings))
       if (this.mapFunction) {
         entity = await this.mapFunction(entity)
       }
+
+      for (const key in overrideParams) {
+        entity[key] = overrideParams[key]
+      }
+
       return entity
     }
     throw new Error('Could not found entity')
@@ -46,12 +52,14 @@ export class EntityFactory<Entity, Settings> {
   /**
    * Seed makes a new entity and does persist it
    */
-  public async seed(): Promise<Entity> {
+  public async seed(
+    overrideParams: EntityProperty<Entity> = {},
+  ): Promise<Entity> {
     const connection: Connection = (global as any).seeder.connection
     if (connection) {
       const em = connection.createEntityManager()
       try {
-        const entity = await this.make()
+        const entity = await this.make(overrideParams)
         return await em.save<Entity>(entity)
       } catch (error) {
         throw new Error('Could not save entity')
@@ -61,18 +69,24 @@ export class EntityFactory<Entity, Settings> {
     }
   }
 
-  public async makeMany(amount: number): Promise<Entity[]> {
+  public async makeMany(
+    amount: number,
+    overrideParams: EntityProperty<Entity> = {},
+  ): Promise<Entity[]> {
     const list = []
     for (let index = 0; index < amount; index++) {
-      list[index] = await this.make()
+      list[index] = await this.make(overrideParams)
     }
     return list
   }
 
-  public async seedMany(amount: number): Promise<Entity[]> {
+  public async seedMany(
+    amount: number,
+    overrideParams: EntityProperty<Entity> = {},
+  ): Promise<Entity[]> {
     const list = []
     for (let index = 0; index < amount; index++) {
-      list[index] = await this.seed()
+      list[index] = await this.seed(overrideParams)
     }
     return list
   }
@@ -95,7 +109,7 @@ export class EntityFactory<Entity, Settings> {
           const subEntityFactory = entity[attribute]
           try {
             if (typeof (subEntityFactory as any).make === 'function') {
-              entity[attribute] = await (subEntityFactory as any).make();
+              entity[attribute] = await (subEntityFactory as any).make()
             }
           } catch (e) {
             throw new Error(`Could not make ${(subEntityFactory as any).name}`)
