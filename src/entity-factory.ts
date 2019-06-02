@@ -1,7 +1,7 @@
 import * as Faker from 'faker'
 import { Connection, ObjectType } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
-import { isPromiseLike } from './utils'
+import { isPromiseLike, printError } from './utils'
 
 export class EntityFactory<Entity, Settings> {
   private mapFunction: (entity: Entity) => Promise<Entity>
@@ -62,10 +62,14 @@ export class EntityFactory<Entity, Settings> {
         const entity = await this.make(overrideParams)
         return await em.save<Entity>(entity)
       } catch (error) {
-        throw new Error('Could not save entity')
+        const message = 'Could not save entity'
+        printError(message, error)
+        throw new Error(message)
       }
     } else {
-      throw new Error('No db connection is given')
+      const message = 'No db connection is given'
+      printError(message)
+      throw new Error(message)
     }
   }
 
@@ -111,8 +115,10 @@ export class EntityFactory<Entity, Settings> {
             if (typeof (subEntityFactory as any).make === 'function') {
               entity[attribute] = await (subEntityFactory as any).make()
             }
-          } catch (e) {
-            throw new Error(`Could not make ${(subEntityFactory as any).name}`)
+          } catch (error) {
+            const message = `Could not make ${(subEntityFactory as any).name}`
+            printError(message, error)
+            throw new Error(message)
           }
         }
       }

@@ -6,6 +6,7 @@ import globals from 'rollup-plugin-node-globals'
 import builtins from 'rollup-plugin-node-builtins'
 import pkg from './package.json'
 import hashbang from 'rollup-plugin-hashbang'
+import json from 'rollup-plugin-json'
 
 export default [
   {
@@ -59,6 +60,11 @@ export default [
       ...Object.keys(pkg.peerDependencies || {}),
     ],
     plugins: [
+      json({
+        exclude: ['node_modules/**'],
+        preferConst: true,
+        compact: true,
+      }),
       cli(),
       hashbang(),
       typescript({

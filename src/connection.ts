@@ -28,12 +28,10 @@ export const loadConnection = async (
   } else {
     try {
       ormconfig = await getConnectionOptions()
-    } catch (e) {
+    } catch (_) {
       ormconfig = require(path.join(process.cwd(), configPath))
     }
   }
-
-  // ormconfig.entities = [];
 
   return createConnection(ormconfig)
 }
