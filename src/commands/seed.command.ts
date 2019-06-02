@@ -1,5 +1,6 @@
 import * as yargs from 'yargs'
 import chalk from 'chalk'
+import { printError } from '../utils'
 import {
   loadConnection,
   setConnection,
@@ -7,6 +8,7 @@ import {
   loadSeeds,
   runSeed,
 } from '../typeorm-seeding'
+import * as pkg from '../../package.json'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -40,12 +42,12 @@ export class SeedCommand implements yargs.CommandModule {
       factoryFiles = await loadEntityFactories(args.factories as string)
       seedFiles = await loadSeeds(args.seeds as string)
     } catch (error) {
-      console.error(error)
+      printError('Could not load factories and seeds!', error)
       process.exit(1)
     }
 
     // Status logging to print out the amount of factories and seeds.
-    log(chalk.bold('seeds'))
+    log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
     log(
       '🔎 ',
       chalk.gray.underline(`found:`),
@@ -61,7 +63,10 @@ export class SeedCommand implements yargs.CommandModule {
       const connection = await loadConnection(args.config as string)
       setConnection(connection)
     } catch (error) {
-      console.error(error)
+      printError(
+        'Database connection failed! Check your typeORM config file.',
+        error,
+      )
       process.exit(1)
     }
 
@@ -72,18 +77,21 @@ export class SeedCommand implements yargs.CommandModule {
         className = className.replace('.ts', '').replace('.js', '')
         className = className.split('-')[className.split('-').length - 1]
         log(
-          '\n' + chalk.gray.underline(`executing seed:  `),
+          chalk.gray.underline(`executing seed:`),
           chalk.green.bold(`${className}`),
         )
         const seedFileObject: any = require(seedFile)
         await runSeed(seedFileObject.default)
       } catch (error) {
-        console.error(error)
+        printError(
+          'Could not run the seeds! Check if your seed script exports the class as default. Verify that the path to the seeds and factories is correct.',
+          error,
+        )
         process.exit(1)
       }
     }
 
-    log('\n👍 ', chalk.gray.underline(`finished seeding`))
+    log('👍 ', chalk.gray.underline(`finished seeding`))
     process.exit(0)
   }
 }

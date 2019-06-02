@@ -1,3 +1,5 @@
+import chalk from 'chalk'
+
 /**
  * Returns the name of a class
  */
@@ -24,4 +26,14 @@ export const times = async <TResult>(
     rs.push(r)
   }
   return rs
+}
+
+/**
+ * Prints the error to the console
+ */
+export const printError = (message: string, error?: any) => {
+  console.log('\n❌ ', chalk.red(message))
+  if (error) {
+    console.error(error)
+  }
 }
