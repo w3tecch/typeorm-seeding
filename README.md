@@ -56,7 +56,7 @@ yarn add typeorm-seeding
 The seeds files define how much and how the data are connected with each other. The files will be executed alphabetically.
 
 ```typescript
-export class CreateUsers implements Seed {
+export default class CreateUsers implements Seed {
   public async seed(factory: Factory, connection: Connection): Promise<any> {
     await connection
       .createQueryBuilder()
@@ -112,7 +112,7 @@ In your seed script you can use the factory like this.
 With the second function, accepting your settings defined in the factories, you are able to create different variations of entities.
 
 ```typescript
-export class CreateUsers implements Seed {
+export default class CreateUsers implements Seed {
   public async seed(factory: Factory, connection: Connection): Promise<any> {
     await factory(User)({ roles: [] }).createMany(10)
   }
@@ -148,7 +148,7 @@ await factory(User)()
 To deal with relations you can use the entity manager like this.
 
 ```typescript
-export class CreatePets implements SeedsInterface {
+export default class CreatePets implements SeedsInterface {
   public async seed(
     factory: FactoryInterface,
     connection: Connection,
