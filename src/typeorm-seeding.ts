@@ -8,7 +8,7 @@ import {
   FactoryFunction,
   SeedConstructor,
 } from './types'
-import { getNameOfClass } from './utils/factory.util'
+import { getNameOfEntity } from './utils/factory.util'
 
 // -------------------------------------------------------------------------
 // Handy Exports
@@ -49,7 +49,7 @@ export const define = <Entity, Settings>(
   entity: ObjectType<Entity>,
   factoryFn: FactoryFunction<Entity, Settings>,
 ) => {
-  ;(global as any).seeder.entityFactories.set(getNameOfClass(entity), {
+  ;(global as any).seeder.entityFactories.set(getNameOfEntity(entity), {
     entity,
     factory: factoryFn,
   })
@@ -61,7 +61,7 @@ export const define = <Entity, Settings>(
 export const factory: Factory = <Entity, Settings>(
   entity: ObjectType<Entity>,
 ) => (settings?: Settings) => {
-  const name = getNameOfClass(entity)
+  const name = getNameOfEntity(entity)
   const entityFactoryObject = (global as any).seeder.entityFactories.get(name)
   return new EntityFactory<Entity, Settings>(
     name,
