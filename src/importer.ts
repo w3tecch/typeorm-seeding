@@ -3,6 +3,7 @@ import { loadFiles, importFiles } from './utils/file.util'
 // -------------------------------------------------------------------------
 // Util functions
 // -------------------------------------------------------------------------
+
 const loadFactoryFiles = loadFiles('**/*actory{.js,.ts}')
 const loadSeedFiles = loadFiles('**/*{.js,.ts}')
 
