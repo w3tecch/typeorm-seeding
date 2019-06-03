@@ -1,37 +1,20 @@
 import * as path from 'path'
-import { Connection, createConnection, getConnectionOptions } from 'typeorm'
+import {
+  Connection,
+  createConnection as createTypeORMConnection,
+  getConnectionOptions as getTypeORMConnectionOptions,
+  ConnectionOptions,
+} from 'typeorm'
 
-const args = process.argv
-
-// Get cli parameter for logging
-const logging =
-  args.indexOf('--logging') >= 0 || args.indexOf('-L') >= 0 || false
-
-// Get cli parameter for ormconfig.json or another json file
-const configParam = '--config'
-const hasConfigPath = args.indexOf(configParam) >= 0 || false
-const indexOfConfigPath = args.indexOf(configParam) + 1
-
-/**
- * Returns a TypeORM database connection for our entity-manager
- */
-export const loadConnection = async (
-  configPath: string,
-): Promise<Connection> => {
-  let ormconfig: any = {
-    logging,
+export const getConnectionOptions = async (configPath: string): Promise<ConnectionOptions> => {
+  try {
+    return await getTypeORMConnectionOptions()
+  } catch (_) {
+    return require(path.join(process.cwd(), configPath))
   }
+}
 
-  if (hasConfigPath) {
-    const configPath = path.join(process.cwd(), args[indexOfConfigPath])
-    ormconfig = require(configPath)
-  } else {
-    try {
-      ormconfig = await getConnectionOptions()
-    } catch (_) {
-      ormconfig = require(path.join(process.cwd(), configPath))
-    }
-  }
-
-  return createConnection(ormconfig)
+export const createConnection = async (configPath: string): Promise<Connection> => {
+  const options = await getConnectionOptions(configPath)
+  return createTypeORMConnection(options)
 }

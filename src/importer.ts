@@ -1,34 +1,19 @@
-import glob from 'glob'
-import * as path from 'path'
+import { loadFiles, importFiles } from './utils/file.util'
 
 // -------------------------------------------------------------------------
 // Util functions
 // -------------------------------------------------------------------------
-
-const importFactories = (files: string[]) => files.forEach(require)
-
-const loadFiles = (filePattern: string) => (pathToFolder: string) => (
-  successFn: (files: string[]) => void,
-) => (failedFn: (error: any) => void) => {
-  glob(
-    path.join(process.cwd(), pathToFolder, filePattern),
-    (error: any, files: string[]) =>
-      error ? failedFn(error) : successFn(files),
-  )
-}
-
 const loadFactoryFiles = loadFiles('**/*actory{.js,.ts}')
+const loadSeedFiles = loadFiles('**/*{.js,.ts}')
 
 // -------------------------------------------------------------------------
 // Facade functions
 // -------------------------------------------------------------------------
 
-export const loadEntityFactories = (
-  pathToFolder: string,
-): Promise<string[]> => {
+export const loadEntityFactories = (pathToFolder: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
     loadFactoryFiles(pathToFolder)(files => {
-      importFactories(files)
+      importFiles(files)
       resolve(files)
     })(reject)
   })
@@ -36,6 +21,15 @@ export const loadEntityFactories = (
 
 export const loadSeeds = (pathToFolder: string): Promise<string[]> => {
   return new Promise((resolve, reject) => {
-    loadFiles('**/*{.js,.ts}')(pathToFolder + '/')(resolve)(reject)
+    loadSeedFiles(pathToFolder + '/')(resolve)(reject)
   })
+}
+
+export const importSeed = (filePath: string): any => {
+  let className = filePath.split('/')[filePath.split('/').length - 1]
+  className = className.replace('.ts', '').replace('.js', '')
+  className = className.split('-')[className.split('-').length - 1]
+
+  const seedFileObject: any = require(filePath)
+  return seedFileObject.default
 }

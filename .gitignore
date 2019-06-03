@@ -2,7 +2,7 @@
 dist
 lib
 es
-test/coverage
+coverage
 .rpt2_cache
 
 ### node ###

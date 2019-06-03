@@ -8,7 +8,7 @@ import {
   FactoryFunction,
   SeedConstructor,
 } from './types'
-import { getNameOfClass } from './utils'
+import { getNameOfClass } from './utils/utils'
 
 // -------------------------------------------------------------------------
 // Handy Exports
@@ -17,7 +17,7 @@ import { getNameOfClass } from './utils'
 export * from './importer'
 export * from './connection'
 export { Factory, Seed } from './types'
-export { times } from './utils'
+export { times } from './helpers'
 
 // -------------------------------------------------------------------------
 // Types & Variables

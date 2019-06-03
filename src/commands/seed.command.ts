@@ -1,14 +1,10 @@
 import * as yargs from 'yargs'
 import chalk from 'chalk'
-import { printError } from '../utils'
-import {
-  loadConnection,
-  setConnection,
-  loadEntityFactories,
-  loadSeeds,
-  runSeed,
-} from '../typeorm-seeding'
+import { createConnection } from 'typeorm'
+import { setConnection, loadEntityFactories, loadSeeds, runSeed, getConnectionOptions } from '../typeorm-seeding'
 import * as pkg from '../../package.json'
+import { printError } from '../utils/log.util'
+import { importSeed } from '../importer'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -35,7 +31,9 @@ export class SeedCommand implements yargs.CommandModule {
 
   async handler(args: yargs.Arguments) {
     const log = console.log
+    log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
 
+    // Find all factories and seed with help of the config
     let factoryFiles
     let seedFiles
     try {
@@ -47,7 +45,6 @@ export class SeedCommand implements yargs.CommandModule {
     }
 
     // Status logging to print out the amount of factories and seeds.
-    log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
     log(
       '🔎 ',
       chalk.gray.underline(`found:`),
@@ -60,28 +57,20 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Get database connection and pass it to the seeder
     try {
-      const connection = await loadConnection(args.config as string)
+      const options = await getConnectionOptions(args.config as string)
+      const connection = await createConnection(options)
       setConnection(connection)
     } catch (error) {
-      printError(
-        'Database connection failed! Check your typeORM config file.',
-        error,
-      )
+      printError('Database connection failed! Check your typeORM config file.', error)
       process.exit(1)
     }
 
     // Show seeds in the console
     for (const seedFile of seedFiles) {
       try {
-        let className = seedFile.split('/')[seedFile.split('/').length - 1]
-        className = className.replace('.ts', '').replace('.js', '')
-        className = className.split('-')[className.split('-').length - 1]
-        log(
-          chalk.gray.underline(`executing seed:`),
-          chalk.green.bold(`${className}`),
-        )
-        const seedFileObject: any = require(seedFile)
-        await runSeed(seedFileObject.default)
+        const seedFileObject: any = importSeed(seedFile)
+        log(chalk.gray.underline(`executing seed:`), chalk.green.bold(`${seedFileObject.name}`))
+        await runSeed(seedFileObject)
       } catch (error) {
         printError(
           'Could not run the seeds! Check if your seed script exports the class as default. Verify that the path to the seeds and factories is correct.',

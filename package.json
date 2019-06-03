@@ -12,7 +12,10 @@
     "format": "prettier --write \"src/**/*.ts\"",
     "build": "npm run clean && rollup -c",
     "watch": "rollup -cw",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage"
   },
   "license": "MIT",
   "author": "w3tec.ch <info@w3tec.ch>",
@@ -25,7 +28,9 @@
   ],
   "devDependencies": {
     "@types/faker": "^4.1.4",
+    "@types/jest": "^24.0.13",
     "@types/yargs": "^13.0.0",
+    "jest": "^24.8.0",
     "rimraf": "^2.6.2",
     "rollup": "^0.66.2",
     "rollup-plugin-cli": "^0.1.5",
@@ -36,6 +41,7 @@
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^3.4.0",
     "rollup-plugin-typescript2": "^0.21.1",
+    "ts-jest": "^24.0.2",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.18.0",
     "tslint-plugin-prettier": "^2.0.1",
@@ -50,5 +56,19 @@
     "typeorm": "^0.2.7",
     "yargs": "^13.2.4"
   },
-  "peerDependencies": {}
+  "peerDependencies": {},
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": "src",
+    "testRegex": ".test.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
+    },
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node"
+  }
 }
