@@ -1,7 +1,7 @@
 import * as Faker from 'faker'
 import { Connection, ObjectType } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
-import { isPromiseLike } from './utils/utils'
+import { isPromiseLike } from './utils/factory.util'
 import { printError } from './utils/log.util';
 
 export class EntityFactory<Entity, Settings> {

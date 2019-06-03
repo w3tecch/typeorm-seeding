@@ -6,7 +6,10 @@
 
 <p align="center">
   <a href="https://david-dm.org/w3tecch/typeorm-seeding">
-    <img src="https://david-dm.org/w3tecch/typeorm-seeding/status.svg?style=flat" alt="dependency" />
+    <img src="https://david-dm.org/w3tecch/typeorm-seeding/status.svg?style=flat" alt="Dependency" />
+  </a>
+  <a href="https://travis-ci.org/w3tecch/typeorm-seeding">
+    <img src="https://travis-ci.org/w3tecch/typeorm-seeding.svg?branch=master" alt="Build Status" />
   </a>
 </p>
 
@@ -53,10 +56,7 @@ export default class CreateUsers implements Seed {
       .createQueryBuilder()
       .insert()
       .into(User)
-      .values([
-        { firstName: 'Timber', lastName: 'Saw' },
-        { firstName: 'Phantom', lastName: 'Lancer' },
-      ])
+      .values([{ firstName: 'Timber', lastName: 'Saw' }, { firstName: 'Phantom', lastName: 'Lancer' }])
       .execute()
   }
 }
@@ -140,10 +140,7 @@ To deal with relations you can use the entity manager like this.
 
 ```typescript
 export default class CreatePets implements SeedsInterface {
-  public async seed(
-    factory: FactoryInterface,
-    connection: Connection,
-  ): Promise<any> {
+  public async seed(factory: FactoryInterface, connection: Connection): Promise<any> {
     const connection = await factory.getConnection()
     const em = connection.createEntityManager()
 
@@ -174,11 +171,11 @@ Now you are able to execute your seeds with this command `npm run seed`.
 
 ### CLI Options
 
-| Option | Default | Description |
-| --- | --- | --- |
-| `--config` or `--c`     | `ormconfig.js` | Path to the typeorm config file (json or js). |
-| `--seeds` or `--s`      | `database/seeds` | Directory where seeds are. |
-| `--factories` or `--f`  | `database/factories` | Directory where enity factories are. |
+| Option                 | Default              | Description                                   |
+| ---------------------- | -------------------- | --------------------------------------------- |
+| `--config` or `--c`    | `ormconfig.js`       | Path to the typeorm config file (json or js). |
+| `--seeds` or `--s`     | `database/seeds`     | Directory where seeds are.                    |
+| `--factories` or `--f` | `database/factories` | Directory where enity factories are.          |
 
 ## ❯ Example
 

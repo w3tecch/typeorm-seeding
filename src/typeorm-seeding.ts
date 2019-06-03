@@ -8,7 +8,7 @@ import {
   FactoryFunction,
   SeedConstructor,
 } from './types'
-import { getNameOfClass } from './utils/utils'
+import { getNameOfClass } from './utils/factory.util'
 
 // -------------------------------------------------------------------------
 // Handy Exports
