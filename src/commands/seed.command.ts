@@ -1,11 +1,12 @@
 import * as yargs from 'yargs'
 import chalk from 'chalk'
 import { createConnection } from 'typeorm'
-import { setConnection, runSeed, getConnectionOptions } from '../typeorm-seeding'
+import { setConnection, runSeeder, getConnectionOptions } from '../typeorm-seeding'
 import * as pkg from '../../package.json'
 import { printError } from '../utils/log.util'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
+import { ConnectionOptions } from '../connection'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -23,11 +24,12 @@ export class SeedCommand implements yargs.CommandModule {
   }
 
   async handler(args: yargs.Arguments) {
+    // tslint:disable-next-line
     const log = console.log
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
 
     // Get TypeORM config file
-    let options
+    let options: ConnectionOptions
     try {
       options = await getConnectionOptions(args.config as string)
     } catch (error) {
@@ -36,8 +38,8 @@ export class SeedCommand implements yargs.CommandModule {
     }
 
     // Find all factories and seed with help of the config
-    const factoryFiles = loadFiles(options.factories || ['src/database/factories/**/*.ts'])
-    const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*.ts'])
+    const factoryFiles = loadFiles(options.factories || ['src/database/factories/**/*{.js,.ts}'])
+    const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*{.js,.ts}'])
     try {
       importFiles(factoryFiles)
     } catch (error) {
@@ -69,11 +71,14 @@ export class SeedCommand implements yargs.CommandModule {
     for (const seedFile of seedFiles) {
       try {
         const seedFileObject = importSeed(seedFile)
-        log(chalk.gray.underline(`executing seed:`), chalk.green.bold(`${seedFileObject.name}`))
-        await runSeed(seedFileObject)
+        if (args.class === undefined || args.class === seedFileObject.name) {
+          log(chalk.gray.underline(`executing seed:`), chalk.green.bold(`${seedFileObject.name}`))
+          await runSeeder(seedFileObject)
+        }
       } catch (error) {
         printError(
-          'Could not run the seeds! Check if your seed script exports the class as default. Verify that the path to the seeds and factories is correct.',
+          'Could not run the seeds! Check if your seed script exports the class as default.' +
+            ' Verify that the path to the seeds and factories is correct.',
           error,
         )
         process.exit(1)
