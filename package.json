@@ -31,6 +31,7 @@
 		"@types/jest": "^24.0.13",
 		"@types/yargs": "^13.0.0",
 		"jest": "^24.8.0",
+		"prettier": "^1.17.1",
 		"rimraf": "^2.6.2",
 		"rollup": "^0.66.2",
 		"rollup-plugin-cli": "^0.1.5",
@@ -48,6 +49,7 @@
 		"typescript": "^3.0.3"
 	},
 	"dependencies": {
+		"@types/glob": "^7.1.1",
 		"@types/node": "^12.0.4",
 		"chalk": "^2.4.2",
 		"faker": "^4.1.0",

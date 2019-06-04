@@ -1,10 +1,11 @@
 import * as yargs from 'yargs'
 import chalk from 'chalk'
 import { createConnection } from 'typeorm'
-import { setConnection, loadEntityFactories, loadSeeds, runSeed, getConnectionOptions } from '../typeorm-seeding'
+import { setConnection, runSeed, getConnectionOptions } from '../typeorm-seeding'
 import * as pkg from '../../package.json'
 import { printError } from '../utils/log.util'
 import { importSeed } from '../importer'
+import { loadFiles, importFiles } from '../utils/file.util'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -12,20 +13,12 @@ export class SeedCommand implements yargs.CommandModule {
 
   builder(args: yargs.Argv) {
     return args
-      .option('c', {
-        alias: 'config',
+      .option('config', {
         default: 'ormconfig.js',
         describe: 'Path to the typeorm config file (json or js).',
       })
-      .option('s', {
-        alias: 'seeds',
-        default: 'database/seeds',
-        describe: 'Directory where seeds are.',
-      })
-      .option('f', {
-        alias: 'factories',
-        default: 'database/factories',
-        describe: 'Directory where enity factories are.',
+      .option('class', {
+        describe: 'Specific seed class to run.',
       })
   }
 
@@ -33,14 +26,22 @@ export class SeedCommand implements yargs.CommandModule {
     const log = console.log
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
 
-    // Find all factories and seed with help of the config
-    let factoryFiles
-    let seedFiles
+    // Get TypeORM config file
+    let options
     try {
-      factoryFiles = await loadEntityFactories(args.factories as string)
-      seedFiles = await loadSeeds(args.seeds as string)
+      options = await getConnectionOptions(args.config as string)
     } catch (error) {
-      printError('Could not load factories and seeds!', error)
+      printError('Could not load the config file!', error)
+      process.exit(1)
+    }
+
+    // Find all factories and seed with help of the config
+    const factoryFiles = loadFiles(options.factories || ['src/database/factories/**/*.ts'])
+    const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*.ts'])
+    try {
+      importFiles(factoryFiles)
+    } catch (error) {
+      printError('Could not load factories!', error)
       process.exit(1)
     }
 
@@ -57,7 +58,6 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Get database connection and pass it to the seeder
     try {
-      const options = await getConnectionOptions(args.config as string)
       const connection = await createConnection(options)
       setConnection(connection)
     } catch (error) {
@@ -68,7 +68,7 @@ export class SeedCommand implements yargs.CommandModule {
     // Show seeds in the console
     for (const seedFile of seedFiles) {
       try {
-        const seedFileObject: any = importSeed(seedFile)
+        const seedFileObject = importSeed(seedFile)
         log(chalk.gray.underline(`executing seed:`), chalk.green.bold(`${seedFileObject.name}`))
         await runSeed(seedFileObject)
       } catch (error) {

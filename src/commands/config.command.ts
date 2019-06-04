@@ -9,12 +9,11 @@ export class ConfigCommand implements yargs.CommandModule {
   describe = 'Show the TypeORM config'
 
   builder(args: yargs.Argv) {
-    return args
-      .option('c', {
-        alias: 'config',
-        default: 'ormconfig.js',
-        describe: 'Path to the typeorm config file (json or js).',
-      })
+    return args.option('c', {
+      alias: 'config',
+      default: 'ormconfig.js',
+      describe: 'Path to the typeorm config file (json or js).',
+    })
   }
 
   async handler(args: yargs.Arguments) {
