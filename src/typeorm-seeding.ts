@@ -44,13 +44,7 @@ export const factory: Factory = <Entity, Settings>(entity: ObjectType<Entity>) =
   return new EntityFactory<Entity, Settings>(name, entity, entityFactoryObject.factory, settings)
 }
 
-export const runSeeder = async (clazz: SeederConstructor, configPath?: string): Promise<void> => {
-  let connection = getConnection()
-  if (!getConnection()) {
-    connection = await createConnection(configPath)
-    setConnection(connection)
-  }
-
+export const runSeeder = async (clazz: SeederConstructor): Promise<void> => {
   const seeder: Seeder = new clazz()
-  return seeder.run(factory, connection)
+  return seeder.run(factory, getConnection())
 }

@@ -1,7 +1,8 @@
 import * as yargs from 'yargs'
+import ora from 'ora'
 import chalk from 'chalk'
 import { createConnection } from 'typeorm'
-import { setConnection, runSeeder, getConnectionOptions } from '../typeorm-seeding'
+import { setConnection, runSeeder, getConnectionOptions, getConnection } from '../typeorm-seeding'
 import * as pkg from '../../package.json'
 import { printError } from '../utils/log.util'
 import { importSeed } from '../importer'
@@ -24,68 +25,76 @@ export class SeedCommand implements yargs.CommandModule {
   }
 
   async handler(args: yargs.Arguments) {
+    // Disable logging for the seeders, but keep it alive for our cli
     // tslint:disable-next-line
     const log = console.log
+    // tslint:disable-next-line
+    console.log = () => void 0
+
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
+    const spinner = ora('Loading ormconfig').start()
 
     // Get TypeORM config file
     let options: ConnectionOptions
     try {
       options = await getConnectionOptions(args.config as string)
+      spinner.succeed('ORM Config loaded')
     } catch (error) {
-      printError('Could not load the config file!', error)
-      process.exit(1)
+      panic(spinner, error, 'Could not load the config file!')
     }
 
     // Find all factories and seed with help of the config
+    spinner.start('Import Factories')
     const factoryFiles = loadFiles(options.factories || ['src/database/factories/**/*{.js,.ts}'])
-    const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*{.js,.ts}'])
     try {
       importFiles(factoryFiles)
+      spinner.succeed('Factories are imported')
     } catch (error) {
-      printError('Could not load factories!', error)
-      process.exit(1)
-    }
-
-    // Status logging to print out the amount of factories and seeds.
-    log(
-      '🔎 ',
-      chalk.gray.underline(`found:`),
-      chalk.blue.bold(
-        `${factoryFiles.length} factories`,
-        chalk.gray('&'),
-        chalk.blue.bold(`${seedFiles.length} seeds`),
-      ),
-    )
-
-    // Get database connection and pass it to the seeder
-    try {
-      const connection = await createConnection(options)
-      setConnection(connection)
-    } catch (error) {
-      printError('Database connection failed! Check your typeORM config file.', error)
-      process.exit(1)
+      panic(spinner, error, 'Could not import factories!')
     }
 
     // Show seeds in the console
-    for (const seedFile of seedFiles) {
+    spinner.start('Importing Seeders')
+    const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*{.js,.ts}'])
+    let seedFileObjects = []
+    try {
+      seedFileObjects = seedFiles
+        .map(seedFile => importSeed(seedFile))
+        .filter(seedFileObject => args.class === undefined || args.class === seedFileObject.name)
+      spinner.succeed('Seeders are imported')
+    } catch (error) {
+      panic(spinner, error, 'Could not import seeders!')
+    }
+
+    // Get database connection and pass it to the seeder
+    spinner.start('Connecting to the database')
+    try {
+      const connection = await createConnection(options)
+      setConnection(connection)
+      spinner.succeed('Database connected')
+    } catch (error) {
+      panic(spinner, error, 'Database connection failed! Check your typeORM config file.')
+    }
+
+    // Run seeds
+    for (const seedFileObject of seedFileObjects) {
+      spinner.start(`Executing ${seedFileObject.name} Seeder`)
       try {
-        const seedFileObject = importSeed(seedFile)
-        if (args.class === undefined || args.class === seedFileObject.name) {
-          log(chalk.gray.underline(`executing seed:`), chalk.green.bold(`${seedFileObject.name}`))
-          await runSeeder(seedFileObject)
-        }
+        await runSeeder(seedFileObject)
+        spinner.succeed(`Seeder ${seedFileObject.name} executed`)
       } catch (error) {
-        printError(
-          'Could not run the seeds! Check if your seed script exports the class as default.' +
-            ' Verify that the path to the seeds and factories is correct.',
-          error,
-        )
-        process.exit(1)
+        panic(spinner, error, `Could not run the seed ${seedFileObject.name}!`)
       }
     }
 
-    log('👍 ', chalk.gray.underline(`finished seeding`))
+    log('👍 ', chalk.gray.underline(`Finished Seeding`))
     process.exit(0)
   }
+}
+
+function panic(spinner: ora.Ora, error: Error, message: string) {
+  spinner.fail(message)
+  // tslint:disable-next-line
+  console.error(error)
+  process.exit(1)
 }

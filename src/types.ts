@@ -30,9 +30,7 @@ export interface Seeder {
 /**
  * Constructor of the seed class
  */
-export interface SeederConstructor {
-  new (): Seeder
-}
+export type SeederConstructor = new () => Seeder
 
 /**
  * Value of our EntityFactory state
