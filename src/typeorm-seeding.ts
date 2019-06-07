@@ -1,10 +1,9 @@
 import 'reflect-metadata'
-import { Connection, ObjectType, ConnectionOptions } from 'typeorm'
+import { Connection, ObjectType } from 'typeorm'
 
 import { EntityFactory } from './entity-factory'
 import { EntityFactoryDefinition, Factory, FactoryFunction, SeederConstructor, Seeder } from './types'
 import { getNameOfEntity } from './utils/factory.util'
-import { getConnectionOptions, createConnection } from './connection'
 
 // -------------------------------------------------------------------------
 // Handy Exports

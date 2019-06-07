@@ -20,6 +20,7 @@ export class SeedCommand implements yargs.CommandModule {
         describe: 'Path to the typeorm config file (json or js).',
       })
       .option('class', {
+        alias: 'c',
         describe: 'Specific seed class to run.',
       })
   }

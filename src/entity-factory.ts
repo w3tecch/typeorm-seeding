@@ -38,7 +38,9 @@ export class EntityFactory<Entity, Settings> {
       }
 
       for (const key in overrideParams) {
-        entity[key] = overrideParams[key]
+        if (overrideParams.hasOwnProperty(key)) {
+          entity[key] = overrideParams[key]
+        }
       }
 
       return entity
