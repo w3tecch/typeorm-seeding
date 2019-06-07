@@ -1,28 +1,18 @@
 {
   "compilerOptions": {
-    "declaration": true,
-    "declarationDir": "./dist",
-    "outDir": "./dist",
-    "target": "es6",
+    "paths": { "*": ["types/*"] },
     "module": "es6",
-    "noImplicitAny": false,
-    "importHelpers": true,
-    "strict": true,
-    "strictNullChecks": false,
-    "noImplicitThis": true,
-    "alwaysStrict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
     "moduleResolution": "node",
-    "allowSyntheticDefaultImports": true,
-    "experimentalDecorators": true,
+    "declaration": true,
+    "removeComments": true,
     "emitDecoratorMetadata": true,
-    "esModuleInterop": true
+    "experimentalDecorators": true,
+    "target": "es6",
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": "./",
+    "incremental": true,
+    "allowSyntheticDefaultImports": true
   },
-  "include": [
-    "src/**/*"
-  ],
   "exclude": ["node_modules"]
 }

@@ -1,14 +1,13 @@
 import * as yargs from 'yargs'
+import ora from 'ora'
 import chalk from 'chalk'
-import { printError } from '../utils'
-import {
-  loadConnection,
-  setConnection,
-  loadEntityFactories,
-  loadSeeds,
-  runSeed,
-} from '../typeorm-seeding'
+import { createConnection } from 'typeorm'
+import { setConnection, runSeeder, getConnectionOptions, getConnection } from '../typeorm-seeding'
 import * as pkg from '../../package.json'
+import { printError } from '../utils/log.util'
+import { importSeed } from '../importer'
+import { loadFiles, importFiles } from '../utils/file.util'
+import { ConnectionOptions } from '../connection'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -16,82 +15,87 @@ export class SeedCommand implements yargs.CommandModule {
 
   builder(args: yargs.Argv) {
     return args
-      .option('c', {
-        alias: 'config',
+      .option('config', {
         default: 'ormconfig.js',
         describe: 'Path to the typeorm config file (json or js).',
       })
-      .option('s', {
-        alias: 'seeds',
-        default: 'database/seeds',
-        describe: 'Directory where seeds are.',
-      })
-      .option('f', {
-        alias: 'factories',
-        default: 'database/factories',
-        describe: 'Directory where enity factories are.',
+      .option('class', {
+        alias: 'c',
+        describe: 'Specific seed class to run.',
       })
   }
 
   async handler(args: yargs.Arguments) {
+    // Disable logging for the seeders, but keep it alive for our cli
+    // tslint:disable-next-line
     const log = console.log
+    // tslint:disable-next-line
+    console.log = () => void 0
 
-    let factoryFiles
-    let seedFiles
+    log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
+    const spinner = ora('Loading ormconfig').start()
+
+    // Get TypeORM config file
+    let options: ConnectionOptions
     try {
-      factoryFiles = await loadEntityFactories(args.factories as string)
-      seedFiles = await loadSeeds(args.seeds as string)
+      options = await getConnectionOptions(args.config as string)
+      spinner.succeed('ORM Config loaded')
     } catch (error) {
-      printError('Could not load factories and seeds!', error)
-      process.exit(1)
+      panic(spinner, error, 'Could not load the config file!')
     }
 
-    // Status logging to print out the amount of factories and seeds.
-    log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
-    log(
-      '🔎 ',
-      chalk.gray.underline(`found:`),
-      chalk.blue.bold(
-        `${factoryFiles.length} factories`,
-        chalk.gray('&'),
-        chalk.blue.bold(`${seedFiles.length} seeds`),
-      ),
-    )
-
-    // Get database connection and pass it to the seeder
+    // Find all factories and seed with help of the config
+    spinner.start('Import Factories')
+    const factoryFiles = loadFiles(options.factories || ['src/database/factories/**/*{.js,.ts}'])
     try {
-      const connection = await loadConnection(args.config as string)
-      setConnection(connection)
+      importFiles(factoryFiles)
+      spinner.succeed('Factories are imported')
     } catch (error) {
-      printError(
-        'Database connection failed! Check your typeORM config file.',
-        error,
-      )
-      process.exit(1)
+      panic(spinner, error, 'Could not import factories!')
     }
 
     // Show seeds in the console
-    for (const seedFile of seedFiles) {
+    spinner.start('Importing Seeders')
+    const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*{.js,.ts}'])
+    let seedFileObjects = []
+    try {
+      seedFileObjects = seedFiles
+        .map(seedFile => importSeed(seedFile))
+        .filter(seedFileObject => args.class === undefined || args.class === seedFileObject.name)
+      spinner.succeed('Seeders are imported')
+    } catch (error) {
+      panic(spinner, error, 'Could not import seeders!')
+    }
+
+    // Get database connection and pass it to the seeder
+    spinner.start('Connecting to the database')
+    try {
+      const connection = await createConnection(options)
+      setConnection(connection)
+      spinner.succeed('Database connected')
+    } catch (error) {
+      panic(spinner, error, 'Database connection failed! Check your typeORM config file.')
+    }
+
+    // Run seeds
+    for (const seedFileObject of seedFileObjects) {
+      spinner.start(`Executing ${seedFileObject.name} Seeder`)
       try {
-        let className = seedFile.split('/')[seedFile.split('/').length - 1]
-        className = className.replace('.ts', '').replace('.js', '')
-        className = className.split('-')[className.split('-').length - 1]
-        log(
-          chalk.gray.underline(`executing seed:`),
-          chalk.green.bold(`${className}`),
-        )
-        const seedFileObject: any = require(seedFile)
-        await runSeed(seedFileObject.default)
+        await runSeeder(seedFileObject)
+        spinner.succeed(`Seeder ${seedFileObject.name} executed`)
       } catch (error) {
-        printError(
-          'Could not run the seeds! Check if your seed script exports the class as default. Verify that the path to the seeds and factories is correct.',
-          error,
-        )
-        process.exit(1)
+        panic(spinner, error, `Could not run the seed ${seedFileObject.name}!`)
       }
     }
 
-    log('👍 ', chalk.gray.underline(`finished seeding`))
+    log('👍 ', chalk.gray.underline(`Finished Seeding`))
     process.exit(0)
   }
+}
+
+function panic(spinner: ora.Ora, error: Error, message: string) {
+  spinner.fail(message)
+  // tslint:disable-next-line
+  console.error(error)
+  process.exit(1)
 }

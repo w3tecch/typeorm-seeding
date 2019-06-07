@@ -1,7 +1,8 @@
 import * as Faker from 'faker'
 import { Connection, ObjectType } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
-import { isPromiseLike, printError } from './utils'
+import { isPromiseLike } from './utils/factory.util'
+import { printError } from './utils/log.util'
 
 export class EntityFactory<Entity, Settings> {
   private mapFunction: (entity: Entity) => Promise<Entity>
@@ -21,9 +22,7 @@ export class EntityFactory<Entity, Settings> {
    * This function is used to alter the generated values of entity, before it
    * is persist into the database
    */
-  public map(
-    mapFunction: (entity: Entity) => Promise<Entity>,
-  ): EntityFactory<Entity, Settings> {
+  public map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Settings> {
     this.mapFunction = mapFunction
     return this
   }
@@ -31,9 +30,7 @@ export class EntityFactory<Entity, Settings> {
   /**
    * Make a new entity, but does not persist it
    */
-  public async make(
-    overrideParams: EntityProperty<Entity> = {},
-  ): Promise<Entity> {
+  public async make(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
     if (this.factory) {
       let entity = await this.resolveEntity(this.factory(Faker, this.settings))
       if (this.mapFunction) {
@@ -41,7 +38,9 @@ export class EntityFactory<Entity, Settings> {
       }
 
       for (const key in overrideParams) {
-        entity[key] = overrideParams[key]
+        if (overrideParams.hasOwnProperty(key)) {
+          entity[key] = overrideParams[key]
+        }
       }
 
       return entity
@@ -52,9 +51,7 @@ export class EntityFactory<Entity, Settings> {
   /**
    * Seed makes a new entity and does persist it
    */
-  public async seed(
-    overrideParams: EntityProperty<Entity> = {},
-  ): Promise<Entity> {
+  public async seed(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
     const connection: Connection = (global as any).seeder.connection
     if (connection) {
       const em = connection.createEntityManager()
@@ -73,10 +70,7 @@ export class EntityFactory<Entity, Settings> {
     }
   }
 
-  public async makeMany(
-    amount: number,
-    overrideParams: EntityProperty<Entity> = {},
-  ): Promise<Entity[]> {
+  public async makeMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
     const list = []
     for (let index = 0; index < amount; index++) {
       list[index] = await this.make(overrideParams)
@@ -84,10 +78,7 @@ export class EntityFactory<Entity, Settings> {
     return list
   }
 
-  public async seedMany(
-    amount: number,
-    overrideParams: EntityProperty<Entity> = {},
-  ): Promise<Entity[]> {
+  public async seedMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
     const list = []
     for (let index = 0; index < amount; index++) {
       list[index] = await this.seed(overrideParams)
@@ -106,10 +97,7 @@ export class EntityFactory<Entity, Settings> {
           entity[attribute] = await entity[attribute]
         }
 
-        if (
-          typeof entity[attribute] === 'object' &&
-          !(entity[attribute] instanceof Date)
-        ) {
+        if (typeof entity[attribute] === 'object' && !(entity[attribute] instanceof Date)) {
           const subEntityFactory = entity[attribute]
           try {
             if (typeof (subEntityFactory as any).make === 'function') {
