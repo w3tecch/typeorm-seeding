@@ -29,8 +29,8 @@ export class SeedCommand implements yargs.CommandModule {
     // Disable logging for the seeders, but keep it alive for our cli
     // tslint:disable-next-line
     const log = console.log
-    // tslint:disable-next-line
-    console.log = () => void 0
+    // // tslint:disable-next-line
+    // console.log = () => void 0
 
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
     const spinner = ora('Loading ormconfig').start()
