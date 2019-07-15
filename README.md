@@ -119,7 +119,7 @@ In your seed script you can use the factory like this.
 With the second function, accepting your settings defined in the factories, you are able to create different variations of entities.
 
 ```typescript
-export default class CreateUsers implements Seed {
+export default class CreateUsers implements Seeder {
   public async seed(factory: Factory, connection: Connection): Promise<any> {
     await factory(User)({ roles: [] }).createMany(10)
   }
