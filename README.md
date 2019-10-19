@@ -164,8 +164,8 @@ await factory(User)()
 To deal with relations you can use the entity manager like this.
 
 ```typescript
-export default class CreatePets implements SeedsInterface {
-  public async seed(factory: FactoryInterface, connection: Connection): Promise<any> {
+export default class CreatePets implements Seeder {
+  public async run(factory: FactoryInterface, connection: Connection): Promise<any> {
     const connection = await factory.getConnection()
     const em = connection.createEntityManager()
 
