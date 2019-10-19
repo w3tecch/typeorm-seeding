@@ -19,7 +19,7 @@ describe('getNameOfClass', () => {
 })
 describe('isPromiseLike', () => {
   test('Passing a promise should return true', () => {
-    const promise = new Promise(() => {})
+    const promise = new Promise(() => void 0)
     expect(isPromiseLike(promise)).toBeTruthy()
   })
   test('Passing no promise should return false', () => {
@@ -31,7 +31,8 @@ describe('isPromiseLike', () => {
     expect(isPromiseLike(false)).toBeFalsy()
     expect(isPromiseLike([])).toBeFalsy()
     expect(isPromiseLike({})).toBeFalsy()
-    expect(isPromiseLike(() => {})).toBeFalsy()
+    expect(isPromiseLike(() => void 0)).toBeFalsy()
+    // tslint:disable-next-line
     class UserEntity {}
     expect(isPromiseLike(new UserEntity())).toBeFalsy()
     expect(isPromiseLike(new Date())).toBeFalsy()

@@ -10,12 +10,14 @@
   "types": "dist/typeorm-seeding.d.ts",
   "scripts": {
     "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "tslint -p tsconfig.json -c tslint.json",
     "build": "npm run clean && rollup -c",
     "watch": "rollup -cw",
     "clean": "rimraf dist",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:cov": "jest --coverage"
+    "test:cov": "jest --coverage",
+    "semantic-release": "semantic-release"
   },
   "license": "MIT",
   "author": "w3tec.ch <info@w3tec.ch>",
