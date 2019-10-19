@@ -17,6 +17,7 @@ export class ConfigCommand implements yargs.CommandModule {
   }
 
   async handler(args: yargs.Arguments) {
+    // tslint:disable-next-line
     const log = console.log
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
     try {
