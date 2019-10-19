@@ -1,6 +1,6 @@
 {
   "name": "typeorm-seeding",
-  "version": "1.0.0-rc.3",
+  "version": "0.0.0-development",
   "description": "TypeORM seeding",
   "main": "dist/typeorm-seeding.js",
   "module": "dist/typeorm-seeding.es.js",
@@ -76,5 +76,9 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/w3tecch/typeorm-seeding.git"
   }
 }
