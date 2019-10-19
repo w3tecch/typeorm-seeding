@@ -201,10 +201,6 @@ Now you are able to execute your seeds with this command `npm run seed`.
 | `--class` or `--c` | null           | Option to specify a specific seeder class to run individually |
 | `--config`         | `ormconfig.js` | Path to the typeorm config file (json or js).                 |
 
-## ❯ Example
-
-A good example is in the [express-typescript-boilerplate](https://github.com/w3tecch/express-typescript-boilerplate) repository.
-
 ## ❯ License
 
 [MIT](/LICENSE)
