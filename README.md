@@ -66,8 +66,12 @@ module.exports = {
 The seeds files define how much and how the data are connected with each other. The files will be executed alphabetically.
 
 ```typescript
-export default class CreateUsers implements Seed {
-  public async seed(factory: Factory, connection: Connection): Promise<any> {
+import { Factory, Seeder } from 'typeorm-seeding';
+import { Connection } from 'typeorm';
+import { User } from '../entities';
+
+export default class CreateUsers implements Seeder {
+  public async run(factory: Factory, connection: Connection): Promise<any> {
     await connection
       .createQueryBuilder()
       .insert()
@@ -119,8 +123,12 @@ In your seed script you can use the factory like this.
 With the second function, accepting your settings defined in the factories, you are able to create different variations of entities.
 
 ```typescript
-export default class CreateUsers implements Seed {
-  public async seed(factory: Factory, connection: Connection): Promise<any> {
+import { Factory, Seeder } from 'typeorm-seeding';
+import { Connection } from 'typeorm';
+import { User } from '../entities';
+
+export default class CreateUsers implements Seeder {
+  public async run(factory: Factory, connection: Connection): Promise<any> {
     await factory(User)({ roles: [] }).createMany(10)
   }
 }
