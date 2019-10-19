@@ -20,7 +20,7 @@ jobs:
             - ~/.cache/yarn
       - run:
           name: peer
-          command: yarn add --peer
+          command: yarn add typeorm --peer
       - run:
           name: lint
           command: yarn run lint
