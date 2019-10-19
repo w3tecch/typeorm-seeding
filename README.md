@@ -5,11 +5,12 @@
 <h1 align="center">TypeORM Seeding</h1>
 
 <p align="center">
+  <a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="Sematic-Release" /></a>
   <a href="https://david-dm.org/w3tecch/typeorm-seeding">
     <img src="https://david-dm.org/w3tecch/typeorm-seeding/status.svg?style=flat" alt="Dependency" />
   </a>
-  <a href="https://travis-ci.org/w3tecch/typeorm-seeding">
-    <img src="https://travis-ci.org/w3tecch/typeorm-seeding.svg?branch=master" alt="Build Status" />
+  <a href="https://circleci.com/gh/w3tecch/typeorm-seeding">
+    <img src="https://circleci.com/gh/w3tecch/typeorm-seeding.svg?style=svg&circle-token=76b764c6bf89b70a7a7a7fd668293f9aa44c4044" alt="Build Status" />
   </a>
 </p>
 
@@ -66,9 +67,9 @@ module.exports = {
 The seeds files define how much and how the data are connected with each other. The files will be executed alphabetically.
 
 ```typescript
-import { Factory, Seeder } from 'typeorm-seeding';
-import { Connection } from 'typeorm';
-import { User } from '../entities';
+import { Factory, Seeder } from 'typeorm-seeding'
+import { Connection } from 'typeorm'
+import { User } from '../entities'
 
 export default class CreateUsers implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -123,9 +124,9 @@ In your seed script you can use the factory like this.
 With the second function, accepting your settings defined in the factories, you are able to create different variations of entities.
 
 ```typescript
-import { Factory, Seeder } from 'typeorm-seeding';
-import { Connection } from 'typeorm';
-import { User } from '../entities';
+import { Factory, Seeder } from 'typeorm-seeding'
+import { Connection } from 'typeorm'
+import { User } from '../entities'
 
 export default class CreateUsers implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -195,10 +196,10 @@ Now you are able to execute your seeds with this command `npm run seed`.
 
 ### CLI Options
 
-| Option             | Default        | Description                                   |
-| ------------------ | -------------- | --------------------------------------------- |
+| Option             | Default        | Description                                                   |
+| ------------------ | -------------- | ------------------------------------------------------------- |
 | `--class` or `--c` | null           | Option to specify a specific seeder class to run individually |
-| `--config`         | `ormconfig.js` | Path to the typeorm config file (json or js). |
+| `--config`         | `ormconfig.js` | Path to the typeorm config file (json or js).                 |
 
 ## ❯ Example
 
