@@ -55,8 +55,8 @@ To configure the path to your seeds and factories change the TypeORM config file
 ```JavaScript
 module.exports = {
   ...
-  seeds: ['seeds/**/*.seed.ts'],
-  factories: ['factories/**/*.factory.ts'],
+  seeds: ['src/seeds/**/*.seed.ts'],
+  factories: ['src/factories/**/*.factory.ts'],
 }
 ```
 
@@ -193,6 +193,8 @@ Once you have written your seeder, you can add this script to your `package.json
 ```
 
 Now you are able to execute your seeds with this command `npm run seed`.
+
+**Note:** Be sure to specify which config file you are using (`ormconfig.json` or `ormconfig.js`) with the `--config` cli option.
 
 ### CLI Options
 
