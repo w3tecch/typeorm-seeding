@@ -195,8 +195,7 @@ To deal with relations you can use the entity manager like this.
 
 ```typescript
 export default class CreatePets implements Seeder {
-  public async run(factory: FactoryInterface, connection: Connection): Promise<any> {
-    const connection = await factory.getConnection()
+  public async run(factory: Factory, connection: Connection): Promise<any> {
     const em = connection.createEntityManager()
 
     await times(10, async n => {
