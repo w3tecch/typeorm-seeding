@@ -4,6 +4,9 @@
   "description": "TypeORM seeding",
   "main": "dist/typeorm-seeding.js",
   "module": "dist/typeorm-seeding.es.js",
+  "bin": {
+    "typeorm-seeding": "dist/cli.js"
+  },
   "files": [
     "dist"
   ],
