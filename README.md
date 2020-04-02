@@ -60,8 +60,8 @@ To configure the path to your seeds and factories change the TypeORM config file
 ```JavaScript
 module.exports = {
   ...
-  seeds: ['src/database/seeds/**/*.seed.ts'],
-  factories: ['src/database/factories/**/*.factory.ts'],
+  seeds: ['src/seeds/**/*.seed.ts'],
+  factories: ['src/factories/**/*.factory.ts'],
 }
 ```
 
@@ -211,6 +211,8 @@ export default class CreatePets implements Seeder {
 ```
 
 Now you are able to execute your seeds with this command `npm run seed`.
+
+**Note:** Be sure to specify which config file you are using (`ormconfig.json` or `ormconfig.js`) with the `--config` cli option.
 
 ### CLI Options
 
