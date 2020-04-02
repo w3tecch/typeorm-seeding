@@ -48,6 +48,11 @@ or with yarn
 yarn add typeorm-seeding
 ```
 
+Optional, for `Faker` types
+```bash
+npm install -D @types/faker
+```
+
 ### Configuration
 
 To configure the path to your seeds and factories change the TypeORM config file(ormconfig.js or ormconfig.json).
@@ -83,13 +88,34 @@ export default class CreateUsers implements Seeder {
 }
 ```
 
+## ❯ Running Seeders
+
+Once you have written your seeder, you can add this script to your `package.json`.
+
+```
+  "scripts": {
+    "seed": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
+    ...
+  }
+```
+
+And then  
+
+```bash
+npm run seed
+```
+
 ### Using Model Factories
 
-For all entities we want to seed, we need to define a factory. To do so we give you the awesome [faker](https://github.com/marak/Faker.js/) library as a parameter into your factory. Then create your "fake" entity and return it. Those factory files should be in the `src/database/factories` folder and suffixed with `Factory` like `src/database/factories/UserFactory.ts`.
+For all entities we want to seed, we need to define a factory. To do so we give you the awesome [faker](https://github.com/marak/Faker.js/) library as a parameter into your factory. Then create your "fake" entity and return it. Those factory files should be in the `src/database/factories` folder and suffixed with `.factory` like `src/database/factories/User.factory.ts`.
 
 Settings can be used to pass some static value into the factory.
 
 ```typescript
+import Faker from 'faker';
+import { define } from "typeorm-seeding";
+import { User } from '../entities'
+
 define(User, (faker: typeof Faker, settings: { roles: string[] }) => {
   const gender = faker.random.number(1)
   const firstName = faker.name.firstName(gender)
@@ -108,6 +134,10 @@ define(User, (faker: typeof Faker, settings: { roles: string[] }) => {
 Handle relation in the entity factory like this.
 
 ```typescript
+import Faker from 'faker';
+import { define } from 'typeorm-seeding';
+import { Pet } from '../entities'
+
 define(Pet, (faker: typeof Faker, settings: undefined) => {
   const gender = faker.random.number(1)
   const name = faker.name.firstName(gender)
@@ -130,7 +160,7 @@ import { User } from '../entities'
 
 export default class CreateUsers implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
-    await factory(User)({ roles: [] }).createMany(10)
+    await factory(User)({ roles: [] }).seedMany(10)
   }
 }
 ```
@@ -142,11 +172,11 @@ the generated value before they get persisted.
 ...
 await factory(User)()
     .map(async (user: User) => {
-        const pets: Pet[] = await factory(Pet)().createMany(2);
+        const pets: Pet[] = await factory(Pet)().seedMany(2);
         const petIds = pets.map((pet: Pet) => pet.Id);
         await user.pets().attach(petIds);
     })
-    .createMany(5);
+    .seedMany(5);
 ...
 ```
 
@@ -157,7 +187,7 @@ and `.seed()` methods, or as second argument in the `.makeMany()` and `.seedMany
 ```typescript
 ...
 await factory(User)()
-    .createMany(10, { roles: ['admin'], firstName: 'John' });
+    .seedMany(10, { roles: ['admin'], firstName: 'John' });
 ...
 ```
 
@@ -165,13 +195,12 @@ To deal with relations you can use the entity manager like this.
 
 ```typescript
 export default class CreatePets implements Seeder {
-  public async run(factory: FactoryInterface, connection: Connection): Promise<any> {
-    const connection = await factory.getConnection()
+  public async run(factory: Factory, connection: Connection): Promise<any> {
     const em = connection.createEntityManager()
 
     await times(10, async n => {
       // This creates a pet in the database
-      const pet = await factory(Pet)().create()
+      const pet = await factory(Pet)().seed()
       // This only returns a entity with fake data
       const user = await factory(User)({ roles: ['admin'] }).make()
       user.pets = [pet]
@@ -179,17 +208,6 @@ export default class CreatePets implements Seeder {
     })
   }
 }
-```
-
-## ❯ Running Seeders
-
-Once you have written your seeder, you can add this script to your `package.json`.
-
-```
-  "scripts": {
-    "seed": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
-    ...
-  }
 ```
 
 Now you are able to execute your seeds with this command `npm run seed`.
@@ -202,6 +220,7 @@ Now you are able to execute your seeds with this command `npm run seed`.
 | ------------------ | -------------- | ------------------------------------------------------------- |
 | `--class` or `--c` | null           | Option to specify a specific seeder class to run individually |
 | `--config`         | `ormconfig.js` | Path to the typeorm config file (json or js).                 |
+
 
 ## ❯ License
 

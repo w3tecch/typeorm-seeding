@@ -94,10 +94,10 @@ export class EntityFactory<Entity, Settings> {
     for (const attribute in entity) {
       if (entity.hasOwnProperty(attribute)) {
         if (isPromiseLike(entity[attribute])) {
-          entity[attribute] = await entity[attribute]
+          entity[attribute] = entity[attribute]
         }
 
-        if (typeof entity[attribute] === 'object' && !(entity[attribute] instanceof Date)) {
+        if (entity[attribute] && typeof entity[attribute] === 'object' && !(entity[attribute] instanceof Date)) {
           const subEntityFactory = entity[attribute]
           try {
             if (typeof (subEntityFactory as any).make === 'function') {
