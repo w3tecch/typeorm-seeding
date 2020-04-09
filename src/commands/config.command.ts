@@ -1,7 +1,6 @@
 import * as yargs from 'yargs'
-import chalk from 'chalk'
+import * as chalk from 'chalk'
 import { getConnectionOptions } from '../typeorm-seeding'
-import * as pkg from '../../package.json'
 import { printError } from '../utils/log.util'
 
 export class ConfigCommand implements yargs.CommandModule {
@@ -17,8 +16,8 @@ export class ConfigCommand implements yargs.CommandModule {
   }
 
   async handler(args: yargs.Arguments) {
-    // tslint:disable-next-line
     const log = console.log
+    const pkg = require('../../package.json')
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
     try {
       const options = await getConnectionOptions(args.config as string)

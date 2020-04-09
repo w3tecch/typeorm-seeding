@@ -19,7 +19,7 @@ export const getConnectionOptions = async (configPath = 'ormconfig.js'): Promise
 export const createConnection = async (configPath: string): Promise<Connection> => {
   let options = await getConnectionOptions(configPath)
   if (Array.isArray(options)) {
-    options.forEach(item => {
+    options.forEach((item) => {
       if (item.name === 'default') {
         options = item
       }

@@ -1,18 +1,22 @@
 {
   "compilerOptions": {
-    "paths": { "*": ["types/*"] },
-    "module": "es6",
+    "lib": ["es5", "es6"],
+    "target": "es5",
+    "module": "commonjs",
     "moduleResolution": "node",
+    "importHelpers": true,
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es6",
     "sourceMap": true,
+    "noImplicitAny": true,
+    "incremental": true,
+    "pretty": true,
+    "allowSyntheticDefaultImports": true,
     "outDir": "./dist",
     "baseUrl": "./",
-    "incremental": true,
-    "allowSyntheticDefaultImports": true
+    "paths": { "*": ["types/*"] }
   },
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "sample"]
 }

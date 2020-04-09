@@ -1,9 +1,8 @@
 import * as yargs from 'yargs'
-import ora from 'ora'
-import chalk from 'chalk'
+import * as ora from 'ora'
+import * as chalk from 'chalk'
 import { createConnection } from 'typeorm'
 import { setConnection, runSeeder, getConnectionOptions, getConnection } from '../typeorm-seeding'
-import * as pkg from '../../package.json'
 import { printError } from '../utils/log.util'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
@@ -32,6 +31,7 @@ export class SeedCommand implements yargs.CommandModule {
     // // tslint:disable-next-line
     // console.log = () => void 0
 
+    const pkg = require('../../package.json')
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
     const spinner = ora('Loading ormconfig').start()
 
@@ -57,11 +57,11 @@ export class SeedCommand implements yargs.CommandModule {
     // Show seeds in the console
     spinner.start('Importing Seeders')
     const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*{.js,.ts}'])
-    let seedFileObjects = []
+    let seedFileObjects: any[] = []
     try {
       seedFileObjects = seedFiles
-        .map(seedFile => importSeed(seedFile))
-        .filter(seedFileObject => args.class === undefined || args.class === seedFileObject.name)
+        .map((seedFile) => importSeed(seedFile))
+        .filter((seedFileObject) => args.class === undefined || args.class === seedFileObject.name)
       spinner.succeed('Seeders are imported')
     } catch (error) {
       panic(spinner, error, 'Could not import seeders!')
