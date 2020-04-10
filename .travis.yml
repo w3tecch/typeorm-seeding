@@ -11,8 +11,8 @@ cache:
   yarn: true
 install:
   - yarn install
+  - yarn add -P typeorm
 script:
-  - yarn install
   - yarn run lint
   - yarn run test
   - yarn run build
