@@ -1,10 +1,8 @@
 import * as yargs from 'yargs'
-import ora from 'ora'
-import chalk from 'chalk'
+import * as ora from 'ora'
+import * as chalk from 'chalk'
 import { createConnection } from 'typeorm'
-import { setConnection, runSeeder, getConnectionOptions, getConnection } from '../typeorm-seeding'
-import * as pkg from '../../package.json'
-import { printError } from '../utils/log.util'
+import { setConnection, runSeeder, getConnectionOption, getConnection } from '../typeorm-seeding'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
 import { ConnectionOptions } from '../connection'
@@ -15,30 +13,45 @@ export class SeedCommand implements yargs.CommandModule {
 
   builder(args: yargs.Argv) {
     return args
-      .option('config', {
-        default: 'ormconfig.js',
-        describe: 'Path to the typeorm config file (json or js).',
+      .option('n', {
+        alias: 'configName',
+        default: '',
+        describe: 'Name of the typeorm config file (json or js).',
       })
-      .option('class', {
-        alias: 'c',
+      .option('c', {
+        alias: 'connection',
+        default: '',
+        describe: 'Name of the typeorm connection',
+      })
+      .option('r', {
+        alias: 'root',
+        default: process.cwd(),
+        describe: 'Path to your typeorm config file',
+      })
+      .option('seed', {
+        alias: 's',
         describe: 'Specific seed class to run.',
       })
   }
 
   async handler(args: yargs.Arguments) {
     // Disable logging for the seeders, but keep it alive for our cli
-    // tslint:disable-next-line
     const log = console.log
-    // // tslint:disable-next-line
-    // console.log = () => void 0
 
+    const pkg = require('../../package.json')
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
     const spinner = ora('Loading ormconfig').start()
 
     // Get TypeORM config file
-    let options: ConnectionOptions
+    let option: ConnectionOptions
     try {
-      options = await getConnectionOptions(args.config as string)
+      option = await getConnectionOption(
+        {
+          root: args.root as string,
+          configName: args.configName as string,
+        },
+        args.connection as string,
+      )
       spinner.succeed('ORM Config loaded')
     } catch (error) {
       panic(spinner, error, 'Could not load the config file!')
@@ -46,7 +59,7 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Find all factories and seed with help of the config
     spinner.start('Import Factories')
-    const factoryFiles = loadFiles(options.factories || ['src/database/factories/**/*{.js,.ts}'])
+    const factoryFiles = loadFiles(option.factories || ['src/database/factories/**/*{.js,.ts}'])
     try {
       importFiles(factoryFiles)
       spinner.succeed('Factories are imported')
@@ -56,12 +69,12 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Show seeds in the console
     spinner.start('Importing Seeders')
-    const seedFiles = loadFiles(options.seeds || ['src/database/seeds/**/*{.js,.ts}'])
-    let seedFileObjects = []
+    const seedFiles = loadFiles(option.seeds || ['src/database/seeds/**/*{.js,.ts}'])
+    let seedFileObjects: any[] = []
     try {
       seedFileObjects = seedFiles
-        .map(seedFile => importSeed(seedFile))
-        .filter(seedFileObject => args.class === undefined || args.class === seedFileObject.name)
+        .map((seedFile) => importSeed(seedFile))
+        .filter((seedFileObject) => args.seed === undefined || args.seed === seedFileObject.name)
       spinner.succeed('Seeders are imported')
     } catch (error) {
       panic(spinner, error, 'Could not import seeders!')
@@ -70,7 +83,7 @@ export class SeedCommand implements yargs.CommandModule {
     // Get database connection and pass it to the seeder
     spinner.start('Connecting to the database')
     try {
-      const connection = await createConnection(options)
+      const connection = await createConnection(option)
       setConnection(connection)
       spinner.succeed('Database connected')
     } catch (error) {
@@ -95,7 +108,6 @@ export class SeedCommand implements yargs.CommandModule {
 
 function panic(spinner: ora.Ora, error: Error, message: string) {
   spinner.fail(message)
-  // tslint:disable-next-line
   console.error(error)
   process.exit(1)
 }

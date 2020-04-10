@@ -4,6 +4,7 @@ lib
 es
 coverage
 .rpt2_cache
+test.db
 
 ### node ###
 logs

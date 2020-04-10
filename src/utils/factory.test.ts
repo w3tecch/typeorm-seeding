@@ -6,7 +6,7 @@ describe('getNameOfClass', () => {
     expect(getNameOfEntity(UserEntity)).toBe('UserEntity')
   })
   test('Passing UserEnity function should return the name of the function', () => {
-    const UserEntity = () => void 0
+    const UserEntity = (): any => void 0
     expect(getNameOfEntity(UserEntity)).toBe('UserEntity')
   })
   test('Passing undefinde as a enity-class should throw an error', () => {
@@ -31,8 +31,7 @@ describe('isPromiseLike', () => {
     expect(isPromiseLike(false)).toBeFalsy()
     expect(isPromiseLike([])).toBeFalsy()
     expect(isPromiseLike({})).toBeFalsy()
-    expect(isPromiseLike(() => void 0)).toBeFalsy()
-    // tslint:disable-next-line
+    expect(isPromiseLike((): any => void 0)).toBeFalsy()
     class UserEntity {}
     expect(isPromiseLike(new UserEntity())).toBeFalsy()
     expect(isPromiseLike(new Date())).toBeFalsy()

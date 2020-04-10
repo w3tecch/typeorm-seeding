@@ -49,6 +49,7 @@ yarn add typeorm-seeding
 ```
 
 Optional, for `Faker` types
+
 ```bash
 npm install -D @types/faker
 ```
@@ -60,9 +61,16 @@ To configure the path to your seeds and factories change the TypeORM config file
 ```JavaScript
 module.exports = {
   ...
-  seeds: ['src/seeds/**/*.seed.ts'],
-  factories: ['src/factories/**/*.factory.ts'],
+  seeds: ['src/seeds/**/*{.ts,.js}'],
+  factories: ['src/factories/**/*{.ts,.js}'],
 }
+```
+
+or add the following variables to your `.env` file.
+
+```
+TYPEORM_SEEDING_FACTORIES=src/seeds/**/*{.ts,.js}
+TYPEORM_SEEDING_SEEDS=src/factories/**/*{.ts,.js}
 ```
 
 ![divider](./w3tec-divider.png)
@@ -82,7 +90,10 @@ export default class CreateUsers implements Seeder {
       .createQueryBuilder()
       .insert()
       .into(User)
-      .values([{ firstName: 'Timber', lastName: 'Saw' }, { firstName: 'Phantom', lastName: 'Lancer' }])
+      .values([
+        { firstName: 'Timber', lastName: 'Saw' },
+        { firstName: 'Phantom', lastName: 'Lancer' },
+      ])
       .execute()
   }
 }
@@ -99,7 +110,7 @@ Once you have written your seeder, you can add this script to your `package.json
   }
 ```
 
-And then  
+And then
 
 ```bash
 npm run seed
@@ -112,8 +123,8 @@ For all entities we want to seed, we need to define a factory. To do so we give 
 Settings can be used to pass some static value into the factory.
 
 ```typescript
-import Faker from 'faker';
-import { define } from "typeorm-seeding";
+import Faker from 'faker'
+import { define } from 'typeorm-seeding'
 import { User } from '../entities'
 
 define(User, (faker: typeof Faker, settings: { roles: string[] }) => {
@@ -134,8 +145,8 @@ define(User, (faker: typeof Faker, settings: { roles: string[] }) => {
 Handle relation in the entity factory like this.
 
 ```typescript
-import Faker from 'faker';
-import { define } from 'typeorm-seeding';
+import Faker from 'faker'
+import { define } from 'typeorm-seeding'
 import { Pet } from '../entities'
 
 define(Pet, (faker: typeof Faker, settings: undefined) => {
@@ -145,7 +156,7 @@ define(Pet, (faker: typeof Faker, settings: undefined) => {
   const pet = new Pet()
   pet.name = name
   pet.age = faker.random.number()
-  pet.user = factory(User)({ roles: ['admin'] })
+  pet.user = factory(User)({ roles: ['admin'] }) as any
   return pet
 })
 ```
@@ -198,7 +209,7 @@ export default class CreatePets implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
     const em = connection.createEntityManager()
 
-    await times(10, async n => {
+    await times(10, async (n) => {
       // This creates a pet in the database
       const pet = await factory(Pet)().seed()
       // This only returns a entity with fake data
@@ -216,11 +227,12 @@ Now you are able to execute your seeds with this command `npm run seed`.
 
 ### CLI Options
 
-| Option             | Default        | Description                                                   |
-| ------------------ | -------------- | ------------------------------------------------------------- |
-| `--class` or `--c` | null           | Option to specify a specific seeder class to run individually |
-| `--config`         | `ormconfig.js` | Path to the typeorm config file (json or js).                 |
-
+| Option                 | Default         | Description                                                                 |
+| ---------------------- | --------------- | --------------------------------------------------------------------------- |
+| `--seed` or `-s`       | null            | Option to specify a specific seeder class to run individually.              |
+| `--connection` or `-c` | null            | Name of the typeorm connection. Required if there are multiple connections. |
+| `--configName` or `-n` | `ormconfig.js`  | Name to the typeorm config file.                                            |
+| `--root` or `-r`       | `process.cwd()` | Path to the typeorm config file.                                            |
 
 ## ❯ License
 
