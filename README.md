@@ -9,8 +9,8 @@
   <a href="https://david-dm.org/w3tecch/typeorm-seeding">
     <img src="https://david-dm.org/w3tecch/typeorm-seeding/status.svg?style=flat" alt="Dependency" />
   </a>
-  <a href="https://circleci.com/gh/w3tecch/typeorm-seeding">
-    <img src="https://circleci.com/gh/w3tecch/typeorm-seeding.svg?style=svg&circle-token=76b764c6bf89b70a7a7a7fd668293f9aa44c4044" alt="Build Status" />
+  <a href="https://travis-ci.org/w3tecch/typeorm-seeding">
+    <img src="https://travis-ci.org/w3tecch/typeorm-seeding.svg?branch=master" alt="Build Status" />
   </a>
 </p>
 
