@@ -31,21 +31,7 @@ export class EntityFactory<Entity, Settings> {
    * Make a new entity, but does not persist it
    */
   public async make(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
-    if (this.factory) {
-      let entity = await this.resolveEntity(this.factory(Faker, this.settings))
-      if (this.mapFunction) {
-        entity = await this.mapFunction(entity)
-      }
-
-      for (const key in overrideParams) {
-        if (overrideParams.hasOwnProperty(key)) {
-          entity[key] = overrideParams[key]
-        }
-      }
-
-      return entity
-    }
-    throw new Error('Could not found entity')
+    return this.makeEnity(overrideParams, false)
   }
 
   /**
@@ -56,7 +42,7 @@ export class EntityFactory<Entity, Settings> {
     if (connection) {
       const em = connection.createEntityManager()
       try {
-        const entity = await this.make(overrideParams)
+        const entity = await this.makeEnity(overrideParams, true)
         return await em.save<Entity>(entity)
       } catch (error) {
         const message = 'Could not save entity'
@@ -90,18 +76,41 @@ export class EntityFactory<Entity, Settings> {
   // Prrivat Helpers
   // -------------------------------------------------------------------------
 
-  private async resolveEntity(entity: Entity): Promise<Entity> {
+  private async makeEnity(overrideParams: EntityProperty<Entity> = {}, isSeeding = false): Promise<Entity> {
+    if (this.factory) {
+      let entity = await this.resolveEntity(this.factory(Faker, this.settings), isSeeding)
+      if (this.mapFunction) {
+        entity = await this.mapFunction(entity)
+      }
+
+      for (const key in overrideParams) {
+        if (overrideParams.hasOwnProperty(key)) {
+          entity[key] = overrideParams[key]
+        }
+      }
+
+      return entity
+    }
+    throw new Error('Could not found entity')
+  }
+
+  private async resolveEntity(entity: Entity, isSeeding = false): Promise<Entity> {
     for (const attribute in entity) {
       if (entity.hasOwnProperty(attribute)) {
         if (isPromiseLike(entity[attribute])) {
           entity[attribute] = entity[attribute]
         }
-
         if (entity[attribute] && typeof entity[attribute] === 'object' && !(entity[attribute] instanceof Date)) {
           const subEntityFactory = entity[attribute]
           try {
-            if (typeof (subEntityFactory as any).make === 'function') {
-              entity[attribute] = await (subEntityFactory as any).make()
+            if (isSeeding) {
+              if (typeof (subEntityFactory as any).seed === 'function') {
+                entity[attribute] = await (subEntityFactory as any).seed()
+              }
+            } else {
+              if (typeof (subEntityFactory as any).make === 'function') {
+                entity[attribute] = await (subEntityFactory as any).make()
+              }
             }
           } catch (error) {
             const message = `Could not make ${(subEntityFactory as any).name}`

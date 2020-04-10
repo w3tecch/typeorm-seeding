@@ -10,6 +10,6 @@ define(Pet, (faker: typeof Faker) => {
   const pet = new Pet()
   pet.name = name
   pet.age = faker.random.number()
-  // pet.user = factory(User)({ roles: ['admin'] })
+  pet.user = factory(User)({ roles: ['admin'] }) as any
   return pet
 })

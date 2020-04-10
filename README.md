@@ -156,7 +156,7 @@ define(Pet, (faker: typeof Faker, settings: undefined) => {
   const pet = new Pet()
   pet.name = name
   pet.age = faker.random.number()
-  pet.user = factory(User)({ roles: ['admin'] }) // not yet implemented
+  pet.user = factory(User)({ roles: ['admin'] }) as any
   return pet
 })
 ```
@@ -230,8 +230,8 @@ Now you are able to execute your seeds with this command `npm run seed`.
 | Option                 | Default         | Description                                                                 |
 | ---------------------- | --------------- | --------------------------------------------------------------------------- |
 | `--seed` or `-s`       | null            | Option to specify a specific seeder class to run individually.              |
-| `--name` or `-n`       | null            | Name of the typeorm connection. Required if there are multiple connections. |
-| `--configName` or `-c` | `ormconfig.js`  | Name to the typeorm config file.                                            |
+| `--connection` or `-c` | null            | Name of the typeorm connection. Required if there are multiple connections. |
+| `--configName` or `-n` | `ormconfig.js`  | Name to the typeorm config file.                                            |
 | `--root` or `-r`       | `process.cwd()` | Path to the typeorm config file.                                            |
 
 ## ❯ License

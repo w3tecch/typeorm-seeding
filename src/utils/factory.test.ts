@@ -32,7 +32,6 @@ describe('isPromiseLike', () => {
     expect(isPromiseLike([])).toBeFalsy()
     expect(isPromiseLike({})).toBeFalsy()
     expect(isPromiseLike((): any => void 0)).toBeFalsy()
-    // tslint:disable-next-line
     class UserEntity {}
     expect(isPromiseLike(new UserEntity())).toBeFalsy()
     expect(isPromiseLike(new Date())).toBeFalsy()

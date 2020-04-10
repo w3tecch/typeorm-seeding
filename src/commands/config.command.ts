@@ -9,13 +9,13 @@ export class ConfigCommand implements yargs.CommandModule {
 
   builder(args: yargs.Argv) {
     return args
-      .option('c', {
+      .option('n', {
         alias: 'configName',
         default: '',
         describe: 'Name of the typeorm config file (json or js).',
       })
-      .option('n', {
-        alias: 'name',
+      .option('c', {
+        alias: 'connection',
         default: '',
         describe: 'Name of the typeorm connection',
       })
@@ -36,7 +36,7 @@ export class ConfigCommand implements yargs.CommandModule {
           root: args.root as string,
           configName: args.configName as string,
         },
-        args.name as string,
+        args.connection as string,
       )
       log(option)
     } catch (error) {

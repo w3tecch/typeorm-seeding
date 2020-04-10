@@ -20,29 +20,39 @@ export declare type ConnectionOptions = TypeORMConnectionOptions & SeedingOption
 
 const attachSeedingOptions = (option: ConnectionOptions): ConnectionOptions => {
   if (!option.factories) {
-    option.factories = [process.env.TYPEORM_SEEDING_FACTORIES as string]
+    const envFactoriesPath = process.env.TYPEORM_SEEDING_FACTORIES
+    if (envFactoriesPath) {
+      option.factories = [envFactoriesPath]
+    } else {
+      option.factories = ['src/database/factories/**/*{.ts,.js}']
+    }
   }
   if (!option.seeds) {
-    option.seeds = [process.env.TYPEORM_SEEDING_SEEDS as string]
+    const envSeedsPath = process.env.TYPEORM_SEEDING_SEEDS
+    if (envSeedsPath) {
+      option.seeds = [envSeedsPath]
+    } else {
+      option.seeds = ['src/database/seeds/**/*{.ts,.js}']
+    }
   }
   return option
 }
 
 export const getConnectionOption = async (
   option: ConnectionOptionArguments,
-  name: string,
+  connection: string,
 ): Promise<ConnectionOptions> => {
   const reader = new ConnectionOptionsReader(option)
   const options = (await reader.all()) as any[]
   if (options.length === 1) {
     return attachSeedingOptions(options[0])
   }
-  if (name !== undefined && name !== '') {
-    const filteredOptions = options.filter((o) => o.name === name)
+  if (connection !== undefined && connection !== '') {
+    const filteredOptions = options.filter((o) => o.name === connection)
     if (filteredOptions.length === 1) {
       return attachSeedingOptions(options[0])
     } else {
-      printError('Could not find any connection with the name=', name)
+      printError('Could not find any connection with the name=', connection)
     }
   }
   printError('There are multiple connections please provide a connection name')

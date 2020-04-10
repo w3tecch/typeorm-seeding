@@ -20,11 +20,11 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "semantic-release": "semantic-release",
-    "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
-    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",
-    "schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log",
-    "seed:run": "ts-node ./src/cli.ts seed",
-    "seed:config": "ts-node ./src/cli.ts config"
+    "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop -c sample",
+    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync -c sample",
+    "schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log -c sample",
+    "seed:run": "ts-node ./src/cli.ts seed -c sample",
+    "seed:config": "ts-node ./src/cli.ts config -c sample"
   },
   "license": "MIT",
   "author": "w3tec.ch <info@w3tec.ch>",

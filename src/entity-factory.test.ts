@@ -1,11 +1,9 @@
 import { EntityFactory } from './entity-factory'
 
 describe('make', () => {
-  // tslint:disable-next-line
   class User {
     constructor(public name: string) {}
   }
-  // tslint:disable-next-line
   class Pet {
     constructor(public name: string, public user: User) {}
   }

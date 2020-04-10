@@ -13,13 +13,13 @@ export class SeedCommand implements yargs.CommandModule {
 
   builder(args: yargs.Argv) {
     return args
-      .option('c', {
+      .option('n', {
         alias: 'configName',
         default: '',
         describe: 'Name of the typeorm config file (json or js).',
       })
-      .option('n', {
-        alias: 'name',
+      .option('c', {
+        alias: 'connection',
         default: '',
         describe: 'Name of the typeorm connection',
       })
@@ -36,10 +36,7 @@ export class SeedCommand implements yargs.CommandModule {
 
   async handler(args: yargs.Arguments) {
     // Disable logging for the seeders, but keep it alive for our cli
-    // tslint:disable-next-line
     const log = console.log
-    // // tslint:disable-next-line
-    // console.log = () => void 0
 
     const pkg = require('../../package.json')
     log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
@@ -53,7 +50,7 @@ export class SeedCommand implements yargs.CommandModule {
           root: args.root as string,
           configName: args.configName as string,
         },
-        args.name as string,
+        args.connection as string,
       )
       spinner.succeed('ORM Config loaded')
     } catch (error) {
@@ -111,7 +108,6 @@ export class SeedCommand implements yargs.CommandModule {
 
 function panic(spinner: ora.Ora, error: Error, message: string) {
   spinner.fail(message)
-  // tslint:disable-next-line
   console.error(error)
   process.exit(1)
 }

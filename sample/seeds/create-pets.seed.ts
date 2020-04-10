@@ -6,15 +6,16 @@ import { User } from '../entities/User.entity'
 
 export default class CreatePets implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
-    const em = connection.createEntityManager()
+    await factory(Pet)().seed()
 
-    await times(10, async (n) => {
-      // This creates a pet in the database
-      const pet = await factory(Pet)().seed()
-      // This only returns a entity with fake data
-      const user = await factory(User)().make()
-      user.pets = [pet]
-      await em.save(user)
-    })
+    // const em = connection.createEntityManager()
+    // await times(1, async (n) => {
+    // This creates a pet in the database
+    //  const pet = await factory(Pet)().seed()
+    // This only returns a entity with fake data
+    //  const user = await factory(User)().make()
+    //  user.pets = [pet]
+    //  await em.save(user)
+    // })
   }
 }
