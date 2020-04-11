@@ -69,8 +69,8 @@ module.exports = {
 or add the following variables to your `.env` file.
 
 ```
-TYPEORM_SEEDING_FACTORIES=src/seeds/**/*{.ts,.js}
-TYPEORM_SEEDING_SEEDS=src/factories/**/*{.ts,.js}
+TYPEORM_SEEDING_FACTORIES=src/factories/**/*{.ts,.js}
+TYPEORM_SEEDING_SEEDS=src/seeds/**/*{.ts,.js}
 ```
 
 ![divider](./w3tec-divider.png)
