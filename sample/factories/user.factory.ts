@@ -12,5 +12,6 @@ define(User, (faker: typeof Faker) => {
   user.firstName = firstName
   user.lastName = lastName
   user.email = email
+  user.password = faker.random.word()
   return user
 })
