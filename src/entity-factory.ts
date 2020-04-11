@@ -98,19 +98,19 @@ export class EntityFactory<Entity, Settings> {
     for (const attribute in entity) {
       if (entity.hasOwnProperty(attribute)) {
         if (isPromiseLike(entity[attribute])) {
-          entity[attribute] = entity[attribute]
+          entity[attribute] = await entity[attribute]
         }
-        if (entity[attribute] && typeof entity[attribute] === 'object' && !(entity[attribute] instanceof Date)) {
+        if (
+          entity[attribute] &&
+          typeof entity[attribute] === 'object' &&
+          entity[attribute].constructor.name === EntityFactory.name
+        ) {
           const subEntityFactory = entity[attribute]
           try {
             if (isSeeding) {
-              if (typeof (subEntityFactory as any).seed === 'function') {
-                entity[attribute] = await (subEntityFactory as any).seed()
-              }
+              entity[attribute] = await (subEntityFactory as any).seed()
             } else {
-              if (typeof (subEntityFactory as any).make === 'function') {
-                entity[attribute] = await (subEntityFactory as any).make()
-              }
+              entity[attribute] = await (subEntityFactory as any).make()
             }
           } catch (error) {
             const message = `Could not make ${(subEntityFactory as any).name}`
