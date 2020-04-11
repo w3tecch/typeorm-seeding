@@ -11,6 +11,7 @@ define(User, (faker: typeof Faker) => {
   const user = new User()
   user.firstName = firstName
   user.lastName = lastName
+  user.middleName = null
   user.email = email
   user.password = faker.random.word()
   return user
