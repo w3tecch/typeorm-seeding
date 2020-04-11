@@ -18,5 +18,5 @@
     "baseUrl": "./",
     "paths": { "*": ["types/*"] }
   },
-  "exclude": ["node_modules", "sample"]
+  "exclude": ["node_modules"]
 }
