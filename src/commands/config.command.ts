@@ -29,7 +29,7 @@ export class ConfigCommand implements yargs.CommandModule {
   async handler(args: yargs.Arguments) {
     const log = console.log
     const pkg = require('../../package.json')
-    log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
+    log('🌱 ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
     try {
       const option = await getConnectionOption(
         {
