@@ -242,8 +242,6 @@ The define function creates a new enity factory.
 define: <Entity, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Context>) => void;
 ```
 
-**Example**
-
 ```typescript
 import Faker from 'faker'
 import { define } from 'typeorm-seeding'
@@ -260,8 +258,6 @@ Factory retrieves the defined factory function and returns the EntityFactory to 
 factory: (entity: Entity) => (context?: Context) => EntityFactory<Entity, Context>
 ```
 
-**Example**
-
 ```typescript
 factory(Pet)()
 factory(Pet)({ name: 'Balou' })
@@ -276,8 +272,6 @@ Use the `.map()` function to alter the generated value before they get persisted
 ```typescript
 map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Context>
 ```
-
-**Example**
 
 ```typescript
 await factory(User)()
@@ -299,8 +293,6 @@ Make and makeMany executes the factory functions and return a new instance of th
 make(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
 ```
 
-**Example**
-
 ```typescript
 await factory(User)().make()
 await factory(User)().makeMany(10)
@@ -319,8 +311,6 @@ seed and seedMany is similar to the make and makeMany method, but at the end the
 ```typescript
 seed(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
 ```
-
-**Example**
 
 ```typescript
 await factory(User)().seed()
