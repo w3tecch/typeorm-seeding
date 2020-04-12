@@ -1,6 +1,6 @@
 {
   "name": "typeorm-seeding",
-  "version": "1.3.0",
+  "version": "1.4.2",
   "description": "TypeORM seeding",
   "main": "dist/typeorm-seeding.js",
   "types": "dist/typeorm-seeding.d.ts",
