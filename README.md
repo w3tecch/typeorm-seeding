@@ -25,7 +25,7 @@
 
 <br />
 
-## ❯ Table of content
+## ❯ Table of contents
 
 - [Introduction](#-introduction)
 - [Installation](#-installation)
