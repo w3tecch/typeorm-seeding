@@ -1,4 +1,4 @@
-import { Seeder, Factory } from '../../dist/types'
+import { Seeder, Factory } from '../../src/types'
 import { User } from '../entities/User.entity'
 
 export default class CreateUsers implements Seeder {
