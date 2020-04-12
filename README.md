@@ -2,7 +2,7 @@
   <img src="./logo.png" alt="logo" width="160" />
 </p>
 
-<h1 align="center">TypeORM Seeding</h1>
+<h1 align="center" style="text-align: center;">TypeORM Seeding</h1>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/typeorm-seeding">
@@ -25,8 +25,6 @@
 
 <br />
 
-<hr>
-
 ## ❯ Table of content
 
 - [Introduction](#-introduction)
@@ -35,8 +33,6 @@
 - [Factory API](#-factory-api)
 - [Changelog](#-changelog)
 - [License](#-license)
-
-<hr>
 
 ## ❯ Introduction
 
@@ -48,7 +44,7 @@ How does it work? Just create a factory for your entities (models) and a seed sc
 
 First create your TypeORM entites.
 
-```TypeScript
+```typescript
 // user.enity.ts
 @Entity()
 export class User {
@@ -82,7 +78,7 @@ The purpose of a factory is to create new fake entites with generate data.
 
 > Factories can also be used to generate test data for some unit, integration or e2e tests.
 
-```TypeScript
+```typescript
 // user.factory.ts
 define(User, (faker: typeof Faker) => {
   const gender = faker.random.number(1)
@@ -112,7 +108,7 @@ define(Pet, (faker: typeof Faker) => {
 
 The seeder can be called by the configured cli command `seed:run`. In this case it generates 10 pets with a owner (User).
 
-```TypeScript
+```typescript
 // create-pets.seed.ts
 export default class CreatePets implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
@@ -120,8 +116,6 @@ export default class CreatePets implements Seeder {
   }
 }
 ```
-
-<hr>
 
 ## ❯ Installation
 
@@ -197,8 +191,6 @@ Add the following TypeORM cli commands to the package.json to drop and sync the 
 | `--connection` or `-c` | null            | Name of the typeorm connection. Required if there are multiple connections. |
 | `--configName` or `-n` | `ormconfig.js`  | Name to the typeorm config file.                                            |
 | `--root` or `-r`       | `process.cwd()` | Path to the typeorm config file.                                            |
-
-<hr>
 
 ## ❯ Basic Seeder
 
@@ -320,8 +312,6 @@ await factory(User)().seedMany(10)
 await factory(User)().seed({ email: 'other@mail.com' })
 await factory(User)().seedMany(10, { email: 'other@mail.com' })
 ```
-
-<hr>
 
 ## ❯ Changelog
 
