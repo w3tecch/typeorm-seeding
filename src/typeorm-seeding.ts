@@ -30,17 +30,17 @@ export const setConnection = (connection: Connection) => ((global as any).seeder
 
 export const getConnection = () => (global as any).seeder.connection
 
-export const define = <Entity, Settings>(entity: ObjectType<Entity>, factoryFn: FactoryFunction<Entity, Settings>) => {
+export const define = <Entity, Context>(entity: ObjectType<Entity>, factoryFn: FactoryFunction<Entity, Context>) => {
   ;(global as any).seeder.entityFactories.set(getNameOfEntity(entity), {
     entity,
     factory: factoryFn,
   })
 }
 
-export const factory: Factory = <Entity, Settings>(entity: ObjectType<Entity>) => (settings?: Settings) => {
+export const factory: Factory = <Entity, Context>(entity: ObjectType<Entity>) => (context?: Context) => {
   const name = getNameOfEntity(entity)
   const entityFactoryObject = (global as any).seeder.entityFactories.get(name)
-  return new EntityFactory<Entity, Settings>(name, entity, entityFactoryObject.factory, settings)
+  return new EntityFactory<Entity, Context>(name, entity, entityFactoryObject.factory, context)
 }
 
 export const runSeeder = async (clazz: SeederConstructor): Promise<void> => {
