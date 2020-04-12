@@ -228,11 +228,11 @@ export default class CreateUsers implements Seeder {
 
 For all entities we want to seed, we need to define a factory. To do so we give you the awesome [faker](https://github.com/marak/Faker.js/) library as a parameter into your factory. Then create your "fake" entity and return it. Those factory files should be in the `src/database/factories` folder and suffixed with `.factory` like `src/database/factories/user.factory.ts`.
 
-**Enity** - TypeORM Enity like the user or the pet in the samples.
-
-**Context** - Argument to pass some static data into the factory function.
-
-**EntityFactory** - This object is used to make new filled entities or seed it into the database.
+| Types           | Description                                                                   |
+| --------------- | ----------------------------------------------------------------------------- |
+| `Enity`         | TypeORM Enity like the user or the pet in the samples.                        |
+| `Context`       | Argument to pass some static data into the factory function.                  |
+| `EntityFactory` | This object is used to make new filled entities or seed it into the database. |
 
 ### define
 
