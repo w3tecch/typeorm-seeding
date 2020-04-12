@@ -234,7 +234,7 @@ For all entities we want to seed, we need to define a factory. To do so we give 
 | `Context`       | Argument to pass some static data into the factory function.                  |
 | `EntityFactory` | This object is used to make new filled entities or seed it into the database. |
 
-### define
+### `define`
 
 The define function creates a new enity factory.
 
@@ -250,7 +250,7 @@ import { User } from '../entities'
 define(User, (faker: typeof Faker, context: { roles: string[] }) => { ... })
 ```
 
-### factory
+### `factory`
 
 Factory retrieves the defined factory function and returns the EntityFactory to start creating new enities.
 
@@ -265,7 +265,7 @@ factory(Pet)({ name: 'Balou' })
 
 ### Entity Factory
 
-#### map
+#### `map`
 
 Use the `.map()` function to alter the generated value before they get persisted.
 
@@ -283,7 +283,7 @@ await factory(User)()
   .seedMany(5)
 ```
 
-#### make & makeMany
+#### `make` & `makeMany`
 
 Make and makeMany executes the factory functions and return a new instance of the given enity. The instance is filled with the generated values from the factory function.
 
@@ -302,7 +302,7 @@ await factory(User)().make({ email: 'other@mail.com' })
 await factory(User)().makeMany(10, { email: 'other@mail.com' })
 ```
 
-#### seed & seedMany
+#### `seed` & `seedMany`
 
 seed and seedMany is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
 
