@@ -4,14 +4,14 @@ import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
 import { printError } from './utils/log.util'
 
-export class EntityFactory<Entity, Settings> {
+export class EntityFactory<Entity, Context> {
   private mapFunction: (entity: Entity) => Promise<Entity>
 
   constructor(
     public name: string,
     public entity: ObjectType<Entity>,
-    private factory: FactoryFunction<Entity, Settings>,
-    private settings?: Settings,
+    private factory: FactoryFunction<Entity, Context>,
+    private context?: Context,
   ) {}
 
   // -------------------------------------------------------------------------
@@ -22,7 +22,7 @@ export class EntityFactory<Entity, Settings> {
    * This function is used to alter the generated values of entity, before it
    * is persist into the database
    */
-  public map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Settings> {
+  public map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Context> {
     this.mapFunction = mapFunction
     return this
   }
@@ -78,7 +78,7 @@ export class EntityFactory<Entity, Settings> {
 
   private async makeEnity(overrideParams: EntityProperty<Entity> = {}, isSeeding = false): Promise<Entity> {
     if (this.factory) {
-      let entity = await this.resolveEntity(this.factory(Faker, this.settings), isSeeding)
+      let entity = await this.resolveEntity(this.factory(Faker, this.context), isSeeding)
       if (this.mapFunction) {
         entity = await this.mapFunction(entity)
       }
