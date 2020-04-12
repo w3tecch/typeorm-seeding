@@ -3,20 +3,15 @@
     "lib": ["es5", "es6"],
     "target": "es5",
     "module": "commonjs",
+    "outDir": "./dist",
     "moduleResolution": "node",
     "importHelpers": true,
     "declaration": true,
-    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "noImplicitAny": true,
-    "incremental": true,
-    "pretty": true,
-    "allowSyntheticDefaultImports": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "paths": { "*": ["types/*"] }
+    "noImplicitAny": true
   },
   "exclude": ["node_modules"]
 }

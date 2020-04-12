@@ -39,7 +39,7 @@ export class SeedCommand implements yargs.CommandModule {
     const log = console.log
 
     const pkg = require('../../package.json')
-    log(chalk.bold(`typeorm-seeding v${(pkg as any).version}`))
+    log('🌱 ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
     const spinner = ora('Loading ormconfig').start()
 
     // Get TypeORM config file
