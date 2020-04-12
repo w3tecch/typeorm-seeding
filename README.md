@@ -263,7 +263,7 @@ factory(Pet)()
 factory(Pet)({ name: 'Balou' })
 ```
 
-### Entity Factory
+### EntityFactory
 
 #### `map`
 
