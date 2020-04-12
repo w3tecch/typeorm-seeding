@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./logo.svg" alt="logo" width="160" />
+  <img src="./logo.png" alt="logo" width="160" />
 </p>
 
 <h1 align="center">TypeORM Seeding</h1>
@@ -29,12 +29,12 @@
 
 ## ❯ Table of content
 
-- [Introduction](/#-introduction)
-- [Installation](/#-installation)
-- [Basic Seeder](/#-basic-seeder)
-- [Factory API](/#-factory-api)
-- [Changelog](/#-changelog)
-- [License](/#-license)
+- [Introduction](#-introduction)
+- [Installation](#-installation)
+- [Basic Seeder](#-basic-seeder)
+- [Factory API](#-factory-api)
+- [Changelog](#-changelog)
+- [License](#-license)
 
 <hr>
 
@@ -131,11 +131,7 @@ You can install our extension with `npm` or `yarn`.
 
 ```bash
 npm i typeorm-seeding
-```
-
-or with yarn
-
-```bash
+# or
 yarn add typeorm-seeding
 ```
 
@@ -191,6 +187,7 @@ Add the following TypeORM cli commands to the package.json to drop and sync the 
   "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",
   ...
 }
+```
 
 #### CLI Options
 
@@ -242,7 +239,7 @@ For all entities we want to seed, we need to define a factory. To do so we give 
 The define function creates a new enity factory.
 
 ```typescript
-define: <Entity, Context>(entity: ObjectType<Entity>, factoryFn: FactoryFunction<Entity, Context>) => void;
+define: <Entity, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Context>) => void;
 ```
 
 **Example**
@@ -266,7 +263,8 @@ factory: (entity: Entity) => (context?: Context) => EntityFactory<Entity, Contex
 **Example**
 
 ```typescript
-factory(Pet)().seed()
+factory(Pet)()
+factory(Pet)({ name: 'Balou' })
 ```
 
 ### Entity Factory
@@ -309,6 +307,7 @@ await factory(User)().makeMany(10)
 
 // override the email
 await factory(User)().make({ email: 'other@mail.com' })
+await factory(User)().makeMany(10, { email: 'other@mail.com' })
 ```
 
 #### seed & seedMany
@@ -329,6 +328,7 @@ await factory(User)().seedMany(10)
 
 // override the email
 await factory(User)().seed({ email: 'other@mail.com' })
+await factory(User)().seedMany(10, { email: 'other@mail.com' })
 ```
 
 <hr>
