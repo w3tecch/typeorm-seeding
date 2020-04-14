@@ -1,6 +1,6 @@
 {
   "name": "typeorm-seeding",
-  "version": "1.4.3",
+  "version": "1.4.4",
   "description": "🌱 A delightful way to seed test data into your database.",
   "license": "MIT",
   "author": "Gery Hirschfeld <gery.hirschfeld@w3tec.ch> (https://github.com/hirsch88)",
@@ -17,7 +17,7 @@
     "prebuild": "rimraf dist",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" --fix",
-    "build": "tsc --project ./tsconfig.build.json",
+    "build": "npm run prebuild && tsc --project ./tsconfig.build.json",
     "watch": "rollup -cw",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -67,19 +67,5 @@
   },
   "resolutions": {
     "mem": ">=4.0.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".test.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
   }
 }
