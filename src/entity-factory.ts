@@ -1,8 +1,9 @@
 import * as Faker from 'faker'
-import { Connection, ObjectType } from 'typeorm'
+import { ObjectType } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
-import { printError } from './utils/log.util'
+import { printError, printWarning } from './utils/log.util'
+import { getConnectionOptions, createConnection } from './connection'
 
 export class EntityFactory<Entity, Context> {
   private mapFunction: (entity: Entity) => Promise<Entity>
@@ -35,11 +36,12 @@ export class EntityFactory<Entity, Context> {
   }
 
   /**
-   * Seed makes a new entity and does persist it
+   * Create makes a new entity and does persist it
    */
-  public async seed(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
-    const connection: Connection = (global as any).seeder.connection
-    if (connection) {
+  public async create(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
+    const option = await getConnectionOptions()
+    const connection = await createConnection(option)
+    if (connection && connection.isConnected) {
       const em = connection.createEntityManager()
       try {
         const entity = await this.makeEnity(overrideParams, true)
@@ -64,12 +66,22 @@ export class EntityFactory<Entity, Context> {
     return list
   }
 
-  public async seedMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
+  public async createMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
     const list = []
     for (let index = 0; index < amount; index++) {
-      list[index] = await this.seed(overrideParams)
+      list[index] = await this.create(overrideParams)
     }
     return list
+  }
+
+  public async seed(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
+    printWarning('The seed() method is deprecated please use the create() method instead')
+    return this.create(overrideParams)
+  }
+
+  public async seedMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
+    printWarning('The seedMany() method is deprecated please use the createMany() method instead')
+    return this.createMany(amount, overrideParams)
   }
 
   // -------------------------------------------------------------------------
@@ -108,7 +120,7 @@ export class EntityFactory<Entity, Context> {
           const subEntityFactory = entity[attribute]
           try {
             if (isSeeding) {
-              entity[attribute] = await (subEntityFactory as any).seed()
+              entity[attribute] = await (subEntityFactory as any).create()
             } else {
               entity[attribute] = await (subEntityFactory as any).make()
             }

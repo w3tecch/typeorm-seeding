@@ -30,7 +30,8 @@
 - [Introduction](#-introduction)
 - [Installation](#-installation)
 - [Basic Seeder](#-basic-seeder)
-- [Factory API](#-factory-api)
+- [Using Entity Factory](#-using-entity-factory)
+- [Seeding Data in Testing](#-seeding-data-in-testing)
 - [Changelog](#-changelog)
 - [License](#-license)
 
@@ -112,7 +113,7 @@ The seeder can be called by the configured cli command `seed:run`. In this case 
 // create-pets.seed.ts
 export default class CreatePets implements Seeder {
   public async run(factory: Factory, connection: Connection): Promise<any> {
-    await factory(Pet)().seedMany(10)
+    await factory(Pet)().createMany(10)
   }
 }
 ```
@@ -216,15 +217,15 @@ export default class CreateUsers implements Seeder {
 }
 ```
 
-## ❯ Factory API
+## ❯ Using Entity Factory
 
-For all entities we want to seed, we need to define a factory. To do so we give you the awesome [faker](https://github.com/marak/Faker.js/) library as a parameter into your factory. Then create your "fake" entity and return it. Those factory files should be in the `src/database/factories` folder and suffixed with `.factory` like `src/database/factories/user.factory.ts`.
+For all entities we want to create, we need to define a factory. To do so we give you the awesome [faker](https://github.com/marak/Faker.js/) library as a parameter into your factory. Then create your "fake" entity and return it. Those factory files should be in the `src/database/factories` folder and suffixed with `.factory` like `src/database/factories/user.factory.ts`.
 
-| Types           | Description                                                                   |
-| --------------- | ----------------------------------------------------------------------------- |
-| `Enity`         | TypeORM Enity like the user or the pet in the samples.                        |
-| `Context`       | Argument to pass some static data into the factory function.                  |
-| `EntityFactory` | This object is used to make new filled entities or seed it into the database. |
+| Types           | Description                                                                     |
+| --------------- | ------------------------------------------------------------------------------- |
+| `Enity`         | TypeORM Enity like the user or the pet in the samples.                          |
+| `Context`       | Argument to pass some static data into the factory function.                    |
+| `EntityFactory` | This object is used to make new filled entities or create it into the database. |
 
 ### `define`
 
@@ -268,11 +269,11 @@ map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Con
 ```typescript
 await factory(User)()
   .map(async (user: User) => {
-    const pets: Pet[] = await factory(Pet)().seedMany(2)
+    const pets: Pet[] = await factory(Pet)().createMany(2)
     const petIds = pets.map((pet: Pet) => pet.Id)
     await user.pets().attach(petIds)
   })
-  .seedMany(5)
+  .createMany(5)
 ```
 
 #### `make` & `makeMany`
@@ -294,23 +295,93 @@ await factory(User)().make({ email: 'other@mail.com' })
 await factory(User)().makeMany(10, { email: 'other@mail.com' })
 ```
 
-#### `seed` & `seedMany`
+#### `create` & `createMany`
 
-seed and seedMany is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
+create and createMany is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
 
 **overrideParams** - Override some of the attributes of the enity.
 
 ```typescript
-seed(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
+create(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
 ```
 
 ```typescript
-await factory(User)().seed()
-await factory(User)().seedMany(10)
+await factory(User)().create()
+await factory(User)().createMany(10)
 
 // override the email
-await factory(User)().seed({ email: 'other@mail.com' })
-await factory(User)().seedMany(10, { email: 'other@mail.com' })
+await factory(User)().create({ email: 'other@mail.com' })
+await factory(User)().createMany(10, { email: 'other@mail.com' })
+```
+
+## ❯ Seeding Data in Testing
+
+The entity factories can also be used in testing. To do so call the `useSeeding` function, which loads all the defined entity factories.
+
+> Note: Normally Jest parallelizes test runs, which all conect to the same database. This could lead to strange sideeffects. So use the `--runInBand` flag to disable parallelizes runs.
+
+```typescript
+describe("UserService", () => {
+  beforeAll(async (done) => {
+    await useRefreshDatabase()
+    await useSeeding()
+
+    const user = await factory(User)().make()
+    const createdUser = await factory(User)().create()
+
+    await runSeeder(CreateUserSeed)
+    done()
+  })
+
+  afterAll(async (done) => {
+    await tearDownDatabase()
+    done()
+  })
+
+  test('Should ...', () => { ... })
+})
+```
+
+### `useSeeding`
+
+Loads the defined entity factories.
+
+```typescript
+useSeeding(options: ConfigureOption = {}): Promise<void>
+```
+
+### `runSeeder`
+
+Runs the given seeder class.
+
+```typescript
+useSeeding(seed: SeederConstructor): Promise<void>
+```
+
+### `useRefreshDatabase`
+
+Connects to the database, drop it and recreates the schema.
+
+```typescript
+useRefreshDatabase(options: ConfigureOption = {}): Promise<Connection>
+```
+
+### `tearDownDatabase`
+
+Closes the open database connection.
+
+```typescript
+tearDownDatabase(): Promise<void>
+```
+
+### `ConfigureOption`
+
+```typescript
+interface ConfigureOption {
+  root?: string // path to the orm config file
+  configName?: string // name of the config file. eg. ormconfig.js
+  connection?: string // name of the database connection.
+}
 ```
 
 ## ❯ Changelog
