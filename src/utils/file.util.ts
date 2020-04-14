@@ -1,7 +1,9 @@
 import * as glob from 'glob'
 import * as path from 'path'
 
-export const importFiles = (filePaths: string[]) => filePaths.forEach(require)
+export const importFiles = async (filePaths: string[]) => {
+  await Promise.all(filePaths.map((filePath) => import(filePath)))
+}
 
 export const loadFiles = (filePattern: string[]): string[] => {
   return filePattern
