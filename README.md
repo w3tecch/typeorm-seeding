@@ -39,7 +39,7 @@
 
 Isn't it exhausting to create some sample data for your database, well this time is over!
 
-How does it work? Just create a factory for your entities (models) and a seed script.
+How does it work? Just create a entity factory for your entities (models) and a seed script.
 
 ### Enity
 
@@ -75,9 +75,9 @@ export class Pet {
 
 ### Factory
 
-The purpose of a factory is to create new fake entites with generate data.
+Then for each entity define a factory. The purpose of a factory is to create new entites with generate data.
 
-> Factories can also be used to generate test data for some unit, integration or e2e tests.
+> Note: Factories can also be used to generate data for testing.
 
 ```typescript
 // user.factory.ts
@@ -107,7 +107,10 @@ define(Pet, (faker: typeof Faker) => {
 
 ### Seeder
 
-The seeder can be called by the configured cli command `seed:run`. In this case it generates 10 pets with a owner (User).
+
+And last but not least, create a seeder. The seeder can be called by the configured cli command `seed:run`. In this case it generates 10 pets with a owner (User).
+
+> Note: `seed:run` must be configured first. Go to [CLI Configuration](#cli-configuration).
 
 ```typescript
 // create-pets.seed.ts
@@ -122,7 +125,7 @@ export default class CreatePets implements Seeder {
 
 Before using this TypeORM extension please read the [TypeORM Getting Started](https://typeorm.io/#/) documentation. This explains how to setup a TypeORM project.
 
-You can install our extension with `npm` or `yarn`.
+After that install the extension with `npm` or `yarn`.
 
 ```bash
 npm i typeorm-seeding
@@ -130,7 +133,7 @@ npm i typeorm-seeding
 yarn add typeorm-seeding
 ```
 
-Optional, for `Faker` types
+Optional, install the type definitions of the `Faker` library.
 
 ```bash
 npm install -D @types/faker
@@ -140,7 +143,7 @@ npm install -D @types/faker
 
 To configure the path to your seeds and factories change the TypeORM config file(ormconfig.js or ormconfig.json).
 
-> Default is `src/database/{seeds,factories}/**/*{.ts,.js}`
+> The default paths are `src/database/{seeds,factories}/**/*{.ts,.js}`
 
 **ormconfig.js**
 
@@ -161,7 +164,7 @@ TYPEORM_SEEDING_SEEDS=src/seeds/**/*{.ts,.js}
 
 ### CLI Configuration
 
-Add the following scripts to your `package.json` file.
+Add the following scripts to your `package.json` file to configure the seed cli commands.
 
 ```
 "scripts": {
@@ -171,7 +174,9 @@ Add the following scripts to your `package.json` file.
 }
 ```
 
-> Now you are able to execute your seeds with this command `npm run seed:run`.
+To execute the seed run `npm run seed:run` in the terminal.
+
+> Note: More CLI optios are [here](#cli-options)
 
 Add the following TypeORM cli commands to the package.json to drop and sync the database.
 
@@ -188,14 +193,16 @@ Add the following TypeORM cli commands to the package.json to drop and sync the 
 
 | Option                 | Default         | Description                                                                 |
 | ---------------------- | --------------- | --------------------------------------------------------------------------- |
-| `--seed` or `-s`       | null            | Option to specify a specific seeder class to run individually.              |
+| `--seed` or `-s`       | null            | Option to specify a seeder class to run individually.              |
 | `--connection` or `-c` | null            | Name of the typeorm connection. Required if there are multiple connections. |
 | `--configName` or `-n` | `ormconfig.js`  | Name to the typeorm config file.                                            |
 | `--root` or `-r`       | `process.cwd()` | Path to the typeorm config file.                                            |
 
 ## ❯ Basic Seeder
 
-The seeds files define how much and how the data are connected with each other. The files will be executed alphabetically.
+A seeder class only contains one method by default `run`. Within this method, you may insert data into your database. For manually insertion use the [Query Builder](https://typeorm.io/#/select-query-builder) or use the [Entity Factory](#-using-entity-factory)
+
+> Note. The seeder files will be executed alphabetically.
 
 ```typescript
 import { Factory, Seeder } from 'typeorm-seeding'
@@ -218,6 +225,8 @@ export default class CreateUsers implements Seeder {
 ```
 
 ## ❯ Using Entity Factory
+
+Of course, manually specifying the attributes for each entity seed is cumbersome. Instead, you can use entity factories to conveniently generate large amounts of database records.
 
 For all entities we want to create, we need to define a factory. To do so we give you the awesome [faker](https://github.com/marak/Faker.js/) library as a parameter into your factory. Then create your "fake" entity and return it. Those factory files should be in the `src/database/factories` folder and suffixed with `.factory` like `src/database/factories/user.factory.ts`.
 
@@ -278,7 +287,7 @@ await factory(User)()
 
 #### `make` & `makeMany`
 
-Make and makeMany executes the factory functions and return a new instance of the given enity. The instance is filled with the generated values from the factory function.
+Make and makeMany executes the factory functions and return a new instance of the given enity. The instance is filled with the generated values from the factory function, but not saved in the database.
 
 **overrideParams** - Override some of the attributes of the enity.
 
@@ -297,7 +306,7 @@ await factory(User)().makeMany(10, { email: 'other@mail.com' })
 
 #### `create` & `createMany`
 
-create and createMany is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
+the create and createMany method is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
 
 **overrideParams** - Override some of the attributes of the enity.
 
@@ -360,7 +369,7 @@ useSeeding(seed: SeederConstructor): Promise<void>
 
 ### `useRefreshDatabase`
 
-Connects to the database, drop it and recreates the schema.
+Connects to the database, drops it and recreates the schema.
 
 ```typescript
 useRefreshDatabase(options: ConfigureOption = {}): Promise<Connection>
@@ -378,7 +387,7 @@ tearDownDatabase(): Promise<void>
 
 ```typescript
 interface ConfigureOption {
-  root?: string // path to the orm config file
+  root?: string // path to the orm config file. Default = process.cwd()
   configName?: string // name of the config file. eg. ormconfig.js
   connection?: string // name of the database connection.
 }
