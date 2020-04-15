@@ -340,8 +340,10 @@ However, if the test database is not in memory, than use the `--runInBand` flag 
 
 ```typescript
 describe("UserService", () => {
+  let connection: Connection
+
   beforeAll(async (done) => {
-    await useRefreshDatabase()
+    connection = await useRefreshDatabase({ connection: 'memory' })
     await useSeeding()
 
     const user = await factory(User)().make()
