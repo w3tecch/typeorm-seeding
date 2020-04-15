@@ -373,7 +373,7 @@ useSeeding(options: ConfigureOption = {}): Promise<void>
 Runs the given seeder class.
 
 ```typescript
-useSeeding(seed: SeederConstructor): Promise<void>
+runSeeder(seed: SeederConstructor): Promise<void>
 ```
 
 ### `useRefreshDatabase`
