@@ -107,7 +107,6 @@ define(Pet, (faker: typeof Faker) => {
 
 ### Seeder
 
-
 And last but not least, create a seeder. The seeder can be called by the configured cli command `seed:run`. In this case it generates 10 pets with a owner (User).
 
 > Note: `seed:run` must be configured first. Go to [CLI Configuration](#cli-configuration).
@@ -193,7 +192,7 @@ Add the following TypeORM cli commands to the package.json to drop and sync the 
 
 | Option                 | Default         | Description                                                                 |
 | ---------------------- | --------------- | --------------------------------------------------------------------------- |
-| `--seed` or `-s`       | null            | Option to specify a seeder class to run individually.              |
+| `--seed` or `-s`       | null            | Option to specify a seeder class to run individually.                       |
 | `--connection` or `-c` | null            | Name of the typeorm connection. Required if there are multiple connections. |
 | `--configName` or `-n` | `ormconfig.js`  | Name to the typeorm config file.                                            |
 | `--root` or `-r`       | `process.cwd()` | Path to the typeorm config file.                                            |
@@ -327,7 +326,17 @@ await factory(User)().createMany(10, { email: 'other@mail.com' })
 
 The entity factories can also be used in testing. To do so call the `useSeeding` function, which loads all the defined entity factories.
 
-> Note: Normally Jest parallelizes test runs, which all conect to the same database. This could lead to strange sideeffects. So use the `--runInBand` flag to disable parallelizes runs.
+Choose your test database wisley. We suggest to run your test in a sqlite in memory database.
+
+```json
+{
+  "type": "sqlite",
+  "name": "memory",
+  "database": ":memory:"
+}
+```
+
+However, if the test database is not in memory, than use the `--runInBand` flag to disable parallelizes runs.
 
 ```typescript
 describe("UserService", () => {
@@ -392,6 +401,14 @@ interface ConfigureOption {
   connection?: string // name of the database connection.
 }
 ```
+
+## ❯ Example Projects
+
+> Please fill free to add your open-source project here. This helps others to better understand the seeding technology.
+
+| Project                                                                                  | Description                                                                                                                    |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| [copa-ch/copa-backend](https://github.com/copa-ch/copa-backend/tree/master/src/database) | 🚀 Nest application written in TypeScript for the COPA project. This app manages your tournaments and generates the schedules. |
 
 ## ❯ Changelog
 
