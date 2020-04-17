@@ -1,11 +1,22 @@
-import { useSeeding, useRefreshDatabase, tearDownDatabase, factory } from '../../src/typeorm-seeding'
+import {
+  useSeeding,
+  useRefreshDatabase,
+  tearDownDatabase,
+  factory,
+  setConnectionOptions,
+} from '../../src/typeorm-seeding'
 import { User } from '../entities/User.entity'
 import { Connection } from 'typeorm'
 
 describe('Sample Integration Test', () => {
   let connection: Connection
   beforeAll(async (done) => {
-    connection = await useRefreshDatabase({ connection: 'memory' })
+    setConnectionOptions({
+      type: 'sqlite',
+      database: ':memory:',
+      entities: ['sample/entities/**/*{.ts,.js}'],
+    })
+    connection = await useRefreshDatabase()
     await useSeeding()
     done()
   })

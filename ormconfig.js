@@ -1,6 +1,6 @@
 module.exports = [
     {
-        name: 'sample',
+        name: 'default',
         type: 'sqlite',
         database: 'test.db',
         entities: ['sample/entities/**/*{.ts,.js}'],
