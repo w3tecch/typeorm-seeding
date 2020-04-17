@@ -3,6 +3,7 @@ import {
   Connection as TypeORMConnection,
   ConnectionOptions as TypeORMConnectionOptions,
   createConnection as TypeORMCreateConnection,
+  getConnection as TypeORMGetConnection,
 } from 'typeorm'
 import { printError } from './utils/log.util'
 
@@ -32,6 +33,7 @@ if ((global as any)[KEY] === undefined) {
     configureOption: defaultConfigureOption,
     ormConfig: undefined,
     connection: undefined,
+    overrideConnectionOptions: {},
   }
 }
 
@@ -42,8 +44,13 @@ export const configureConnection = (option: ConfigureOption = {}) => {
   }
 }
 
+export const setConnectionOptions = (options: TypeORMConnectionOptions): void => {
+  ;(global as any)[KEY].overrideConnectionOptions = options
+}
+
 export const getConnectionOptions = async (): Promise<ConnectionOptions> => {
   const ormConfig = (global as any)[KEY].ormConfig
+  const overrideConnectionOptions = (global as any)[KEY].overrideConnectionOptions
   if (ormConfig === undefined) {
     const configureOption = (global as any)[KEY].configureOption
     const connection = configureOption.connection
@@ -58,6 +65,12 @@ export const getConnectionOptions = async (): Promise<ConnectionOptions> => {
         options = filteredOptions
       }
     }
+    if (options.length > 1) {
+      const filteredOptions = options.filter((o) => o.name === 'default')
+      if (filteredOptions.length === 1) {
+        options = filteredOptions
+      }
+    }
     if (options.length === 1) {
       const option = options[0]
       if (!option.factories) {
@@ -66,8 +79,11 @@ export const getConnectionOptions = async (): Promise<ConnectionOptions> => {
       if (!option.seeds) {
         option.seeds = [process.env.TYPEORM_SEEDING_SEEDS || 'src/database/seeds/**/*{.ts,.js}']
       }
-      ;(global as any)[KEY].ormConfig = option
-      return option
+      ;(global as any)[KEY].ormConfig = {
+        ...option,
+        ...overrideConnectionOptions,
+      }
+      return (global as any)[KEY].ormConfig
     }
     printError('There are multiple connections please provide a connection name')
   }
@@ -75,6 +91,7 @@ export const getConnectionOptions = async (): Promise<ConnectionOptions> => {
 }
 
 export const createConnection = async (option?: TypeORMConnectionOptions): Promise<TypeORMConnection> => {
+  const configureOption = (global as any)[KEY].configureOption
   let connection = (global as any)[KEY].connection
   let ormConfig = (global as any)[KEY].ormConfig
 
@@ -83,7 +100,12 @@ export const createConnection = async (option?: TypeORMConnectionOptions): Promi
   }
 
   if (connection === undefined) {
-    connection = await TypeORMCreateConnection(ormConfig)
+    try {
+      connection = await TypeORMGetConnection(configureOption.name)
+    } catch (_) {}
+    if (connection === undefined) {
+      connection = await TypeORMCreateConnection(ormConfig)
+    }
     ;(global as any)[KEY].connection = connection
   }
   return connection

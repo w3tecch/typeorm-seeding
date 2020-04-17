@@ -53,7 +53,7 @@ export const useRefreshDatabase = async (options: ConfigureOption = {}): Promise
   configureConnection(options)
   const option = await getConnectionOptions()
   const connection = await createConnection(option)
-  if (connection.isConnected) {
+  if (connection && connection.isConnected) {
     await connection.dropDatabase()
     await connection.synchronize()
   }
