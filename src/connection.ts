@@ -44,7 +44,7 @@ export const configureConnection = (option: ConfigureOption = {}) => {
   }
 }
 
-export const setConnectionOptions = (options: TypeORMConnectionOptions): void => {
+export const setConnectionOptions = (options: Partial<TypeORMConnectionOptions>): void => {
   ;(global as any)[KEY].overrideConnectionOptions = options
 }
 
