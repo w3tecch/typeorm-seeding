@@ -1,4 +1,4 @@
-#!/usr/bin/env nod
+#!/usr/bin/env node
 import 'reflect-metadata'
 import * as yargs from 'yargs'
 import { SeedCommand } from './commands/seed.command'
