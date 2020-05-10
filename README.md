@@ -46,7 +46,7 @@ How does it work? Just create a entity factory for your entities (models) and a 
 First create your TypeORM entites.
 
 ```typescript
-// user.enity.ts
+// user.entity.ts
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid') id: string
@@ -61,7 +61,7 @@ export class User {
   }
 }
 
-// pet.enity.ts
+// pet.entity.ts
 @Entity()
 export class Pet {
   @PrimaryGeneratedColumn('uuid') id: string
