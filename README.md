@@ -41,7 +41,7 @@ Isn't it exhausting to create some sample data for your database, well this time
 
 How does it work? Just create a entity factory for your entities (models) and a seed script.
 
-### Enity
+### Entity
 
 First create your TypeORM entites.
 
