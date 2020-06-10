@@ -41,9 +41,9 @@ Isn't it exhausting to create some sample data for your database, well this time
 
 How does it work? Just create a entity factory for your entities (models) and a seed script.
 
-### Enity
+### Entity
 
-First create your TypeORM entites.
+First create your TypeORM entities.
 
 ```typescript
 // user.entity.ts
@@ -140,7 +140,7 @@ npm install -D @types/faker
 
 ### Configuration
 
-To configure the path to your seeds and factories change the TypeORM config file(ormconfig.js or ormconfig.json).
+To configure the path to your seeds and factories change the TypeORM config file (ormconfig.js or ormconfig.json).
 
 > The default paths are `src/database/{seeds,factories}/**/*{.ts,.js}`
 
@@ -231,13 +231,13 @@ For all entities we want to create, we need to define a factory. To do so we giv
 
 | Types           | Description                                                                     |
 | --------------- | ------------------------------------------------------------------------------- |
-| `Enity`         | TypeORM Enity like the user or the pet in the samples.                          |
+| `Entity`         | TypeORM Entity like the user or the pet in the samples.                          |
 | `Context`       | Argument to pass some static data into the factory function.                    |
 | `EntityFactory` | This object is used to make new filled entities or create it into the database. |
 
 ### `define`
 
-The define function creates a new enity factory.
+The define function creates a new entity factory.
 
 ```typescript
 define: <Entity, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Context>) => void;
@@ -286,9 +286,9 @@ await factory(User)()
 
 #### `make` & `makeMany`
 
-Make and makeMany executes the factory functions and return a new instance of the given enity. The instance is filled with the generated values from the factory function, but not saved in the database.
+Make and makeMany executes the factory functions and return a new instance of the given entity. The instance is filled with the generated values from the factory function, but not saved in the database.
 
-**overrideParams** - Override some of the attributes of the enity.
+**overrideParams** - Override some of the attributes of the entity.
 
 ```typescript
 make(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
@@ -307,7 +307,7 @@ await factory(User)().makeMany(10, { email: 'other@mail.com' })
 
 the create and createMany method is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
 
-**overrideParams** - Override some of the attributes of the enity.
+**overrideParams** - Override some of the attributes of the entity.
 
 ```typescript
 create(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
