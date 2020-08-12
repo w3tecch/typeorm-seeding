@@ -175,7 +175,7 @@ Add the following scripts to your `package.json` file to configure the seed cli 
 
 To execute the seed run `npm run seed:run` in the terminal.
 
-> Note: More CLI optios are [here](#cli-options)
+> Note: More CLI options are [here](#cli-options)
 
 Add the following TypeORM cli commands to the package.json to drop and sync the database.
 
