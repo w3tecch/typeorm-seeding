@@ -6,7 +6,7 @@ import { EntityFactory } from './entity-factory'
 /**
  * FactoryFunction is the fucntion, which generate a new filled entity
  */
-export type FactoryFunction<Entity, Context> = (faker: typeof Faker, context?: Context) => Entity
+export type FactoryFunction<Entity, Context> = (faker: typeof Faker, context?: Context) => Entity | Promise<Entity>
 
 /**
  * EntityProperty defines an object whose keys and values must be properties of the given Entity.

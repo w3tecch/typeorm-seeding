@@ -90,7 +90,7 @@ export class EntityFactory<Entity, Context> {
 
   private async makeEnity(overrideParams: EntityProperty<Entity> = {}, isSeeding = false): Promise<Entity> {
     if (this.factory) {
-      let entity = await this.resolveEntity(this.factory(Faker, this.context), isSeeding)
+      let entity = await this.resolveEntity(await this.factory(Faker, this.context), isSeeding)
       if (this.mapFunction) {
         entity = await this.mapFunction(entity)
       }
