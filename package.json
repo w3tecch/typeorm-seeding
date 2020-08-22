@@ -1,6 +1,6 @@
 {
   "name": "typeorm-seeding",
-  "version": "1.6.0",
+  "version": "1.6.0-defineasync",
   "description": "🌱 A delightful way to seed test data into your database.",
   "license": "MIT",
   "author": "Gery Hirschfeld <gery.hirschfeld@w3tec.ch> (https://github.com/hirsch88)",
@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/w3tecch/typeorm-seeding.git"
+    "url": "https://github.com/doofenshmirtz-deco-inc/typeorm-seeding.git"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -67,5 +67,8 @@
   },
   "resolutions": {
     "mem": ">=4.0.0"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
   }
 }
