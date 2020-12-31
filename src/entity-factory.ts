@@ -1,5 +1,5 @@
 import * as Faker from 'faker'
-import { ObjectType } from 'typeorm'
+import { ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
 import { printError, printWarning } from './utils/log.util'
@@ -38,14 +38,14 @@ export class EntityFactory<Entity, Context> {
   /**
    * Create makes a new entity and does persist it
    */
-  public async create(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
+  public async create(overrideParams: EntityProperty<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity> {
     const option = await getConnectionOptions()
     const connection = await createConnection(option)
     if (connection && connection.isConnected) {
       const em = connection.createEntityManager()
       try {
         const entity = await this.makeEnity(overrideParams, true)
-        return await em.save<Entity>(entity)
+        return await em.save<Entity>(entity, saveOptions)
       } catch (error) {
         const message = 'Could not save entity'
         printError(message, error)
@@ -66,10 +66,14 @@ export class EntityFactory<Entity, Context> {
     return list
   }
 
-  public async createMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
+  public async createMany(
+    amount: number,
+    overrideParams: EntityProperty<Entity> = {},
+    saveOptions?: SaveOptions,
+  ): Promise<Entity[]> {
     const list = []
     for (let index = 0; index < amount; index++) {
-      list[index] = await this.create(overrideParams)
+      list[index] = await this.create(overrideParams, saveOptions)
     }
     return list
   }
@@ -85,50 +89,52 @@ export class EntityFactory<Entity, Context> {
   }
 
   // -------------------------------------------------------------------------
-  // Prrivat Helpers
+  // Private Helpers
   // -------------------------------------------------------------------------
 
   private async makeEnity(overrideParams: EntityProperty<Entity> = {}, isSeeding = false): Promise<Entity> {
-    if (this.factory) {
-      let entity = await this.resolveEntity(this.factory(Faker, this.context), isSeeding)
-      if (this.mapFunction) {
-        entity = await this.mapFunction(entity)
-      }
-
-      for (const key in overrideParams) {
-        if (overrideParams.hasOwnProperty(key)) {
-          entity[key] = overrideParams[key]
-        }
-      }
-
-      return entity
+    if (!this.factory) {
+      throw new Error('Could not found entity')
     }
-    throw new Error('Could not found entity')
+
+    let entity = await this.resolveEntity(this.factory(Faker, this.context), isSeeding)
+    if (this.mapFunction) {
+      entity = await this.mapFunction(entity)
+    }
+
+    for (const key in overrideParams) {
+      if (overrideParams.hasOwnProperty(key)) {
+        entity[key] = overrideParams[key]
+      }
+    }
+
+    return entity
   }
 
   private async resolveEntity(entity: Entity, isSeeding = false): Promise<Entity> {
     for (const attribute in entity) {
-      if (entity.hasOwnProperty(attribute)) {
-        if (isPromiseLike(entity[attribute])) {
-          entity[attribute] = await entity[attribute]
-        }
-        if (
-          entity[attribute] &&
-          typeof entity[attribute] === 'object' &&
-          entity[attribute].constructor.name === EntityFactory.name
-        ) {
-          const subEntityFactory = entity[attribute]
-          try {
-            if (isSeeding) {
-              entity[attribute] = await (subEntityFactory as any).create()
-            } else {
-              entity[attribute] = await (subEntityFactory as any).make()
-            }
-          } catch (error) {
-            const message = `Could not make ${(subEntityFactory as any).name}`
-            printError(message, error)
-            throw new Error(message)
+      if (!entity.hasOwnProperty(attribute)) {
+        continue
+      }
+      if (isPromiseLike(entity[attribute])) {
+        entity[attribute] = await entity[attribute]
+      }
+      if (
+        entity[attribute] &&
+        typeof entity[attribute] === 'object' &&
+        entity[attribute].constructor.name === EntityFactory.name
+      ) {
+        const subEntityFactory = entity[attribute]
+        try {
+          if (isSeeding) {
+            entity[attribute] = await (subEntityFactory as any).create()
+          } else {
+            entity[attribute] = await (subEntityFactory as any).make()
           }
+        } catch (error) {
+          const message = `Could not make ${(subEntityFactory as any).name}`
+          printError(message, error)
+          throw new Error(message)
         }
       }
     }
