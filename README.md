@@ -308,9 +308,11 @@ await factory(User)().makeMany(10, { email: 'other@mail.com' })
 the create and createMany method is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
 
 **overrideParams** - Override some of the attributes of the entity.
+**saveOptions** - [Save options](https://github.com/typeorm/typeorm/blob/master/src/repository/SaveOptions.ts) from typeorm
 
 ```typescript
-create(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
+create(overrideParams: EntityProperty<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
+createMany(amount: number, overrideParams: EntityProperty<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
 ```
 
 ```typescript
@@ -320,6 +322,10 @@ await factory(User)().createMany(10)
 // override the email
 await factory(User)().create({ email: 'other@mail.com' })
 await factory(User)().createMany(10, { email: 'other@mail.com' })
+
+// using save options
+await factory(User)().create({ email: 'other@mail.com' }, { listeners: false })
+await factory(User)().createMany(10, { email: 'other@mail.com' }, { listeners: false })
 ```
 
 ## ❯ Seeding Data in Testing
