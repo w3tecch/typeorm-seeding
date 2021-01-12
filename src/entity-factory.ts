@@ -31,7 +31,7 @@ export class EntityFactory<Entity, Context> {
    * Make a new entity, but does not persist it
    */
   public async make(overrideParams: EntityProperty<Entity> = {}): Promise<Entity> {
-    return this.makeEnity(overrideParams, false)
+    return this.makeEntity(overrideParams, false)
   }
 
   /**
@@ -42,7 +42,7 @@ export class EntityFactory<Entity, Context> {
     if (connection) {
       const em = connection.createEntityManager()
       try {
-        const entity = await this.makeEnity(overrideParams, true)
+        const entity = await this.makeEntity(overrideParams, true)
         return await em.save<Entity>(entity)
       } catch (error) {
         const message = 'Could not save entity'
@@ -76,17 +76,19 @@ export class EntityFactory<Entity, Context> {
   // Prrivat Helpers
   // -------------------------------------------------------------------------
 
-  private async makeEnity(overrideParams: EntityProperty<Entity> = {}, isSeeding = false): Promise<Entity> {
+  private async makeEntity(overrideParams: EntityProperty<Entity> = {}, isSeeding = false): Promise<Entity> {
     if (this.factory) {
-      let entity = await this.resolveEntity(this.factory(Faker, this.context), isSeeding)
-      if (this.mapFunction) {
-        entity = await this.mapFunction(entity)
-      }
+      let entity = this.factory(Faker, this.context)
 
       for (const key in overrideParams) {
         if (overrideParams.hasOwnProperty(key)) {
           entity[key] = overrideParams[key]
         }
+      }
+
+      entity = await this.resolveEntity(this.factory(Faker, this.context), isSeeding)
+      if (this.mapFunction) {
+        entity = await this.mapFunction(entity)
       }
 
       return entity
