@@ -167,8 +167,8 @@ Add the following scripts to your `package.json` file to configure the seed cli 
 
 ```
 "scripts": {
-  "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config"
-  "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
+  "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
+  "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
   ...
 }
 ```
