@@ -82,7 +82,7 @@ Then for each entity define a factory. The purpose of a factory is to create new
 ```typescript
 // user.factory.ts
 define(User, (faker: typeof Faker) => {
-  const gender = faker.random.number(1)
+  const gender = faker.datatype.number(1)
   const firstName = faker.name.firstName(gender)
   const lastName = faker.name.lastName(gender)
 
@@ -94,12 +94,12 @@ define(User, (faker: typeof Faker) => {
 
 // pet.factory.ts
 define(Pet, (faker: typeof Faker) => {
-  const gender = faker.random.number(1)
+  const gender = faker.datatype.number(1)
   const name = faker.name.firstName(gender)
 
   const pet = new Pet()
   pet.name = name
-  pet.age = faker.random.number()
+  pet.age = faker.datatype.number()
   pet.user = factory(User)() as any
   return pet
 })
