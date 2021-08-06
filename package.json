@@ -60,7 +60,7 @@
     "glob": "7.1.6",
     "ora": "4.0.3",
     "reflect-metadata": "0.1.13",
-    "yargs": "15.3.1"
+    "yargs": "15.5.0-candidate.0"
   },
   "peerDependencies": {
     "typeorm": "^0.2.24"
