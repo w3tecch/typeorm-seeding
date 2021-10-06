@@ -1,7 +1,7 @@
 import * as yargs from 'yargs'
 import * as chalk from 'chalk'
-import { getConnectionOption } from '../typeorm-seeding'
 import { printError } from '../utils/log.util'
+import { configureConnection, getConnectionOptions } from '../connection'
 
 export class ConfigCommand implements yargs.CommandModule {
   command = 'config'
@@ -29,15 +29,14 @@ export class ConfigCommand implements yargs.CommandModule {
   async handler(args: yargs.Arguments) {
     const log = console.log
     const pkg = require('../../package.json')
-    log('🌱 ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
+    log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
     try {
-      const option = await getConnectionOption(
-        {
-          root: args.root as string,
-          configName: args.configName as string,
-        },
-        args.connection as string,
-      )
+      configureConnection({
+        root: args.root as string,
+        configName: args.configName as string,
+        connection: args.connection as string,
+      })
+      const option = await getConnectionOptions()
       log(option)
     } catch (error) {
       printError('Could not find the orm config file', error)

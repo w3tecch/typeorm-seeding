@@ -1,8 +1,6 @@
-const path = require('path')
-
 module.exports = [
     {
-        name: 'sample',
+        name: 'default',
         type: 'sqlite',
         database: 'test.db',
         entities: ['sample/entities/**/*{.ts,.js}'],
@@ -10,9 +8,9 @@ module.exports = [
         seeds: ['sample/seeds/**/*{.ts,.js}'],
     },
     {
-        name: 'other',
+        name: 'memory',
         type: 'sqlite',
-        database: 'test.db',
+        database: ':memory:',
         entities: ['sample/entities/**/*{.ts,.js}'],
         factories: ['sample/factories/**/*{.ts,.js}'],
         seeds: ['sample/seeds/**/*{.ts,.js}'],

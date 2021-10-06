@@ -1,11 +1,10 @@
 import * as yargs from 'yargs'
 import * as ora from 'ora'
 import * as chalk from 'chalk'
-import { createConnection } from 'typeorm'
-import { setConnection, runSeeder, getConnectionOption, getConnection } from '../typeorm-seeding'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
-import { ConnectionOptions } from '../connection'
+import { runSeeder } from '../typeorm-seeding'
+import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -35,23 +34,21 @@ export class SeedCommand implements yargs.CommandModule {
   }
 
   async handler(args: yargs.Arguments) {
-    // Disable logging for the seeders, but keep it alive for our cli
     const log = console.log
-
     const pkg = require('../../package.json')
-    log('🌱 ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
+    log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
     const spinner = ora('Loading ormconfig').start()
+    const configureOption = {
+      root: args.root as string,
+      configName: args.configName as string,
+      connection: args.connection as string,
+    }
 
     // Get TypeORM config file
     let option: ConnectionOptions
     try {
-      option = await getConnectionOption(
-        {
-          root: args.root as string,
-          configName: args.configName as string,
-        },
-        args.connection as string,
-      )
+      configureConnection(configureOption)
+      option = await getConnectionOptions()
       spinner.succeed('ORM Config loaded')
     } catch (error) {
       panic(spinner, error, 'Could not load the config file!')
@@ -59,9 +56,9 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Find all factories and seed with help of the config
     spinner.start('Import Factories')
-    const factoryFiles = loadFiles(option.factories || ['src/database/factories/**/*{.js,.ts}'])
+    const factoryFiles = loadFiles(option.factories)
     try {
-      importFiles(factoryFiles)
+      await importFiles(factoryFiles)
       spinner.succeed('Factories are imported')
     } catch (error) {
       panic(spinner, error, 'Could not import factories!')
@@ -69,12 +66,13 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Show seeds in the console
     spinner.start('Importing Seeders')
-    const seedFiles = loadFiles(option.seeds || ['src/database/seeds/**/*{.js,.ts}'])
+    const seedFiles = loadFiles(option.seeds)
     let seedFileObjects: any[] = []
     try {
-      seedFileObjects = seedFiles
-        .map((seedFile) => importSeed(seedFile))
-        .filter((seedFileObject) => args.seed === undefined || args.seed === seedFileObject.name)
+      seedFileObjects = await Promise.all(seedFiles.map((seedFile) => importSeed(seedFile)))
+      seedFileObjects = seedFileObjects.filter(
+        (seedFileObject) => args.seed === undefined || args.seed === seedFileObject.name,
+      )
       spinner.succeed('Seeders are imported')
     } catch (error) {
       panic(spinner, error, 'Could not import seeders!')
@@ -83,8 +81,7 @@ export class SeedCommand implements yargs.CommandModule {
     // Get database connection and pass it to the seeder
     spinner.start('Connecting to the database')
     try {
-      const connection = await createConnection(option)
-      setConnection(connection)
+      await createConnection()
       spinner.succeed('Database connected')
     } catch (error) {
       panic(spinner, error, 'Database connection failed! Check your typeORM config file.')
