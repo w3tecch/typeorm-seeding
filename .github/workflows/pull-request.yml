@@ -21,6 +21,6 @@ jobs:
       - name: Format check
         run: yarn format:ci
       - name: Linter
-        run: yarn lint
+        run: yarn lint:ci
       - name: Typecheck
         run: yarn typecheck
