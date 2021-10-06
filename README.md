@@ -41,12 +41,12 @@ Isn't it exhausting to create some sample data for your database, well this time
 
 How does it work? Just create a entity factory for your entities (models) and a seed script.
 
-### Enity
+### Entity
 
-First create your TypeORM entites.
+First create your TypeORM entities.
 
 ```typescript
-// user.enity.ts
+// user.entity.ts
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid') id: string
@@ -61,7 +61,7 @@ export class User {
   }
 }
 
-// pet.enity.ts
+// pet.entity.ts
 @Entity()
 export class Pet {
   @PrimaryGeneratedColumn('uuid') id: string
@@ -82,7 +82,7 @@ Then for each entity define a factory. The purpose of a factory is to create new
 ```typescript
 // user.factory.ts
 define(User, (faker: typeof Faker) => {
-  const gender = faker.random.number(1)
+  const gender = faker.datatype.number(1)
   const firstName = faker.name.firstName(gender)
   const lastName = faker.name.lastName(gender)
 
@@ -94,12 +94,12 @@ define(User, (faker: typeof Faker) => {
 
 // pet.factory.ts
 define(Pet, (faker: typeof Faker) => {
-  const gender = faker.random.number(1)
+  const gender = faker.datatype.number(1)
   const name = faker.name.firstName(gender)
 
   const pet = new Pet()
   pet.name = name
-  pet.age = faker.random.number()
+  pet.age = faker.datatype.number()
   pet.user = factory(User)() as any
   return pet
 })
@@ -140,7 +140,7 @@ npm install -D @types/faker
 
 ### Configuration
 
-To configure the path to your seeds and factories change the TypeORM config file(ormconfig.js or ormconfig.json).
+To configure the path to your seeds and factories change the TypeORM config file (ormconfig.js or ormconfig.json).
 
 > The default paths are `src/database/{seeds,factories}/**/*{.ts,.js}`
 
@@ -167,15 +167,15 @@ Add the following scripts to your `package.json` file to configure the seed cli 
 
 ```
 "scripts": {
-  "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config"
-  "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed"
+  "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
+  "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
   ...
 }
 ```
 
 To execute the seed run `npm run seed:run` in the terminal.
 
-> Note: More CLI optios are [here](#cli-options)
+> Note: More CLI options are [here](#cli-options)
 
 Add the following TypeORM cli commands to the package.json to drop and sync the database.
 
@@ -231,13 +231,13 @@ For all entities we want to create, we need to define a factory. To do so we giv
 
 | Types           | Description                                                                     |
 | --------------- | ------------------------------------------------------------------------------- |
-| `Enity`         | TypeORM Enity like the user or the pet in the samples.                          |
+| `Entity`         | TypeORM Entity like the user or the pet in the samples.                          |
 | `Context`       | Argument to pass some static data into the factory function.                    |
 | `EntityFactory` | This object is used to make new filled entities or create it into the database. |
 
 ### `define`
 
-The define function creates a new enity factory.
+The define function creates a new entity factory.
 
 ```typescript
 define: <Entity, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Context>) => void;
@@ -286,9 +286,9 @@ await factory(User)()
 
 #### `make` & `makeMany`
 
-Make and makeMany executes the factory functions and return a new instance of the given enity. The instance is filled with the generated values from the factory function, but not saved in the database.
+Make and makeMany executes the factory functions and return a new instance of the given entity. The instance is filled with the generated values from the factory function, but not saved in the database.
 
-**overrideParams** - Override some of the attributes of the enity.
+**overrideParams** - Override some of the attributes of the entity.
 
 ```typescript
 make(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
@@ -307,7 +307,7 @@ await factory(User)().makeMany(10, { email: 'other@mail.com' })
 
 the create and createMany method is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
 
-**overrideParams** - Override some of the attributes of the enity.
+**overrideParams** - Override some of the attributes of the entity.
 
 ```typescript
 create(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
