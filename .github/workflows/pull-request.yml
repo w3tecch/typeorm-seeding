@@ -29,3 +29,5 @@ jobs:
         run: yarn lint:ci
       - name: Typecheck
         run: yarn typecheck
+      - name: Jest
+        run: yarn test
