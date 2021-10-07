@@ -14,20 +14,22 @@
     "url": "https://github.com/w3tecch/typeorm-seeding.git"
   },
   "scripts": {
-    "prebuild": "rimraf dist",
+    "build": "tsc --project ./tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\" --fix",
-    "build": "npm run prebuild && tsc --project ./tsconfig.build.json",
-    "watch": "rollup -cw",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
+    "format:ci": "prettier --check \"src/**/*.ts\" \"sample/**/*.ts\"",
+    "lint": "eslint \"src/**/*.ts\" \"sample/**/*.ts\" --fix",
+    "lint:ci": "eslint \"src/**/*.ts\" \"sample/**/*.ts\"",
+    "prebuild": "rimraf dist",
     "semantic-release": "semantic-release",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop -c sample",
-    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync -c sample",
     "schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log -c sample",
+    "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync -c sample",
     "seed:run": "ts-node ./dist/cli.js seed -c sample",
-    "seed:config": "ts-node ./dist/cli.js config -c sample"
+    "seed:config": "ts-node ./dist/cli.js config -c sample",
+    "test": "jest",
+    "test:cov": "jest --coverage",
+    "test:watch": "jest --watch",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@semantic-release/git": "^9.0.0",
