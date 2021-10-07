@@ -22,7 +22,6 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "semantic-release": "semantic-release",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop -c sample",
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync -c sample",
     "schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log -c sample",
@@ -30,7 +29,7 @@
     "seed:config": "ts-node ./dist/cli.js config -c sample"
   },
   "devDependencies": {
-    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/git": "^10.0.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/chalk": "^2.2.0",
     "@types/faker": "^5.5.8",
@@ -47,7 +46,7 @@
     "jest": "^25.3.0",
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2",
-    "semantic-release": "^17.0.4",
+    "semantic-release": "^18.0.0",
     "sqlite": "^4.0.6",
     "sqlite3": "^4.1.1",
     "ts-jest": "^25.3.1",
