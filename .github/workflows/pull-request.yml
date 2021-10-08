@@ -1,0 +1,33 @@
+name: Pull request checks
+
+on:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version:
+          - lts/erbium
+          - lts/fermium
+    name: Node ${{ matrix.node_version }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: yarn
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+      - name: Format check
+        run: yarn format:ci
+      - name: Linter
+        run: yarn lint:ci
+      - name: Typecheck
+        run: yarn typecheck
+      - name: Jest
+        run: yarn test
