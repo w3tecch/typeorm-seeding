@@ -120,6 +120,8 @@ export default class CreatePets implements Seeder {
 }
 ```
 
+Until [this issue](https://github.com/w3tecch/typeorm-seeding/issues/119) is closed, seeder files must not contain any other export statement besides the one that exports the seeder class.
+
 ## ❯ Installation
 
 Before using this TypeORM extension please read the [TypeORM Getting Started](https://typeorm.io/#/) documentation. This explains how to setup a TypeORM project.
