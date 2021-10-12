@@ -2,7 +2,7 @@ name: Pull request checks
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ master, next ]
 
 jobs:
   build:
