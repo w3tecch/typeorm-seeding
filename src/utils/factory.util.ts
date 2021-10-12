@@ -9,5 +9,5 @@ export const getNameOfEntity = <T>(entity: ObjectType<T>): string => {
   throw new Error('Enity is not defined')
 }
 
-export const isPromiseLike = (o: any): boolean =>
-  !!o && (typeof o === 'object' || typeof o === 'function') && typeof o.then === 'function' && !(o instanceof Date)
+export const isPromiseLike = (o: any): o is Promise<any> =>
+  o && Object.prototype.toString.call(o) === '[object Promise]'
