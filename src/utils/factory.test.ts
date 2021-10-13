@@ -17,23 +17,30 @@ describe('getNameOfClass', () => {
     }
   })
 })
+
 describe('isPromiseLike', () => {
-  test('Passing a promise should return true', () => {
+  test('Passing promise should return true', () => {
     const promise = new Promise(() => void 0)
     expect(isPromiseLike(promise)).toBeTruthy()
   })
-  test('Passing no promise should return false', () => {
-    expect(isPromiseLike(undefined)).toBeFalsy()
-    expect(isPromiseLike(null)).toBeFalsy()
-    expect(isPromiseLike('')).toBeFalsy()
-    expect(isPromiseLike(42)).toBeFalsy()
-    expect(isPromiseLike(true)).toBeFalsy()
-    expect(isPromiseLike(false)).toBeFalsy()
-    expect(isPromiseLike([])).toBeFalsy()
-    expect(isPromiseLike({})).toBeFalsy()
-    expect(isPromiseLike((): any => void 0)).toBeFalsy()
-    class UserEntity {}
-    expect(isPromiseLike(new UserEntity())).toBeFalsy()
-    expect(isPromiseLike(new Date())).toBeFalsy()
+
+  test.each([
+    ['undefined', undefined],
+    ['null', null],
+    ['string', ''],
+    ['number', 1],
+    ['boolean', true],
+    ['boolean', false],
+    ['array', []],
+    ['object', {}],
+    ['function', () => true],
+    ['date', new Date()],
+  ])('Passing %s should return false', (_, value) => {
+    expect(isPromiseLike(value)).toBeFalsy()
+  })
+
+  test('Passing class instace should return false', () => {
+    class Test {}
+    expect(isPromiseLike(new Test())).toBeFalsy()
   })
 })
