@@ -34,11 +34,13 @@ export const define = <Entity, Context>(entity: ObjectType<Entity>, factoryFn: F
   })
 }
 
-export const factory: Factory = <Entity, Context>(entity: ObjectType<Entity>) => (context?: Context) => {
-  const name = getNameOfEntity(entity)
-  const entityFactoryObject = (global as any).seeder.entityFactories.get(name)
-  return new EntityFactory<Entity, Context>(name, entity, entityFactoryObject.factory, context)
-}
+export const factory: Factory =
+  <Entity, Context>(entity: ObjectType<Entity>) =>
+  (context?: Context) => {
+    const name = getNameOfEntity(entity)
+    const entityFactoryObject = (global as any).seeder.entityFactories.get(name)
+    return new EntityFactory<Entity, Context>(name, entity, entityFactoryObject.factory, context)
+  }
 
 export const runSeeder = async (clazz: SeederConstructor): Promise<any> => {
   const seeder: Seeder = new clazz()
