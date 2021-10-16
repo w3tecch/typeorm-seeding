@@ -10,7 +10,7 @@ import { Connection } from 'typeorm'
 
 describe('Sample Integration Test', () => {
   let connection: Connection
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     setConnectionOptions({
       type: 'sqlite',
       database: ':memory:',
@@ -18,17 +18,15 @@ describe('Sample Integration Test', () => {
     })
     connection = await useRefreshDatabase()
     await useSeeding()
-    done()
   })
 
-  afterAll(async (done) => {
+  afterAll(async () => {
     await tearDownDatabase()
   })
 
-  test('Should create a user with the entity factory', async (done) => {
+  test('Should create a user with the entity factory', async () => {
     const createdUser = await factory(User)().create()
     const user = await connection.getRepository(User).findOne(createdUser.id)
     expect(createdUser.firstName).toBe(user.firstName)
-    done()
   })
 })
