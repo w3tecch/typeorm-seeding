@@ -33,6 +33,7 @@
   },
   "devDependencies": {
     "@semantic-release/git": "^9.0.0",
+    "@tsconfig/node14": "^1.0.1",
     "@types/bcryptjs": "^2.4.2",
     "@types/chalk": "^2.2.0",
     "@types/faker": "^5.5.8",
