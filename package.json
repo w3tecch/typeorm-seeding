@@ -38,7 +38,7 @@
     "@types/faker": "^5.5.8",
     "@types/glob": "^7.1.4",
     "@types/jest": "^27.0.2",
-    "@types/node": "13.11.1",
+    "@types/node": "^16.11.0",
     "@types/yargs": "^15.0.4",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
@@ -59,7 +59,7 @@
     "chalk": "^4.1.2",
     "faker": "5.5.3",
     "glob": "^7.2.0",
-    "ora": "4.0.3",
+    "ora": "^6.0.1",
     "reflect-metadata": "0.1.13",
     "yargs": "15.3.1"
   },
