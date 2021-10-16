@@ -1577,19 +1577,6 @@ base64-js@^1.3.1:
   resolved "https://registry.yarnpkg.com/base64-js/-/base64-js-1.5.1.tgz#1b1b440160a5bf7ad40b650f095963481903930a"
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
-base@^0.11.1:
-  version "0.11.2"
-  resolved "https://registry.yarnpkg.com/base/-/base-0.11.2.tgz#7bde5ced145b6d551a90db87f83c558b4eb48a8f"
-  integrity sha512-5T6P4xPgpp0YDFvSWwEZ4NoE3aM4QBQXDzmVbraCkFj8zHM+mba8SyqB5DbZWyR7mYHo6Y7BdQo3MoA4m0TeQg==
-  dependencies:
-    cache-base "^1.0.1"
-    class-utils "^0.3.5"
-    component-emitter "^1.2.1"
-    define-property "^1.0.0"
-    isobject "^3.0.1"
-    mixin-deep "^1.2.0"
-    pascalcase "^0.1.1"
-
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/bcrypt-pbkdf/-/bcrypt-pbkdf-1.0.2.tgz#a4301d389b6a43f9b67ff3ca11a3f6637e360e9e"
