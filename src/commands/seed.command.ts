@@ -1,5 +1,5 @@
 import * as yargs from 'yargs'
-import * as ora from 'ora'
+import ora, { Ora } from 'ora'
 import * as chalk from 'chalk'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
@@ -103,7 +103,7 @@ export class SeedCommand implements yargs.CommandModule {
   }
 }
 
-function panic(spinner: ora.Ora, error: Error, message: string) {
+function panic(spinner: Ora, error: Error, message: string) {
   spinner.fail(message)
   console.error(error)
   process.exit(1)
