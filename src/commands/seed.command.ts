@@ -1,6 +1,6 @@
 import * as yargs from 'yargs'
 import ora from 'ora'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
 import { runSeeder } from '../typeorm-seeding'
@@ -36,8 +36,7 @@ export class SeedCommand implements yargs.CommandModule {
   async handler(args: yargs.Arguments) {
     const log = console.log
     const { default: pkg } = await import('../../package.json')
-    console.error(pkg)
-    log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
+    log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`))
     const spinner = ora('Loading ormconfig').start()
     const configureOption = {
       root: args.root as string,

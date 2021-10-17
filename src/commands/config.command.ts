@@ -1,5 +1,5 @@
 import * as yargs from 'yargs'
-import * as chalk from 'chalk'
+import chalk from 'chalk'
 import { printError } from '../utils/log.util'
 import { configureConnection, getConnectionOptions } from '../connection'
 
@@ -29,8 +29,7 @@ export class ConfigCommand implements yargs.CommandModule {
   async handler(args: yargs.Arguments) {
     const log = console.log
     const { default: pkg } = await import('../../package.json')
-    console.error(pkg)
-    log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
+    log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`))
     try {
       configureConnection({
         root: args.root as string,

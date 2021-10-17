@@ -93,7 +93,10 @@ export class EntityFactory<Entity, Context> {
       entity = await this.mapFunction(entity)
     }
 
-    entity = { ...entity, ...overrideParams }
+    for (const key in overrideParams) {
+      const actualValue = entity[key]
+      entity[key] = overrideParams[key] as typeof actualValue
+    }
     return await this.resolveEntity(entity, isSeeding)
   }
 
