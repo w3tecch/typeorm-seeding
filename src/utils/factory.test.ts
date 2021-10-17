@@ -5,16 +5,14 @@ describe('getNameOfClass', () => {
     class UserEntity {}
     expect(getNameOfEntity(UserEntity)).toBe('UserEntity')
   })
+
   test('Passing UserEnity function should return the name of the function', () => {
     const UserEntity = (): any => void 0
     expect(getNameOfEntity(UserEntity)).toBe('UserEntity')
   })
-  test('Passing undefinde as a enity-class should throw an error', () => {
-    try {
-      getNameOfEntity(undefined)
-    } catch (error) {
-      expect(error.message).toBe('Enity is not defined')
-    }
+
+  test('Passing undefined as a entity-class should throw an error', () => {
+    expect(() => getNameOfEntity(undefined as any)).toThrow('Entity is not defined')
   })
 })
 

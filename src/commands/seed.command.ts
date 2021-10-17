@@ -1,5 +1,5 @@
 import * as yargs from 'yargs'
-import ora, { Ora } from 'ora'
+import ora from 'ora'
 import * as chalk from 'chalk'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
@@ -35,7 +35,8 @@ export class SeedCommand implements yargs.CommandModule {
 
   async handler(args: yargs.Arguments) {
     const log = console.log
-    const pkg = require('../../package.json')
+    const {default: pkg} = await import('../../package.json')
+    console.error(pkg)
     log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
     const spinner = ora('Loading ormconfig').start()
     const configureOption = {
@@ -51,7 +52,8 @@ export class SeedCommand implements yargs.CommandModule {
       option = await getConnectionOptions()
       spinner.succeed('ORM Config loaded')
     } catch (error) {
-      panic(spinner, error, 'Could not load the config file!')
+      panic(spinner, error as Error, 'Could not load the config file!')
+      throw error
     }
 
     // Find all factories and seed with help of the config
@@ -61,7 +63,7 @@ export class SeedCommand implements yargs.CommandModule {
       await importFiles(factoryFiles)
       spinner.succeed('Factories are imported')
     } catch (error) {
-      panic(spinner, error, 'Could not import factories!')
+      panic(spinner, error as Error, 'Could not import factories!')
     }
 
     // Show seeds in the console
@@ -75,7 +77,7 @@ export class SeedCommand implements yargs.CommandModule {
       )
       spinner.succeed('Seeders are imported')
     } catch (error) {
-      panic(spinner, error, 'Could not import seeders!')
+      panic(spinner, error as Error, 'Could not import seeders!')
     }
 
     // Get database connection and pass it to the seeder
@@ -84,7 +86,7 @@ export class SeedCommand implements yargs.CommandModule {
       await createConnection()
       spinner.succeed('Database connected')
     } catch (error) {
-      panic(spinner, error, 'Database connection failed! Check your typeORM config file.')
+      panic(spinner, error as Error, 'Database connection failed! Check your typeORM config file.')
     }
 
     // Run seeds
@@ -94,7 +96,7 @@ export class SeedCommand implements yargs.CommandModule {
         await runSeeder(seedFileObject)
         spinner.succeed(`Seeder ${seedFileObject.name} executed`)
       } catch (error) {
-        panic(spinner, error, `Could not run the seed ${seedFileObject.name}!`)
+        panic(spinner, error as Error, `Could not run the seed ${seedFileObject.name}!`)
       }
     }
 
@@ -103,7 +105,7 @@ export class SeedCommand implements yargs.CommandModule {
   }
 }
 
-function panic(spinner: Ora, error: Error, message: string) {
+function panic(spinner: any, error: Error, message: string) {
   spinner.fail(message)
   console.error(error)
   process.exit(1)

@@ -8,5 +8,6 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
+    "resolveJsonModule": true
   },
 }

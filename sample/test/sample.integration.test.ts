@@ -27,6 +27,6 @@ describe('Sample Integration Test', () => {
   test('Should create a user with the entity factory', async () => {
     const createdUser = await factory(User)().create()
     const user = await connection.getRepository(User).findOne(createdUser.id)
-    expect(createdUser.firstName).toBe(user.firstName)
+    expect(createdUser.firstName).toBe(user?.firstName)
   })
 })
