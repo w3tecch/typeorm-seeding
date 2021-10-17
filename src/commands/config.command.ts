@@ -28,7 +28,7 @@ export class ConfigCommand implements yargs.CommandModule {
 
   async handler(args: yargs.Arguments) {
     const log = console.log
-    const {default: pkg} = await import('../../package.json')
+    const { default: pkg } = await import('../../package.json')
     console.error(pkg)
     log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
     try {
