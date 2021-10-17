@@ -51,6 +51,7 @@ export const runSeeder = async (clazz: SeederConstructor): Promise<any> => {
 // -------------------------------------------------------------------------
 // Facade functions for testing
 // -------------------------------------------------------------------------
+
 export const useRefreshDatabase = async (options: ConfigureOption = {}): Promise<Connection> => {
   configureConnection(options)
   const option = await getConnectionOptions()
