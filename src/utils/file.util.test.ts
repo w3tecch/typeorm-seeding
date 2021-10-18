@@ -1,26 +1,20 @@
-import { loadFiles } from './file.util'
-import * as path from 'path'
-import * as glob from 'glob'
+import { importFiles, loadFiles } from './file.util'
+
+describe('importFiles', () => {
+  test('Should successfully import files', () => {
+    return expect(importFiles(['../../ormconfig.js'])).resolves.toBeUndefined()
+  })
+
+  test('Should raise an error if an import could not be done', () => {
+    return expect(importFiles(['../ormconfig.js'])).rejects.toThrowError()
+  })
+})
 
 describe('loadFiles', () => {
-  let syncMock: jest.Mock
-  beforeEach(() => {
-    syncMock = jest.fn()
-    ;(glob as any).sync = syncMock
-    syncMock.mockReturnValue(['fileA', 'fileB'])
-  })
-
   test('Should return a flat array', () => {
-    const results = loadFiles(['path/to/files', 'other/path/to/files'])
+    const results = loadFiles(['*.json'])
 
-    expect(results.length).toBe(4)
-    expect(results[0]).toBe('fileA')
-    expect(results[1]).toBe('fileB')
-  })
-
-  test('Should call the sync method with the cwd path', () => {
-    const results = loadFiles(['path/to/files'])
-
-    expect(syncMock).toBeCalledWith(path.join(process.cwd(), 'path/to/files'))
+    expect(results.length).toBeGreaterThan(0)
+    expect(results.some((result) => result.includes('package.json'))).toBeTruthy()
   })
 })

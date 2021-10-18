@@ -4,15 +4,15 @@ import { User } from './User.entity'
 @Entity()
 export class Pet {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id!: string
 
   @Column()
-  name: string
+  name!: string
 
   @Column()
-  age: number
+  age!: number
 
   @ManyToOne((type) => User, (user) => user.pets)
   @JoinColumn({ name: 'user_id' })
-  user: User
+  user!: User
 }

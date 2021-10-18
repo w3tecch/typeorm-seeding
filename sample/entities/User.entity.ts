@@ -5,25 +5,25 @@ import { Pet } from './Pet.entity'
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  id: string
+  id!: string
 
   @Column()
-  firstName: string
+  firstName!: string
 
   @Column()
-  lastName: string
+  lastName!: string
 
-  @Column({ nullable: true })
-  middleName: string
+  @Column({ type: 'varchar', nullable: true })
+  middleName!: string | null
 
   @Column()
-  email: string
+  email!: string
 
   @OneToMany((type) => Pet, (pet) => pet.user)
-  pets: Pet[]
+  pets!: Pet[]
 
   @Column({ type: 'varchar', length: 100, nullable: false })
-  password: string
+  password!: string
 
   @BeforeInsert()
   async setPassword(password: string) {
