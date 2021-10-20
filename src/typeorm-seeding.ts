@@ -14,7 +14,6 @@ import { ConfigureOption, configureConnection, getConnectionOptions, createConne
 export * from './importer'
 export * from './connection'
 export { Factory, Seeder } from './types'
-export { times } from './helpers'
 
 // -------------------------------------------------------------------------
 // Types & Variables
