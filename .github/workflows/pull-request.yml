@@ -11,7 +11,7 @@ jobs:
       matrix:
         node_version:
           - lts/fermium
-          - 16
+          - lts/gallium
     name: Node ${{ matrix.node_version }}
     steps:
       - name: Check out repository code
