@@ -1,5 +1,5 @@
 import * as Faker from 'faker'
-import { Connection, ObjectType } from 'typeorm'
+import { ObjectType } from 'typeorm'
 
 import { EntityFactory } from './entity-factory'
 
@@ -16,16 +16,9 @@ export type Factory = <Entity, Context>(
 ) => (context?: Context) => EntityFactory<Entity, Context>
 
 /**
- * Seed are the class to create some data. Those seed are run by the cli.
- */
-export interface Seeder {
-  run(factory: Factory, connection: Connection): Promise<void>
-}
-
-/**
  * Constructor of the seed class
  */
-export type SeederConstructor = new () => Seeder
+export type ClassConstructor<T> = new () => T
 
 /**
  * Value of our EntityFactory state

@@ -2,10 +2,11 @@ import 'reflect-metadata'
 import { ObjectType, getConnection, Connection } from 'typeorm'
 
 import { EntityFactory } from './entity-factory'
-import { EntityFactoryDefinition, Factory, FactoryFunction, SeederConstructor, Seeder } from './types'
+import { ClassConstructor, EntityFactoryDefinition, Factory, FactoryFunction } from './types'
 import { getNameOfEntity } from './utils/factory.util'
-import { loadFiles, importFiles } from './utils/file.util'
+import { loadFilePaths, importFiles } from './utils/file.util'
 import { ConfigureOption, configureConnection, getConnectionOptions, createConnection } from './connection'
+import { Seeder } from './seeder'
 
 // -------------------------------------------------------------------------
 // Handy Exports
@@ -13,7 +14,8 @@ import { ConfigureOption, configureConnection, getConnectionOptions, createConne
 
 export * from './importer'
 export * from './connection'
-export { Factory, Seeder } from './types'
+export { Seeder } from './seeder'
+export { Factory } from './types'
 
 // -------------------------------------------------------------------------
 // Types & Variables
@@ -41,10 +43,12 @@ export const factory: Factory =
     return new EntityFactory<Entity, Context>(name, entity, entityFactoryObject.factory, context)
   }
 
-export const runSeeder = async (clazz: SeederConstructor): Promise<any> => {
-  const seeder: Seeder = new clazz()
-  const connection = await createConnection()
-  return seeder.run(factory, connection)
+export const runSeeder = async (clazz: ClassConstructor<any>): Promise<void> => {
+  const seeder = new clazz()
+  if (seeder instanceof Seeder) {
+    const connection = await createConnection()
+    seeder.run(factory, connection)
+  }
 }
 
 // -------------------------------------------------------------------------
@@ -70,6 +74,6 @@ export const tearDownDatabase = async (): Promise<void> => {
 export const useSeeding = async (options: ConfigureOption = {}): Promise<void> => {
   configureConnection(options)
   const option = await getConnectionOptions()
-  const factoryFiles = loadFiles(option.factories)
+  const factoryFiles = loadFilePaths(option.factories)
   await importFiles(factoryFiles)
 }

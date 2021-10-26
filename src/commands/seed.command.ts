@@ -2,9 +2,10 @@ import * as yargs from 'yargs'
 import ora from 'ora'
 import chalk from 'chalk'
 import { importSeed } from '../importer'
-import { loadFiles, importFiles } from '../utils/file.util'
+import { loadFilePaths, importFiles } from '../utils/file.util'
 import { runSeeder } from '../typeorm-seeding'
 import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
+import { ClassConstructor } from '../types'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -57,7 +58,7 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Find all factories and seed with help of the config
     spinner.start('Import Factories')
-    const factoryFiles = loadFiles(option.factories)
+    const factoryFiles = loadFilePaths(option.factories)
     try {
       await importFiles(factoryFiles)
       spinner.succeed('Factories are imported')
@@ -67,13 +68,16 @@ export class SeedCommand implements yargs.CommandModule {
 
     // Show seeds in the console
     spinner.start('Importing Seeders')
-    const seedFiles = loadFiles(option.seeds)
-    let seedFileObjects: any[] = []
+    const seederFiles = loadFilePaths(option.seeds)
+    let classConstructors: ClassConstructor<any>[] = []
     try {
-      seedFileObjects = await Promise.all(seedFiles.map((seedFile) => importSeed(seedFile)))
-      seedFileObjects = seedFileObjects.filter(
-        (seedFileObject) => args.seed === undefined || args.seed === seedFileObject.name,
-      )
+      classConstructors = await Promise.all(seederFiles.map(importSeed))
+        .then((classConstructors) => classConstructors.flat())
+        .then((classConstructors) =>
+          classConstructors.filter(
+            (classConstructor) => args.seed === undefined || args.seed === classConstructor.name,
+          ),
+        )
       spinner.succeed('Seeders are imported')
     } catch (error) {
       panic(spinner, error as Error, 'Could not import seeders!')
@@ -85,7 +89,7 @@ export class SeedCommand implements yargs.CommandModule {
       await createConnection()
       spinner.succeed('Database connected')
     } catch (error) {
-      panic(spinner, error as Error, 'Database connection failed! Check your typeORM config file.')
+      panic(spinner, error as Error, 'Database connection failed! Check your TypeORM config.')
     }
 
     // Run seeds
