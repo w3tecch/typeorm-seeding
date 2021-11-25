@@ -11,6 +11,7 @@ export declare type ConnectionOptions = TypeORMConnectionOptions & {
   seeds: string[]
 }
 let connectionOptions: ConnectionOptions
+let partialConnectionOptions: Partial<ConnectionOptions> = {}
 
 export type ConnectionConfiguration = {
   root?: string
@@ -57,8 +58,24 @@ export const getConnectionOptions = async (): Promise<ConnectionOptions> => {
 }
 
 export const setConnectionOptions = (options: Partial<ConnectionOptions>): void => {
-  connectionOptions = {
-    ...connectionOptions,
-    ...options,
-  } as ConnectionOptions
+  partialConnectionOptions = options
+}
+
+export const fetchConnection = async (): Promise<Connection> => {
+  const { connection: connectionName } = connectionConfiguration
+  if (connectionOptions === undefined) {
+    await readConnectionOptions()
+  }
+
+  let connection: Connection
+  try {
+    connection = getConnection(connectionName)
+  } catch {
+    connection = await TypeORMCreateConnection({
+      ...connectionOptions,
+      ...partialConnectionOptions,
+    } as TypeORMConnectionOptions)
+  }
+
+  return connection
 }
