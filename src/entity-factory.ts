@@ -1,9 +1,9 @@
 import * as Faker from 'faker'
-import { ObjectType, SaveOptions, Entity } from 'typeorm'
+import { ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction } from './types'
 import { isPromiseLike } from './utils/factory.util'
 import { printError, printWarning } from './utils/log.util'
-import { getConnectionOptions, createConnection } from './connection'
+import { fetchConnection, getConnectionOptions } from './connection'
 
 export class EntityFactory<Entity, Context> {
   private mapFunction?: (entity: Entity) => Promise<Entity>
@@ -39,8 +39,7 @@ export class EntityFactory<Entity, Context> {
    * Create makes a new entity and does persist it
    */
   public async create(overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity> {
-    const option = await getConnectionOptions()
-    const connection = await createConnection(option)
+    const connection = await fetchConnection()
     if (connection && connection.isConnected) {
       const em = connection.createEntityManager()
       try {

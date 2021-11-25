@@ -1,7 +1,8 @@
 import * as yargs from 'yargs'
 import chalk from 'chalk'
 import { printError } from '../utils/log.util'
-import { configureConnection, getConnectionOptions } from '../connection'
+import { configureConnection, getConnectionOptions, setConnectionOptions } from '../connection'
+import { getConnectionOptions as TypeORMgetConnectionOptions } from 'typeorm'
 
 export class ConfigCommand implements yargs.CommandModule {
   command = 'config'
@@ -36,8 +37,8 @@ export class ConfigCommand implements yargs.CommandModule {
         configName: args.configName as string,
         connection: args.connection as string,
       })
-      const option = await getConnectionOptions()
-      log(option)
+      const options = await getConnectionOptions()
+      log(options)
     } catch (error) {
       printError('Could not find the orm config file', error)
       process.exit(1)

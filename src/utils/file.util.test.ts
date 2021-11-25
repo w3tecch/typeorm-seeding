@@ -1,4 +1,4 @@
-import { importFiles, loadFiles } from './file.util'
+import { importFiles, loadFilePaths } from './file.util'
 
 describe('importFiles', () => {
   test('Should successfully import files', () => {
@@ -12,7 +12,7 @@ describe('importFiles', () => {
 
 describe('loadFiles', () => {
   test('Should return a flat array', () => {
-    const results = loadFiles(['*.json'])
+    const results = loadFilePaths(['*.json'])
 
     expect(results.length).toBeGreaterThan(0)
     expect(results.some((result) => result.includes('package.json'))).toBeTruthy()
