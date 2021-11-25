@@ -1,7 +1,7 @@
 import * as yargs from 'yargs'
 import chalk from 'chalk'
 import { printError } from '../utils/log.util'
-import { configureConnection, createConnection, getConnectionOptions, setConnectionOptions } from '../connection'
+import { configureConnection, getConnectionOptions, setConnectionOptions } from '../connection'
 import { getConnectionOptions as TypeORMgetConnectionOptions } from 'typeorm'
 
 export class ConfigCommand implements yargs.CommandModule {
