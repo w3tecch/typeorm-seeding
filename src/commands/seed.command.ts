@@ -4,7 +4,7 @@ import chalk from 'chalk'
 import { importSeed } from '../importer'
 import { loadFilePaths, importFiles } from '../utils/file.util'
 import { runSeeder } from '../typeorm-seeding'
-import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
+import { configureConnection, getConnectionOptions, ConnectionOptions, fetchConnection } from '../connection'
 import { ClassConstructor } from '../types'
 
 export class SeedCommand implements yargs.CommandModule {
@@ -86,7 +86,7 @@ export class SeedCommand implements yargs.CommandModule {
     // Get database connection and pass it to the seeder
     spinner.start('Connecting to the database')
     try {
-      await createConnection()
+      await fetchConnection()
       spinner.succeed('Database connected')
     } catch (error) {
       panic(spinner, error as Error, 'Database connection failed! Check your TypeORM config.')
