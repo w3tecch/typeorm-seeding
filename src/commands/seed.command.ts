@@ -1,4 +1,4 @@
-import * as yargs from 'yargs'
+import { Arguments, Argv, CommandModule } from 'yargs'
 import ora from 'ora'
 import chalk from 'chalk'
 import { importSeed } from '../importer'
@@ -7,48 +7,55 @@ import { runSeeder } from '../typeorm-seeding'
 import { configureConnection, getConnectionOptions, ConnectionOptions, fetchConnection } from '../connection'
 import { ClassConstructor } from '../types'
 
-export class SeedCommand implements yargs.CommandModule {
+interface SeedCommandArguments extends Arguments {
+  root?: string
+  configName?: string
+  connection?: string
+  seed?: string
+}
+
+export class SeedCommand implements CommandModule {
   command = 'seed'
   describe = 'Runs the seeds'
 
-  builder(args: yargs.Argv) {
+  builder(args: Argv) {
     return args
       .option('n', {
         alias: 'configName',
-        default: '',
+        type: 'string',
         describe: 'Name of the typeorm config file (json or js).',
       })
       .option('c', {
         alias: 'connection',
-        default: '',
+        type: 'string',
         describe: 'Name of the typeorm connection',
       })
       .option('r', {
         alias: 'root',
-        default: process.cwd(),
+        type: 'string',
         describe: 'Path to your typeorm config file',
       })
-      .option('seed', {
-        alias: 's',
+      .option('s', {
+        alias: 'seed',
+        type: 'string',
         describe: 'Specific seed class to run.',
       })
   }
 
-  async handler(args: yargs.Arguments) {
+  async handler(args: SeedCommandArguments) {
     const log = console.log
     const { default: pkg } = await import('../../package.json')
     log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`))
     const spinner = ora('Loading ormconfig').start()
-    const configureOption = {
-      root: args.root as string,
-      configName: args.configName as string,
-      connection: args.connection as string,
-    }
 
     // Get TypeORM config file
     let option: ConnectionOptions
     try {
-      configureConnection(configureOption)
+      configureConnection({
+        root: args.root,
+        configName: args.configName,
+        connection: args.connection,
+      })
       option = await getConnectionOptions()
       spinner.succeed('ORM Config loaded')
     } catch (error) {
