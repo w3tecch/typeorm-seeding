@@ -40,7 +40,7 @@
     "@types/glob": "^7.1.4",
     "@types/jest": "^27.0.2",
     "@types/node": "^16.11.0",
-    "@types/yargs": "^15.0.4",
+    "@types/yargs": "^17.0.7",
     "@typescript-eslint/eslint-plugin": "^5.0.0",
     "@typescript-eslint/parser": "^5.0.0",
     "bcryptjs": "^2.4.3",
@@ -59,11 +59,11 @@
   },
   "dependencies": {
     "chalk": "^4.1.2",
-    "faker": "5.5.3",
+    "faker": "^5.5.3",
     "glob": "^7.2.0",
     "ora": "^5.4.1",
-    "reflect-metadata": "0.1.13",
-    "yargs": "15.3.1"
+    "reflect-metadata": "^0.1.13",
+    "yargs": "^17.2.1"
   },
   "peerDependencies": {
     "typeorm": "^0.2.41"
