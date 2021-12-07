@@ -1,5 +1,5 @@
 import * as Faker from 'faker'
-import { ObjectType } from 'typeorm'
+import { ConnectionOptions as TypeORMConnectionOptions, ObjectType } from 'typeorm'
 import { Factory } from './factory'
 
 /**
@@ -18,3 +18,14 @@ export type ContextFactoryFunction = <Entity, Context>(
  * Constructor of the seed class
  */
 export type ClassConstructor<T> = new () => T
+
+export type ConnectionOptions = TypeORMConnectionOptions & {
+  factories: string[]
+  seeds: string[]
+}
+
+export type ConnectionConfiguration = {
+  root?: string
+  configName?: string
+  connection?: string
+}

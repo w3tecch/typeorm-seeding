@@ -1,8 +1,8 @@
 import { Connection, ObjectType } from 'typeorm'
-import { configureConnection, ConnectionConfiguration, fetchConnection, getConnectionOptions } from './connection'
+import { configureConnection, fetchConnection, getConnectionOptions } from './connection'
 import { Factory } from './factory'
 import { Seeder } from './seeder'
-import { ClassConstructor, ContextFactoryFunction, FactoryFunction } from './types'
+import { ClassConstructor, ConnectionConfiguration, ContextFactoryFunction, FactoryFunction } from './types'
 import { calculateFilePaths } from './utils/fileHandling'
 import { getNameOfEntity } from './utils/getNameOfEntity'
 

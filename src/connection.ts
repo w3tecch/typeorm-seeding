@@ -1,22 +1,7 @@
-import {
-  ConnectionOptionsReader,
-  Connection,
-  ConnectionOptions as TypeORMConnectionOptions,
-  createConnection,
-  getConnection,
-} from 'typeorm'
+import { ConnectionOptionsReader, Connection, createConnection, getConnection } from 'typeorm'
+import { ConnectionConfiguration, ConnectionOptions } from './types'
 
-export declare type ConnectionOptions = TypeORMConnectionOptions & {
-  factories: string[]
-  seeds: string[]
-}
 let connectionOptions: ConnectionOptions
-
-export type ConnectionConfiguration = {
-  root?: string
-  configName?: string
-  connection?: string
-}
 let connectionConfiguration: ConnectionConfiguration = {}
 
 const readConnectionOptions = async (): Promise<void> => {
@@ -66,7 +51,7 @@ export const fetchConnection = async (options?: Partial<ConnectionOptions>): Pro
     connection = await createConnection({
       ...getConnectionOptions(),
       ...options,
-    } as TypeORMConnectionOptions)
+    } as ConnectionOptions)
   }
 
   return connection

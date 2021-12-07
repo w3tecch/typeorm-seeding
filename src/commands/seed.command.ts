@@ -2,8 +2,8 @@ import { Arguments, Argv, CommandModule } from 'yargs'
 import ora from 'ora'
 import chalk from 'chalk'
 import { calculateFilePaths } from '../utils/fileHandling'
-import { configureConnection, getConnectionOptions, ConnectionOptions, fetchConnection } from '../connection'
-import { ClassConstructor } from '../types'
+import { configureConnection, getConnectionOptions, fetchConnection } from '../connection'
+import { ClassConstructor, ConnectionOptions } from '../types'
 import { runSeeder } from '../facade'
 
 interface SeedCommandArguments extends Arguments {
