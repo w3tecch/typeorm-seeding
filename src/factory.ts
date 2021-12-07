@@ -68,7 +68,7 @@ export class Factory<Entity, Context> {
 
   private async makeEntity(overrideParams: Partial<Entity> = {}, isSeeding = false): Promise<Entity> {
     if (!this.factory) {
-      throw new Error('Could not found entity')
+      throw new Error('Could not found entity') // TODO: Add custom error
     }
 
     let entity = this.factory(Faker, this.context)

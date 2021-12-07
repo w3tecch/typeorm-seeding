@@ -5,5 +5,5 @@ export const getNameOfEntity = <T>(entity: ObjectType<T>): string => {
     return entity.name
   }
 
-  throw new Error('Entity is not defined')
+  throw new Error('Entity is not defined') // TODO: Add custom error
 }

@@ -19,7 +19,7 @@ export const factory: ContextFactoryFunction =
 
     const factory = factoriesMap.get(name)
     if (!factory) {
-      throw new Error(`Factory for ${name} is not defined`)
+      throw new Error(`Factory for ${name} is not defined`) // TODO: Add custom error
     }
 
     return new Factory<Entity, Context>(name, entity, factory, context)
