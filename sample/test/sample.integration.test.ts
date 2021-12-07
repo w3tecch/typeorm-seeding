@@ -1,17 +1,11 @@
-import {
-  useSeeding,
-  useRefreshDatabase,
-  tearDownDatabase,
-  factory,
-  setConnectionOptions,
-} from '../../src/typeorm-seeding'
 import { User } from '../entities/User.entity'
 import { Connection } from 'typeorm'
+import { useRefreshDatabase, useSeeding, tearDownDatabase, factory, fetchConnection } from '../../src'
 
 describe('Sample Integration Test', () => {
   let connection: Connection
   beforeAll(async () => {
-    setConnectionOptions({
+    connection = await fetchConnection({
       type: 'sqlite',
       database: ':memory:',
       entities: ['sample/entities/**/*{.ts,.js}'],
@@ -21,7 +15,8 @@ describe('Sample Integration Test', () => {
   })
 
   afterAll(async () => {
-    await tearDownDatabase()
+    await connection.dropDatabase()
+    await connection.close()
   })
 
   test('Should create a user with the entity factory', async () => {
