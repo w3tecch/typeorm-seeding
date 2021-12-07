@@ -4,6 +4,9 @@
   "description": "🌱 A delightful way to seed test data into your database.",
   "license": "MIT",
   "author": "Gery Hirschfeld <gery.hirschfeld@w3tec.ch> (https://github.com/hirsch88)",
+  "contributors": [
+    "Jorge Bodega <jorge.bodega.f@gmail.com> (https://github.com/jorgebodega)"
+  ],
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "bin": {
