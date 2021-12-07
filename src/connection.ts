@@ -2,7 +2,7 @@ import {
   ConnectionOptionsReader,
   Connection,
   ConnectionOptions as TypeORMConnectionOptions,
-  createConnection as TypeORMCreateConnection,
+  createConnection,
   getConnection,
 } from 'typeorm'
 
@@ -71,7 +71,7 @@ export const fetchConnection = async (): Promise<Connection> => {
   try {
     connection = getConnection(connectionName)
   } catch {
-    connection = await TypeORMCreateConnection({
+    connection = await createConnection({
       ...connectionOptions,
       ...partialConnectionOptions,
     } as TypeORMConnectionOptions)
