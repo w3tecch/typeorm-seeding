@@ -8,7 +8,6 @@ export class Factory<Entity, Context> {
   private mapFunction?: (entity: Entity) => Promise<Entity>
 
   constructor(
-    public name: string,
     public entity: ObjectType<Entity>,
     private factory: FactoryFunction<Entity, Context>,
     private context?: Context,
@@ -66,7 +65,7 @@ export class Factory<Entity, Context> {
     return list
   }
 
-  private async makeEntity(overrideParams: Partial<Entity> = {}, isSeeding = false): Promise<Entity> {
+  private async makeEntity(overrideParams: Partial<Entity>, isSeeding = false): Promise<Entity> {
     if (!this.factory) {
       throw new Error('Could not found entity') // TODO: Add custom error
     }

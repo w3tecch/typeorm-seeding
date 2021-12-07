@@ -22,7 +22,7 @@ export const factory: ContextFactoryFunction =
       throw new Error(`Factory for ${name} is not defined`) // TODO: Add custom error
     }
 
-    return new Factory<Entity, Context>(name, entity, factory, context)
+    return new Factory<Entity, Context>(entity, factory, context)
   }
 
 export const runSeeder = async (clazz: ClassConstructor<any>): Promise<void> => {
