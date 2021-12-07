@@ -23,7 +23,7 @@ const readConnectionOptions = async (): Promise<void> => {
   }
 }
 
-export const configureConnection = async (option: Partial<ConnectionConfiguration> = {}) => {
+export const configureConnection = async (option?: Partial<ConnectionConfiguration>) => {
   connectionConfiguration = {
     ...connectionConfiguration,
     ...option,
@@ -33,9 +33,7 @@ export const configureConnection = async (option: Partial<ConnectionConfiguratio
 }
 
 export const getConnectionOptions = async (): Promise<ConnectionOptions> => {
-  if (connectionOptions === undefined) {
-    await readConnectionOptions()
-  }
+  if (connectionOptions === undefined) await readConnectionOptions()
 
   return connectionOptions
 }

@@ -37,7 +37,7 @@ export class ConfigCommand implements CommandModule {
     const { default: pkg } = await import('../../package.json')
     log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`))
     try {
-      configureConnection({
+      await configureConnection({
         root: args.root,
         configName: args.configName,
         connection: args.connection,

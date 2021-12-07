@@ -50,7 +50,7 @@ export class SeedCommand implements CommandModule {
     // Get TypeORM config file
     let option: ConnectionOptions
     try {
-      configureConnection({
+      await configureConnection({
         root: args.root,
         configName: args.configName,
         connection: args.connection,

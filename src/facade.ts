@@ -38,7 +38,7 @@ export const runSeeder = async (clazz: ClassConstructor<any>): Promise<void> => 
  * @deprecated
  */
 export const useRefreshDatabase = async (options: Partial<ConnectionConfiguration> = {}): Promise<Connection> => {
-  configureConnection(options)
+  await configureConnection(options)
   const connection = await fetchConnection()
   if (connection && connection.isConnected) {
     await connection.dropDatabase()
@@ -57,7 +57,7 @@ export const tearDownDatabase = async (): Promise<void> => {
 }
 
 export const useFactories = async (options: Partial<ConnectionConfiguration> = {}): Promise<void> => {
-  configureConnection(options)
+  await configureConnection(options)
   const option = await getConnectionOptions()
   const factoryFiles = calculateFilePaths(option.factories)
   await Promise.all(factoryFiles.map((factoryFile) => import(factoryFile)))
@@ -65,7 +65,7 @@ export const useFactories = async (options: Partial<ConnectionConfiguration> = {
 
 // TODO: Add seeder execution
 export const useSeeding = async (options: Partial<ConnectionConfiguration> = {}): Promise<void> => {
-  configureConnection(options)
+  await configureConnection(options)
   const option = await getConnectionOptions()
   const factoryFiles = calculateFilePaths(option.seeds)
   await Promise.all(factoryFiles.map((factoryFile) => import(factoryFile)))
