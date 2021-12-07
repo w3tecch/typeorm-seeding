@@ -1,6 +1,6 @@
 import { isPromiseLike } from './isPromiseLike'
 
-describe('isPromiseLike', () => {
+describe(isPromiseLike, () => {
   test('Passing promise should return true', () => {
     const promise = new Promise(() => void 0)
     expect(isPromiseLike(promise)).toBeTruthy()
