@@ -1,4 +1,4 @@
-import { getNameOfEntity } from './getNameOfEntity'
+import { getNameOfEntity } from '../../src/utils/getNameOfEntity'
 
 describe(getNameOfEntity, () => {
   test('Passing UserEntity class should return the name of the class', () => {
