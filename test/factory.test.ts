@@ -4,18 +4,12 @@ import { fetchConnection } from '../src/connection'
 import { Factory } from '../src/factory'
 import { Pet } from './entities/Pet.entity'
 import { User } from './entities/User.entity'
+import { userFactoryFn } from './factories/UserFactoryFunction'
 
 describe(Factory, () => {
   let connection: Connection
   let userFactory: Factory<User, any>
   let petFactory: Factory<Pet, any>
-  const userFn = () => {
-    const user = new User()
-
-    user.name = 'John Doe'
-
-    return user
-  }
   const petFn = () => {
     const pet = new Pet()
 
@@ -33,7 +27,7 @@ describe(Factory, () => {
   })
 
   beforeEach(() => {
-    userFactory = new Factory<User, any>(User, userFn)
+    userFactory = new Factory<User, any>(User, userFactoryFn)
     petFactory = new Factory<Pet, any>(Pet, petFn)
   })
 
