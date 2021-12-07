@@ -9,13 +9,3 @@ export const printError = (message: string, error?: any) => {
     console.error(error)
   }
 }
-
-/**
- * Prints the warning to the console
- */
-export const printWarning = (message: string, error?: any) => {
-  console.log('\n🚨 ', chalk.yellow(message))
-  if (error) {
-    console.error(error)
-  }
-}

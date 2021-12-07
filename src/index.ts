@@ -1,5 +1,5 @@
-export * from './importer'
 export * from './connection'
 export * from './facade'
+export * from './factoriesMap'
 export { Seeder } from './seeder'
 export { ContextFactoryFunction as Factory } from './types'

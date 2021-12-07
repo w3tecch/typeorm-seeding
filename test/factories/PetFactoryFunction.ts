@@ -1,4 +1,4 @@
-import { factory } from '../../src/facade'
+import { factory } from '../../src/factoriesMap'
 import { FactoryFunction } from '../../src/types'
 import { Pet } from '../entities/Pet.entity'
 import { User } from '../entities/User.entity'

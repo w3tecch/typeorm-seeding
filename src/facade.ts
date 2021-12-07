@@ -1,31 +1,11 @@
-import { Connection, ObjectType } from 'typeorm'
+import { Connection } from 'typeorm'
 import { configureConnection, fetchConnection, getConnectionOptions } from './connection'
-import { Factory } from './factory'
+import { factory } from './factoriesMap'
 import { Seeder } from './seeder'
-import { ClassConstructor, ConnectionConfiguration, ContextFactoryFunction, FactoryFunction } from './types'
+import { ClassConstructor, ConnectionConfiguration } from './types'
 import { calculateFilePaths } from './utils/fileHandling'
-import { getNameOfEntity } from './utils/getNameOfEntity'
 
-const factoriesMap: Map<string, FactoryFunction<any, any>> = new Map()
-
-export const define = <Entity, Context>(entity: ObjectType<Entity>, factoryFn: FactoryFunction<Entity, Context>) => {
-  factoriesMap.set(getNameOfEntity(entity), factoryFn)
-}
-
-export const factory: ContextFactoryFunction =
-  <Entity, Context>(entity: ObjectType<Entity>) =>
-  (context?: Context) => {
-    const name = getNameOfEntity(entity)
-
-    const factory = factoriesMap.get(name)
-    if (!factory) {
-      throw new Error(`Factory for ${name} is not defined`) // TODO: Add custom error
-    }
-
-    return new Factory<Entity, Context>(entity, factory, context)
-  }
-
-export const runSeeder = async (clazz: ClassConstructor<any>): Promise<void> => {
+export const runSeeder = async (clazz: ClassConstructor<any>) => {
   const seeder = new clazz()
   if (seeder instanceof Seeder) {
     const connection = await fetchConnection()
@@ -62,7 +42,10 @@ export const useFactories = async (options?: Partial<ConnectionConfiguration>): 
   await configureConnection(options)
   const option = await getConnectionOptions()
   const factoryFiles = calculateFilePaths(option.factories)
-  await Promise.all(factoryFiles.map((factoryFile) => import(factoryFile)))
+  await Promise.all(factoryFiles.map((factoryFile) => import(factoryFile))).catch((e) => {
+    console.error(e)
+    throw e
+  })
 }
 
 // TODO: Add seeder execution
