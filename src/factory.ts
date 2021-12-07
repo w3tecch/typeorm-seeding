@@ -1,11 +1,11 @@
 import * as Faker from 'faker'
 import { ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction } from './types'
-import { isPromiseLike } from './utils/factory.util'
+import { isPromiseLike } from './utils/isPromiseLike'
 import { printError, printWarning } from './utils/log.util'
 import { fetchConnection, getConnectionOptions } from './connection'
 
-export class EntityFactory<Entity, Context> {
+export class Factory<Entity, Context> {
   private mapFunction?: (entity: Entity) => Promise<Entity>
 
   constructor(
@@ -15,28 +15,35 @@ export class EntityFactory<Entity, Context> {
     private context?: Context,
   ) {}
 
-  // -------------------------------------------------------------------------
-  // Public API
-  // -------------------------------------------------------------------------
-
   /**
    * This function is used to alter the generated values of entity, before it
    * is persist into the database
    */
-  public map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Context> {
+  public map(mapFunction: (entity: Entity) => Promise<Entity>) {
     this.mapFunction = mapFunction
     return this
   }
 
   /**
-   * Make a new entity, but does not persist it
+   * Make a new entity without persisting it
    */
   public async make(overrideParams: Partial<Entity> = {}): Promise<Entity> {
     return this.makeEntity(overrideParams, false)
   }
 
   /**
-   * Create makes a new entity and does persist it
+   * Make many new entities without persisting it
+   */
+  public async makeMany(amount: number, overrideParams: Partial<Entity> = {}): Promise<Entity[]> {
+    const list = []
+    for (let index = 0; index < amount; index++) {
+      list[index] = await this.make(overrideParams)
+    }
+    return list
+  }
+
+  /**
+   * Create a new entity and persist it
    */
   public async create(overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity> {
     const connection = await fetchConnection()
@@ -57,14 +64,9 @@ export class EntityFactory<Entity, Context> {
     }
   }
 
-  public async makeMany(amount: number, overrideParams: Partial<Entity> = {}): Promise<Entity[]> {
-    const list = []
-    for (let index = 0; index < amount; index++) {
-      list[index] = await this.make(overrideParams)
-    }
-    return list
-  }
-
+  /**
+   * Create many new entities and persist them
+   */
   public async createMany(
     amount: number,
     overrideParams: Partial<Entity> = {},
@@ -76,10 +78,6 @@ export class EntityFactory<Entity, Context> {
     }
     return list
   }
-
-  // -------------------------------------------------------------------------
-  // Private Helpers
-  // -------------------------------------------------------------------------
 
   private async makeEntity(overrideParams: Partial<Entity> = {}, isSeeding = false): Promise<Entity> {
     if (!this.factory) {
@@ -96,7 +94,8 @@ export class EntityFactory<Entity, Context> {
       const actualValue = entity[key]
       entity[key] = overrideParams[key] as typeof actualValue
     }
-    return await this.resolveEntity(entity, isSeeding)
+
+    return this.resolveEntity(entity, isSeeding)
   }
 
   private async resolveEntity(entity: Entity, isSeeding = false): Promise<Entity> {
@@ -107,7 +106,7 @@ export class EntityFactory<Entity, Context> {
         entity[attribute] = await attributeValue
       }
 
-      if (attributeValue instanceof EntityFactory) {
+      if (attributeValue instanceof Factory) {
         try {
           if (isSeeding) {
             entity[attribute] = await attributeValue.create()
