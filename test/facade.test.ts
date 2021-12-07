@@ -1,18 +1,7 @@
-import { runSeeder, useFactories } from '../src/facade'
-import { factory } from '../src/factoriesMap'
-import { Pet } from './entities/Pet.entity'
-import { User } from './entities/User.entity'
+import { runSeeder } from '../src/facade'
 import PetSeeder from './seeders/Pet.seed'
 
 describe('Facade global methods', () => {
-  describe(useFactories, () => {
-    test('Should import all factories', async () => {
-      await useFactories()
-      expect(factory(User)()).toBeDefined()
-      expect(factory(Pet)()).toBeDefined()
-    })
-  })
-
   describe(runSeeder, () => {
     let mockFn: jest.Mock
 

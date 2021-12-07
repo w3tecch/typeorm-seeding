@@ -38,16 +38,6 @@ export const tearDownDatabase = async (): Promise<void> => {
   return connection && connection.isConnected ? connection.close() : undefined
 }
 
-export const useFactories = async (options?: Partial<ConnectionConfiguration>): Promise<void> => {
-  await configureConnection(options)
-  const option = await getConnectionOptions()
-  const factoryFiles = calculateFilePaths(option.factories)
-  await Promise.all(factoryFiles.map((factoryFile) => import(factoryFile))).catch((e) => {
-    console.error(e)
-    throw e
-  })
-}
-
 // TODO: Add seeder execution
 /* istanbul ignore next */
 export const useSeeding = async (options?: Partial<ConnectionConfiguration>): Promise<void> => {
