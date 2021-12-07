@@ -2,8 +2,7 @@ import * as Faker from 'faker'
 import { ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction } from './types'
 import { isPromiseLike } from './utils/isPromiseLike'
-import { printError, printWarning } from './utils/log.util'
-import { fetchConnection, getConnectionOptions } from './connection'
+import { fetchConnection } from './connection'
 
 export class Factory<Entity, Context> {
   private mapFunction?: (entity: Entity) => Promise<Entity>
@@ -47,21 +46,9 @@ export class Factory<Entity, Context> {
    */
   public async create(overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity> {
     const connection = await fetchConnection()
-    if (connection && connection.isConnected) {
-      const em = connection.createEntityManager()
-      try {
-        const entity = await this.makeEntity(overrideParams, true)
-        return await em.save<Entity>(entity, saveOptions)
-      } catch (error) {
-        const message = 'Could not save entity'
-        printError(message, error)
-        throw new Error(message)
-      }
-    } else {
-      const message = 'No db connection is given'
-      printError(message)
-      throw new Error(message)
-    }
+    const em = connection.createEntityManager()
+    const entity = await this.makeEntity(overrideParams, true)
+    return em.save<Entity>(entity, saveOptions)
   }
 
   /**
@@ -107,16 +94,10 @@ export class Factory<Entity, Context> {
       }
 
       if (attributeValue instanceof Factory) {
-        try {
-          if (isSeeding) {
-            entity[attribute] = await attributeValue.create()
-          } else {
-            entity[attribute] = await attributeValue.make()
-          }
-        } catch (error) {
-          const message = `Could not make ${attributeValue.name}`
-          printError(message, error)
-          throw new Error(message)
+        if (isSeeding) {
+          entity[attribute] = await attributeValue.create()
+        } else {
+          entity[attribute] = await attributeValue.make()
         }
       }
     }
