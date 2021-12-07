@@ -48,7 +48,7 @@ export const fetchConnection = async (options?: Partial<ConnectionOptions>): Pro
     connection = getConnection(connectionName)
   } catch {
     connection = await createConnection({
-      ...getConnectionOptions(),
+      ...(await getConnectionOptions()),
       ...options,
     } as ConnectionOptions)
   }

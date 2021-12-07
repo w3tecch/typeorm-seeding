@@ -65,7 +65,7 @@ export class Factory<Entity, Context> {
     return list
   }
 
-  private async makeEntity(overrideParams: Partial<Entity>, isSeeding = false): Promise<Entity> {
+  private async makeEntity(overrideParams: Partial<Entity>, isSeeding: boolean): Promise<Entity> {
     if (!this.factory) {
       throw new Error('Could not found entity') // TODO: Add custom error
     }
@@ -84,7 +84,7 @@ export class Factory<Entity, Context> {
     return this.resolveEntity(entity, isSeeding)
   }
 
-  private async resolveEntity(entity: Entity, isSeeding = false): Promise<Entity> {
+  private async resolveEntity(entity: Entity, isSeeding: boolean): Promise<Entity> {
     for (const attribute in entity) {
       const attributeValue = entity[attribute]
 
