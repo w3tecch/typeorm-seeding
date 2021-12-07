@@ -27,5 +27,5 @@ export type ConnectionOptions = TypeORMConnectionOptions & {
 export type ConnectionConfiguration = {
   root?: string
   configName?: string
-  connection?: string
+  connection: string
 }

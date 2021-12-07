@@ -37,7 +37,7 @@ export const runSeeder = async (clazz: ClassConstructor<any>): Promise<void> => 
  * I believe this library just cover seeding and factory creation, so database cleanup is out of scope
  * @deprecated
  */
-export const useRefreshDatabase = async (options: ConnectionConfiguration = {}): Promise<Connection> => {
+export const useRefreshDatabase = async (options: Partial<ConnectionConfiguration> = {}): Promise<Connection> => {
   configureConnection(options)
   const connection = await fetchConnection()
   if (connection && connection.isConnected) {
@@ -56,7 +56,7 @@ export const tearDownDatabase = async (): Promise<void> => {
   return connection && connection.isConnected ? connection.close() : undefined
 }
 
-export const useFactories = async (options: ConnectionConfiguration = {}): Promise<void> => {
+export const useFactories = async (options: Partial<ConnectionConfiguration> = {}): Promise<void> => {
   configureConnection(options)
   const option = await getConnectionOptions()
   const factoryFiles = calculateFilePaths(option.factories)
@@ -64,7 +64,7 @@ export const useFactories = async (options: ConnectionConfiguration = {}): Promi
 }
 
 // TODO: Add seeder execution
-export const useSeeding = async (options: ConnectionConfiguration = {}): Promise<void> => {
+export const useSeeding = async (options: Partial<ConnectionConfiguration> = {}): Promise<void> => {
   configureConnection(options)
   const option = await getConnectionOptions()
   const factoryFiles = calculateFilePaths(option.seeds)

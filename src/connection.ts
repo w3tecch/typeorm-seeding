@@ -2,7 +2,7 @@ import { ConnectionOptionsReader, Connection, createConnection, getConnection } 
 import { ConnectionConfiguration, ConnectionOptions } from './types'
 
 let connectionOptions: ConnectionOptions
-let connectionConfiguration: ConnectionConfiguration = {}
+let connectionConfiguration: ConnectionConfiguration = { connection: 'default' }
 
 const readConnectionOptions = async (): Promise<void> => {
   const { root, configName, connection } = connectionConfiguration
@@ -11,8 +11,7 @@ const readConnectionOptions = async (): Promise<void> => {
     configName,
   })
 
-  const connectionName = connection || 'default'
-  const options = (await connectionReader.get(connectionName)) as ConnectionOptions
+  const options = (await connectionReader.get(connection)) as ConnectionOptions
 
   const factoriesFromEnv = process.env.TYPEORM_SEEDING_FACTORIES
   const seedersFromEnv = process.env.TYPEORM_SEEDING_SEEDS
@@ -24,7 +23,7 @@ const readConnectionOptions = async (): Promise<void> => {
   }
 }
 
-export const configureConnection = async (option: ConnectionConfiguration = {}) => {
+export const configureConnection = async (option: Partial<ConnectionConfiguration> = {}) => {
   connectionConfiguration = {
     ...connectionConfiguration,
     ...option,
