@@ -1,5 +1,6 @@
-/sample
-/src
+sample
+src
+test
 .editorconfig
 .eslintrc.js
 .prettierrc
@@ -7,6 +8,6 @@
 .sgcrc
 .travis.yml
 logo.png
-ormconfig.js
+ormconfig.ts
 tsconfig.build.json
 tsconfig.json
