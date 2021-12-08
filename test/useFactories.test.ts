@@ -24,8 +24,6 @@ describe(useFactories, () => {
     await useFactories(['test/**/User.factory.ts'])
     expect(factory(User)()).toBeDefined()
     expect(() => factory(Pet)()).toThrowError(Error)
-
-    jest.clearAllMocks()
   })
 
   test(`Should throw ${FactoryImportationError.name}`, () => {
@@ -34,7 +32,5 @@ describe(useFactories, () => {
     })
 
     expect(useFactories()).rejects.toThrowError(FactoryImportationError)
-
-    jest.clearAllMocks()
   })
 })

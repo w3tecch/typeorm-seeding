@@ -1,5 +1,6 @@
-import { Connection } from 'typeorm'
+import { Connection, ConnectionOptionsReader } from 'typeorm'
 import { configureConnection, fetchConnection, getConnectionOptions } from '../src/connection'
+import { ConnectionOptions } from '../src/types'
 
 describe('Connection global methods', () => {
   describe(getConnectionOptions, () => {
@@ -15,6 +16,23 @@ describe('Connection global methods', () => {
       const options = await getConnectionOptions()
 
       expect(options.name).toBe('memory')
+    })
+
+    test('Should get connection without seeding variables', async () => {
+      jest.spyOn(ConnectionOptionsReader.prototype, 'get').mockImplementationOnce(() =>
+        Promise.resolve({
+          name: 'memory',
+        } as ConnectionOptions),
+      )
+
+      await configureConnection({ connection: 'memory' })
+      const options = await getConnectionOptions()
+
+      expect(options.name).toBe('memory')
+      expect(options.factories).toBeInstanceOf(Array)
+      expect(options.factories).toHaveLength(0)
+      expect(options.seeds).toBeInstanceOf(Array)
+      expect(options.seeds).toHaveLength(0)
     })
 
     test('Should get default connection with overrided env variables', async () => {
