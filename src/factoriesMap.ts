@@ -21,3 +21,7 @@ export const factory: ContextFactoryFunction =
 
     return new Factory<Entity, Context>(entity, factory, context)
   }
+
+export const clearFactories = () => {
+  factoriesMap.clear()
+}
