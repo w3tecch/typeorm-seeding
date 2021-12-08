@@ -5,6 +5,10 @@ import { calculateFilePaths } from '../utils/fileHandling'
 import { configureConnection, getConnectionOptions, fetchConnection } from '../connection'
 import { ClassConstructor, ConnectionOptions } from '../types'
 import { runSeeder } from '../facade'
+import { useFactories } from '../useFactories'
+import { Seeder } from '../seeder'
+import { useSeeding } from '..'
+import { useSeeders } from '../useSeeders'
 
 interface SeedCommandArguments extends Arguments {
   root?: string
@@ -48,14 +52,12 @@ export class SeedCommand implements CommandModule {
     const spinner = ora('Loading ormconfig').start()
 
     // Get TypeORM config file
-    let option: ConnectionOptions
     try {
       await configureConnection({
         root: args.root,
         configName: args.configName,
         connection: args.connection,
       })
-      option = await getConnectionOptions()
       spinner.succeed('ORM Config loaded')
     } catch (error) {
       panic(spinner, error as Error, 'Could not load the config file!')
@@ -64,9 +66,8 @@ export class SeedCommand implements CommandModule {
 
     // Find all factories and seed with help of the config
     spinner.start('Import Factories')
-    const factoryFiles = calculateFilePaths(option.factories)
     try {
-      await Promise.all(factoryFiles.map((factoryFile) => import(factoryFile)))
+      await useFactories()
       spinner.succeed('Factories are imported')
     } catch (error) {
       panic(spinner, error as Error, 'Could not import factories!')
@@ -74,21 +75,9 @@ export class SeedCommand implements CommandModule {
 
     // Show seeds in the console
     spinner.start('Importing Seeders')
-    const seederFiles = calculateFilePaths(option.seeds)
-    let classConstructors: ClassConstructor<any>[] = []
+    let classConstructors: ClassConstructor<Seeder>[] = []
     try {
-      classConstructors = await Promise.all(seederFiles.map((seederFile) => import(seederFile)))
-        .then((filesLoaded) => filesLoaded.flat())
-        .then((importedElements) =>
-          Object.values(importedElements).filter(
-            (value) => Object.prototype.toString.call(value) === '[object Function]',
-          ),
-        )
-        .then((classConstructors) =>
-          classConstructors.filter(
-            (classConstructor) => args.seed === undefined || args.seed === classConstructor.name,
-          ),
-        )
+      classConstructors = await useSeeders(false)
       spinner.succeed('Seeders are imported')
     } catch (error) {
       panic(spinner, error as Error, 'Could not import seeders!')
