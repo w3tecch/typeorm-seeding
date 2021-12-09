@@ -1,6 +1,5 @@
-import { Argv, Arguments, CommandModule } from 'yargs'
-import chalk from 'chalk'
-import { printError } from '../utils/log.util'
+import yargs, { Argv, Arguments, CommandModule } from 'yargs'
+import { bold, red } from 'chalk'
 import { configureConnection, getConnectionOptions } from '../connection'
 
 interface ConfigCommandArguments extends Arguments {
@@ -23,6 +22,7 @@ export class ConfigCommand implements CommandModule {
       .option('c', {
         alias: 'connection',
         type: 'string',
+        default: 'default',
         describe: 'Name of the typeorm connection',
       })
       .option('r', {
@@ -33,9 +33,8 @@ export class ConfigCommand implements CommandModule {
   }
 
   async handler(args: ConfigCommandArguments) {
-    const log = console.log
     const { default: pkg } = await import('../../package.json')
-    log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`))
+    console.log('🌱  ' + bold(`TypeORM Seeding v${pkg.version}`))
     try {
       await configureConnection({
         root: args.root,
@@ -43,11 +42,12 @@ export class ConfigCommand implements CommandModule {
         connection: args.connection,
       })
       const options = await getConnectionOptions()
-      log(options)
-    } catch (error) {
-      printError('Could not find the orm config file', error)
-      process.exit(1)
+      console.log(options)
+    } catch (error: any) {
+      console.log('\n❌ ', red('Could not find the orm config file'))
+      console.error(error)
+      yargs.exit(1, error.message)
+      // throw error
     }
-    process.exit(0)
   }
 }

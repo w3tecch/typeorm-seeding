@@ -6,14 +6,10 @@ import { User } from '../entities/User.entity'
 
 export default class PetSeeder extends Seeder {
   public async run(factory: Factory, connection: Connection): Promise<void> {
-    const users = await factory(User)().createMany(2)
-    const tobi = await factory(Pet)().create({
-      owner: users[0],
-    })
-
-    const newPet = new Pet()
-    newPet.name = `${tobi.name} brother`
-    newPet.owner = users[1]
-    connection.createEntityManager().save(new Pet())
+    const users = await connection.createEntityManager().find(User)
+    const petFactory = factory(Pet)()
+    for (const user of users) {
+      await petFactory.create({ owner: user })
+    }
   }
 }

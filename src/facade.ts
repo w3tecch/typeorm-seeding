@@ -1,17 +1,6 @@
 import { Connection } from 'typeorm'
-import { configureConnection, fetchConnection, getConnectionOptions } from './connection'
-import { factory } from './factoriesMap'
-import { Seeder } from './seeder'
-import { ClassConstructor, ConnectionConfiguration } from './types'
-import { calculateFilePaths } from './utils/fileHandling'
-
-export const runSeeder = async (clazz: ClassConstructor<any>) => {
-  const seeder = new clazz()
-  if (seeder instanceof Seeder) {
-    const connection = await fetchConnection()
-    seeder.run(factory, connection)
-  }
-}
+import { configureConnection, fetchConnection } from './connection'
+import { ConnectionConfiguration } from './types'
 
 /**
  * I believe this library just cover seeding and factory creation, so database cleanup is out of scope
@@ -36,13 +25,4 @@ export const useRefreshDatabase = async (options: Partial<ConnectionConfiguratio
 export const tearDownDatabase = async (): Promise<void> => {
   const connection = await fetchConnection()
   return connection && connection.isConnected ? connection.close() : undefined
-}
-
-// TODO: Add seeder execution
-/* istanbul ignore next */
-export const useSeeding = async (options?: Partial<ConnectionConfiguration>): Promise<void> => {
-  await configureConnection(options)
-  const option = await getConnectionOptions()
-  const factoryFiles = calculateFilePaths(option.seeds)
-  await Promise.all(factoryFiles.map((factoryFile) => import(factoryFile)))
 }

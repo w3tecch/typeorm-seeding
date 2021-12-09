@@ -5,7 +5,7 @@ jest.mock('../ormconfig.ts', () => [
     database: 'test.db',
     entities: ['test/entities/**/*.entity.ts}'],
     factories: ['test/factories/**/*.factory.ts'],
-    seeds: ['test/seeds/**/*.seed.ts'],
+    seeds: ['test/seeders/**/*.seed.ts'],
   },
   {
     name: 'memory',
@@ -13,6 +13,6 @@ jest.mock('../ormconfig.ts', () => [
     database: ':memory:',
     entities: ['test/entities/**/*.entity.ts}'],
     factories: ['test/factories/**/*.factory.ts'],
-    seeds: ['test/seeds/**/*.seed.ts'],
+    seeds: ['test/seeders/**/*.seed.ts'],
   },
 ])

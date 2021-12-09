@@ -1,32 +1,33 @@
 import { configureConnection, getConnectionOptions } from './connection'
 import { SeederImportationError } from './errors/SeederImportationError'
-import { runSeeder } from './facade'
+import { runSeeder } from './runSeeder'
 import { Seeder } from './seeder'
 import { ClassConstructor, ConnectionConfiguration } from './types'
 import { calculateFilePaths } from './utils/fileHandling'
 
 export async function useSeeders(
-  executeSeeders: boolean,
+  executeSeeders?: boolean,
   options?: Partial<ConnectionConfiguration>,
 ): Promise<ClassConstructor<Seeder>[]>
 export async function useSeeders(
-  executeSeeders: boolean,
+  executeSeeders?: boolean,
   seeders?: string[],
   options?: Partial<ConnectionConfiguration>,
 ): Promise<ClassConstructor<Seeder>[]>
 
 export async function useSeeders(
-  executeSeeders = true,
+  executeSeeders?: boolean,
   seedersOrOptions?: string[] | Partial<ConnectionConfiguration>,
   options?: Partial<ConnectionConfiguration>,
 ) {
+  const shouldExecuteSeeders = Boolean(executeSeeders)
   const seeders = Array.isArray(seedersOrOptions) ? seedersOrOptions : undefined
   const customOptions = Array.isArray(seedersOrOptions) ? options : seedersOrOptions
 
   await configureConnection(customOptions)
   const option = await getConnectionOptions()
 
-  let seederFiles = calculateFilePaths(option.factories)
+  let seederFiles = calculateFilePaths(option.seeds)
   if (seeders) {
     const seedersDesired = calculateFilePaths(seeders)
     seederFiles = seederFiles.filter((factoryFile) => seedersDesired.includes(factoryFile))
@@ -40,11 +41,10 @@ export async function useSeeders(
       Object.values(importedElements).filter((value) => Object.prototype.toString.call(value) === '[object Function]'),
     )
 
-    if (executeSeeders) {
+    if (shouldExecuteSeeders) {
       for (const seeder of seedersImported) {
         await runSeeder(seeder)
       }
-      await Promise.all(seedersImported.map((seeder) => runSeeder(seeder)))
     }
   } catch (error: any) {
     throw new SeederImportationError(error.message)

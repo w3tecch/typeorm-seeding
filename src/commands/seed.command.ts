@@ -4,11 +4,10 @@ import chalk from 'chalk'
 import { calculateFilePaths } from '../utils/fileHandling'
 import { configureConnection, getConnectionOptions, fetchConnection } from '../connection'
 import { ClassConstructor, ConnectionOptions } from '../types'
-import { runSeeder } from '../facade'
 import { useFactories } from '../useFactories'
 import { Seeder } from '../seeder'
-import { useSeeding } from '..'
 import { useSeeders } from '../useSeeders'
+import { runSeeder } from '../runSeeder'
 
 interface SeedCommandArguments extends Arguments {
   root?: string
@@ -77,7 +76,7 @@ export class SeedCommand implements CommandModule {
     spinner.start('Importing Seeders')
     let classConstructors: ClassConstructor<Seeder>[] = []
     try {
-      classConstructors = await useSeeders(false)
+      classConstructors = await useSeeders()
       spinner.succeed('Seeders are imported')
     } catch (error) {
       panic(spinner, error as Error, 'Could not import seeders!')
