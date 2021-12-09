@@ -47,7 +47,6 @@ export class ConfigCommand implements CommandModule {
       console.log('\n❌ ', red('Could not find the orm config file'))
       console.error(error)
       yargs.exit(1, error.message)
-      // throw error
     }
   }
 }

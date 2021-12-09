@@ -1,0 +1,12 @@
+{
+  "extends": ["config:base", ":assignee(jorgebodega)", ":reviewer(jorgebodega)"],
+  "baseBranches": ["next"],
+  "schedule": ["every weekend"],
+  "npm": {
+    "stabilityDays": 5
+  },
+  "timezone": "UTC",
+  "semanticCommitScope": null,
+  "semanticCommitType": "arg0",
+  "automerge": false
+}
