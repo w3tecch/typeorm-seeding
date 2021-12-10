@@ -1,4 +1,4 @@
-import yargs, { Argv, Arguments, CommandModule } from 'yargs'
+import { Argv, Arguments, CommandModule, exit } from 'yargs'
 import { bold, red } from 'chalk'
 import { configureConnection, getConnectionOptions } from '../connection'
 
@@ -45,8 +45,7 @@ export class ConfigCommand implements CommandModule {
       console.log(options)
     } catch (error: any) {
       console.log('\n❌ ', red('Could not find the orm config file'))
-      console.error(error)
-      yargs.exit(1, error.message)
+      exit(1, error as Error)
     }
   }
 }
