@@ -1,6 +1,6 @@
 import { Connection } from 'typeorm'
-import { ContextFactoryFunction } from './types'
+import { EntityFactory } from './types'
 
 export abstract class Seeder {
-  abstract run(factory: ContextFactoryFunction, connection: Connection): Promise<void>
+  abstract run(factory: EntityFactory, connection: Connection): Promise<void>
 }

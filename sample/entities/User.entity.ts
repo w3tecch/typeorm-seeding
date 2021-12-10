@@ -19,7 +19,7 @@ export class User {
   @Column()
   email!: string
 
-  @OneToMany((type) => Pet, (pet) => pet.user)
+  @OneToMany(() => Pet, (pet) => pet.user)
   pets!: Pet[]
 
   @Column({ type: 'varchar', length: 100, nullable: false })

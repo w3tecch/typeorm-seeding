@@ -12,7 +12,7 @@ export class Pet {
   @Column()
   age!: number
 
-  @ManyToOne((type) => User, (user) => user.pets)
+  @ManyToOne(() => User, (user) => user.pets)
   @JoinColumn({ name: 'user_id' })
   user!: User
 }

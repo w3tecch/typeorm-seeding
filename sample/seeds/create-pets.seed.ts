@@ -1,10 +1,9 @@
-import { Connection } from 'typeorm'
+import { EntityFactory } from '../../src'
 import { Seeder } from '../../src/seeder'
-import { Factory } from '../../src/types'
 import { Pet } from '../entities/Pet.entity'
 
 export default class CreatePets extends Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<void> {
+  public async run(factory: EntityFactory): Promise<void> {
     await factory(Pet)().create()
   }
 }

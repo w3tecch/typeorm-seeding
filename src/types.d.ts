@@ -10,9 +10,12 @@ export type FactoryFunction<Entity, Context> = (faker: typeof Faker, context?: C
 /**
  * Factory gets the EntityFactory to the given Entity and pass the context along
  */
-export type ContextFactoryFunction = <Entity, Context>(
-  entity: ObjectType<Entity>,
-) => (context?: Context) => Factory<Entity, Context>
+export type EntityFactory = <Entity, Context>(entity: ObjectType<Entity>) => ContextFactory<Entity, Context>
+
+/**
+ * Factory gets the EntityFactory to the given Entity and pass the context along
+ */
+export type ContextFactory<Entity, Context> = (context?: Context) => Factory<Entity, Context>
 
 /**
  * Constructor of the seed class
