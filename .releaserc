@@ -3,8 +3,8 @@
     [
       "@semantic-release/commit-analyzer",
       {
-        "headerPattern": "/^(:w*: )?(w*)(?:(([w$.-* ]*)))?: (.*)$",
         "parserOpts": {
+          "headerPattern": "^\\:\\w*\\: (\\w*)(?:\\(([\\w\\$\\.\\-\\* ]*)\\))?\\: (.*)$",
           "noteKeywords": [
             "BREAKING CHANGE",
             "BREAKING CHANGES"
@@ -12,7 +12,18 @@
         }
       }
     ],
-    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/release-notes-generator",
+      {
+        "parserOpts": {
+          "headerPattern": "^\\:\\w*\\: (\\w*)(?:\\(([\\w\\$\\.\\-\\* ]*)\\))?\\: (.*)$",
+          "noteKeywords": [
+            "BREAKING CHANGE",
+            "BREAKING CHANGES"
+          ]
+        }
+      }
+    ],
     [
       "@semantic-release/changelog",
       {
