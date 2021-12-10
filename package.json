@@ -35,7 +35,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/git": "^10.0.1",
     "@tsconfig/node16": "^1.0.2",
     "@types/bcryptjs": "^2.4.2",
     "@types/chalk": "^2.2.0",
@@ -52,7 +52,7 @@
     "eslint-plugin-import": "^2.25.3",
     "jest": "^27.4.3",
     "prettier": "^2.5.1",
-    "semantic-release": "^17.0.4",
+    "semantic-release": "^18.0.1",
     "sqlite3": "^5.0.2",
     "ts-jest": "^27.1.1",
     "ts-node": "^10.4.0",
