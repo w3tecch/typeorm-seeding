@@ -1,12 +1,33 @@
 {
   "plugins": [
-    "@semantic-release/commit-analyzer",
+    [
+      "@semantic-release/commit-analyzer",
+      {
+        "headerPattern": "/^(:w*: )?(w*)(?:(([w$.-* ]*)))?: (.*)$",
+        "parserOpts": {
+          "noteKeywords": [
+            "BREAKING CHANGE",
+            "BREAKING CHANGES"
+          ]
+        }
+      }
+    ],
     "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/changelog",
+      {
+        "changelogFile": "CHANGELOG.md"
+      }
+    ],
     [
       "@semantic-release/git",
       {
-        "assets": ["package.json", "yarn.lock"],
-        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        "assets": [
+          "package.json",
+          "yarn.lock",
+          "CHANGELOG.md"
+        ],
+        "message": "Chore: Release ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ],
     "@semantic-release/npm",

@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/w3tecch/typeorm-seeding.git"
+    "url": "https://github.com/jorgebodega/typeorm-seeding.git"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -59,6 +59,7 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
+    "@semantic-release/changelog": "^6.0.1",
     "chalk": "^4.1.2",
     "faker": "^5.5.3",
     "glob": "^7.2.0",
