@@ -18,10 +18,6 @@ describe(ConfigCommand, () => {
       expect(yargs.command(command).parse('config')).resolves.toBeTruthy()
     })
 
-    test('Should use the connection argument', async () => {
-      expect(yargs.command(command).parse('config -c memory')).resolves.toBeTruthy()
-    })
-
     test('Should use the config file argument', async () => {
       expect(yargs.command(command).parse('config -n ormconfig.ts')).resolves.toBeTruthy()
     })

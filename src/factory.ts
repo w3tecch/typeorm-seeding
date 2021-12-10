@@ -1,6 +1,7 @@
 import * as Faker from 'faker'
 import { ObjectType, SaveOptions } from 'typeorm'
 import { fetchConnection } from './connection'
+import { EntityNotDefinedError } from './errors/EntityNotDefinedError'
 import { FactoryFunction } from './types'
 import { isPromiseLike } from './utils/isPromiseLike'
 
@@ -47,7 +48,7 @@ export class Factory<Entity, Context> {
     const entity = await this.makeEntity(overrideParams, true)
 
     const connection = await fetchConnection()
-    return connection.createEntityManager().save<Entity>(entity, saveOptions)
+    return await connection.createEntityManager().save<Entity>(entity, saveOptions)
   }
 
   /**
@@ -67,7 +68,7 @@ export class Factory<Entity, Context> {
 
   private async makeEntity(overrideParams: Partial<Entity>, isSeeding: boolean): Promise<Entity> {
     if (!this.factory) {
-      throw new Error('Could not found entity') // TODO: Add custom error
+      throw new EntityNotDefinedError(this.entity)
     }
 
     let entity = this.factory(Faker, this.context)
@@ -92,6 +93,7 @@ export class Factory<Entity, Context> {
         entity[attribute] = await attributeValue
       }
 
+      console.error(Factory)
       if (attributeValue instanceof Factory) {
         if (isSeeding) {
           entity[attribute] = await attributeValue.create()

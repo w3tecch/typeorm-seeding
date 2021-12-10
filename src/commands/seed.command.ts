@@ -2,7 +2,6 @@ import { Arguments, Argv, CommandModule, exit } from 'yargs'
 import ora, { Ora } from 'ora'
 import { bold, gray } from 'chalk'
 import { configureConnection, fetchConnection } from '../connection'
-import { ClassConstructor } from '../types'
 import { useFactories } from '../useFactories'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../useSeeders'
@@ -72,9 +71,9 @@ export class SeedCommand implements CommandModule {
 
     // Show seeds in the console
     spinner.start('Importing Seeders')
-    let classConstructors: ClassConstructor<Seeder>[] = []
+    let seeders: Seeder[] = []
     try {
-      classConstructors = await useSeeders()
+      seeders = await useSeeders()
       spinner.succeed('Seeders are imported')
     } catch (error) {
       panic(spinner, error as Error, 'Could not import seeders!')
@@ -90,13 +89,13 @@ export class SeedCommand implements CommandModule {
     }
 
     // Run seeds
-    for (const classConstructor of classConstructors) {
-      spinner.start(`Executing ${classConstructor.name} Seeder`)
+    for (const seeder of seeders) {
+      spinner.start(`Executing ${seeder.constructor.name} Seeder`)
       try {
-        await runSeeder(classConstructor)
-        spinner.succeed(`Seeder ${classConstructor.name} executed`)
+        await runSeeder(seeder)
+        spinner.succeed(`Seeder ${seeder.constructor.name} executed`)
       } catch (error) {
-        panic(spinner, error as Error, `Could not run the seed ${classConstructor.name}!`)
+        panic(spinner, error as Error, `Could not run the seed ${seeder.constructor.name}!`)
       }
     }
 
@@ -106,5 +105,6 @@ export class SeedCommand implements CommandModule {
 
 function panic(spinner: Ora, error: Error, message: string) {
   spinner.fail(message)
+  console.error(message)
   exit(1, error)
 }

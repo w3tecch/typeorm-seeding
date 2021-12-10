@@ -22,7 +22,3 @@ export function factory<Entity, Context>(entity: ObjectType<Entity>) {
     return new Factory<Entity, Context>(entity, factoryFunction, context)
   }
 }
-
-export function clearFactories() {
-  factoriesMap.clear()
-}

@@ -2,7 +2,7 @@ import { configureConnection, getConnectionOptions } from './connection'
 import { SeederImportationError } from './errors/SeederImportationError'
 import { runSeeder } from './runSeeder'
 import { Seeder } from './seeder'
-import { ClassConstructor, ConnectionConfiguration } from './types'
+import { ConnectionConfiguration } from './types'
 import { calculateFilePaths } from './utils/fileHandling'
 
 export async function useSeeders(
