@@ -1,12 +1,15 @@
 {
-  "extends": ["config:base", ":assignee(jorgebodega)", ":reviewer(jorgebodega)"],
+  "extends": [
+    "config:base",
+    ":assignAndReview(jorgebodega)",
+    ":automergeDisabled",
+    ":semanticCommits",
+    ":semanticCommitScopeDisabled",
+    ":timezone(UTC+1)"
+  ],
   "baseBranches": ["next"],
   "schedule": ["every weekend"],
   "npm": {
     "stabilityDays": 5
-  },
-  "timezone": "UTC",
-  "semanticCommitScope": null,
-  "semanticCommitType": "arg0",
-  "automerge": false
+  }
 }
