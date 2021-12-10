@@ -1,4 +1,5 @@
 import { ObjectType } from 'typeorm'
+import { FactoryNotDefinedError } from './errors/FactoryNotDefinedError'
 import { Factory } from './factory'
 import { FactoryFunction, ContextFactoryFunction } from './types'
 import { getNameOfEntity } from './utils/getNameOfEntity'
@@ -16,7 +17,7 @@ export const factory: ContextFactoryFunction =
 
     const factory = factoriesMap.get(name)
     if (!factory) {
-      throw new Error(`Factory for ${name} is not defined`) // TODO: Add custom error
+      throw new FactoryNotDefinedError(name)
     }
 
     return new Factory<Entity, Context>(entity, factory, context)

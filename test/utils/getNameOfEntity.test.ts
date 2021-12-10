@@ -1,3 +1,4 @@
+import { EntityNotDefinedError } from '../../src/errors/EntityNotDefinedError'
 import { getNameOfEntity } from '../../src/utils/getNameOfEntity'
 
 describe(getNameOfEntity, () => {
@@ -12,6 +13,6 @@ describe(getNameOfEntity, () => {
   })
 
   test('Passing something not instantiable should raise Error', () => {
-    expect(() => getNameOfEntity('test' as any)).toThrowError('Entity is not defined')
+    expect(() => getNameOfEntity('test' as any)).toThrow(EntityNotDefinedError)
   })
 })

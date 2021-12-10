@@ -5,7 +5,7 @@ import { Factory } from './factory'
 /**
  * FactoryFunction is the function, which generate a new filled entity
  */
-export type FactoryFunction<Entity, Context> = (faker: typeof Faker, context?: Context) => Entity // TODO: Maybe add support for promises
+export type FactoryFunction<Entity, Context> = (faker: typeof Faker, context?: Context) => Entity
 
 /**
  * Factory gets the EntityFactory to the given Entity and pass the context along
