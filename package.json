@@ -34,6 +34,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
+    "@semantic-release/changelog": "^6.0.1",
     "@semantic-release/git": "^10.0.1",
     "@tsconfig/node16": "^1.0.2",
     "@types/bcryptjs": "^2.4.2",
@@ -59,7 +60,6 @@
     "typescript": "^4.5.3"
   },
   "dependencies": {
-    "@semantic-release/changelog": "^6.0.1",
     "chalk": "^4.1.2",
     "faker": "^5.5.3",
     "glob": "^7.2.0",

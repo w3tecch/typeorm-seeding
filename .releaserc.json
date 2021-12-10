@@ -4,10 +4,7 @@
       "@semantic-release/commit-analyzer",
       {
         "parserOpts": {
-          "noteKeywords": [
-            "BREAKING CHANGE",
-            "BREAKING CHANGES"
-          ]
+          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
         }
       }
     ],
@@ -15,10 +12,7 @@
       "@semantic-release/release-notes-generator",
       {
         "parserOpts": {
-          "noteKeywords": [
-            "BREAKING CHANGE",
-            "BREAKING CHANGES"
-          ]
+          "noteKeywords": ["BREAKING CHANGE", "BREAKING CHANGES"]
         }
       }
     ],
@@ -31,12 +25,8 @@
     [
       "@semantic-release/git",
       {
-        "assets": [
-          "package.json",
-          "yarn.lock",
-          "CHANGELOG.md"
-        ],
-        "message": "Chore: Release ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        "assets": ["package.json", "yarn.lock", "CHANGELOG.md"],
+        "message": "chore: Release ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
       }
     ],
     "@semantic-release/npm",
