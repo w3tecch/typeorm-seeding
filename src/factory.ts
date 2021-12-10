@@ -1,8 +1,8 @@
 import * as Faker from 'faker'
 import { ObjectType, SaveOptions } from 'typeorm'
+import { fetchConnection } from './connection'
 import { FactoryFunction } from './types'
 import { isPromiseLike } from './utils/isPromiseLike'
-import { fetchConnection } from './connection'
 
 export class Factory<Entity, Context> {
   private mapFunction?: (entity: Entity) => Promise<Entity>

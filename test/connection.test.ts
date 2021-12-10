@@ -5,14 +5,14 @@ import { ConnectionOptions } from '../src/types'
 describe('Connection global methods', () => {
   describe(getConnectionOptions, () => {
     test('Should get default connection', async () => {
-      await configureConnection({ connection: 'default' })
+      configureConnection({ connection: 'default' })
       const options = await getConnectionOptions()
 
       expect(options.name).toBe('default')
     })
 
     test('Should get memory connection', async () => {
-      await configureConnection({ connection: 'memory' })
+      configureConnection({ connection: 'memory' })
       const options = await getConnectionOptions()
 
       expect(options.name).toBe('memory')
@@ -25,7 +25,7 @@ describe('Connection global methods', () => {
         } as ConnectionOptions),
       )
 
-      await configureConnection({ connection: 'memory' })
+      configureConnection({ connection: 'memory' })
       const options = await getConnectionOptions()
 
       expect(options.name).toBe('memory')
@@ -40,7 +40,7 @@ describe('Connection global methods', () => {
       process.env.TYPEORM_SEEDING_FACTORIES = 'overrided'
       process.env.TYPEORM_SEEDING_SEEDS = 'overrided'
 
-      await configureConnection({ connection: 'default' })
+      configureConnection({ connection: 'default' })
       const options = await getConnectionOptions()
       expect(options.name).toBe('default')
       expect(options.factories).toBeInstanceOf(Array)
@@ -56,7 +56,7 @@ describe('Connection global methods', () => {
     let connection: Connection
 
     beforeAll(async () => {
-      await configureConnection({ connection: 'memory' })
+      configureConnection({ connection: 'memory' })
     })
 
     afterAll(() => {

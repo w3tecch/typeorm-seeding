@@ -20,8 +20,8 @@ describe(Factory, () => {
   }
 
   beforeAll(async () => {
-    await configureConnection({ connection: 'memory' })
-    connection = await fetchConnection({ entities: ['test/entities/**/*.ts'] })
+    configureConnection({ connection: 'memory' })
+    connection = await fetchConnection()
 
     await connection.synchronize()
   })

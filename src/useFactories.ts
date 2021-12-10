@@ -13,7 +13,7 @@ export async function useFactories(
   const factories = Array.isArray(factoriesOrOptions) ? factoriesOrOptions : undefined
   const customOptions = Array.isArray(factoriesOrOptions) ? options : factoriesOrOptions
 
-  await configureConnection(customOptions)
+  configureConnection(customOptions)
   const option = await getConnectionOptions()
 
   let factoryFiles = calculateFilePaths(option.factories)

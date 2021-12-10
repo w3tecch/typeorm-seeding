@@ -8,7 +8,7 @@ import { ConnectionConfiguration } from './types'
  */
 /* istanbul ignore next */
 export const useRefreshDatabase = async (options: Partial<ConnectionConfiguration> = {}): Promise<Connection> => {
-  await configureConnection(options)
+  configureConnection(options)
   const connection = await fetchConnection()
   if (connection && connection.isConnected) {
     await connection.dropDatabase()

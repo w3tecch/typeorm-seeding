@@ -24,7 +24,7 @@ export async function useSeeders(
   const seeders = Array.isArray(seedersOrOptions) ? seedersOrOptions : undefined
   const customOptions = Array.isArray(seedersOrOptions) ? options : seedersOrOptions
 
-  await configureConnection(customOptions)
+  configureConnection(customOptions)
   const option = await getConnectionOptions()
 
   let seederFiles = calculateFilePaths(option.seeds)

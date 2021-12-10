@@ -1,9 +1,8 @@
-import { Arguments, Argv, CommandModule } from 'yargs'
-import ora from 'ora'
-import chalk from 'chalk'
-import { calculateFilePaths } from '../utils/fileHandling'
-import { configureConnection, getConnectionOptions, fetchConnection } from '../connection'
-import { ClassConstructor, ConnectionOptions } from '../types'
+import { Arguments, Argv, CommandModule, exit } from 'yargs'
+import ora, { Ora } from 'ora'
+import { bold, gray } from 'chalk'
+import { configureConnection, fetchConnection } from '../connection'
+import { ClassConstructor } from '../types'
 import { useFactories } from '../useFactories'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../useSeeders'
@@ -30,6 +29,7 @@ export class SeedCommand implements CommandModule {
       .option('c', {
         alias: 'connection',
         type: 'string',
+        default: 'default',
         describe: 'Name of the typeorm connection',
       })
       .option('r', {
@@ -45,14 +45,13 @@ export class SeedCommand implements CommandModule {
   }
 
   async handler(args: SeedCommandArguments) {
-    const log = console.log
     const { default: pkg } = await import('../../package.json')
-    log('🌱  ' + chalk.bold(`TypeORM Seeding v${pkg.version}`))
+    console.log('🌱  ' + bold(`TypeORM Seeding v${pkg.version}`))
     const spinner = ora('Loading ormconfig').start()
 
     // Get TypeORM config file
     try {
-      await configureConnection({
+      configureConnection({
         root: args.root,
         configName: args.configName,
         connection: args.connection,
@@ -60,11 +59,10 @@ export class SeedCommand implements CommandModule {
       spinner.succeed('ORM Config loaded')
     } catch (error) {
       panic(spinner, error as Error, 'Could not load the config file!')
-      throw error
     }
 
     // Find all factories and seed with help of the config
-    spinner.start('Import Factories')
+    spinner.start('Importing Factories')
     try {
       await useFactories()
       spinner.succeed('Factories are imported')
@@ -102,13 +100,11 @@ export class SeedCommand implements CommandModule {
       }
     }
 
-    log('👍 ', chalk.gray.underline(`Finished Seeding`))
-    process.exit(0)
+    console.log('👍 ', gray.underline(`Finished Seeding`))
   }
 }
 
-function panic(spinner: any, error: Error, message: string) {
+function panic(spinner: Ora, error: Error, message: string) {
   spinner.fail(message)
-  console.error(error)
-  process.exit(1)
+  exit(1, error)
 }
