@@ -8,12 +8,12 @@ import { calculateFilePaths } from './utils/fileHandling'
 export async function useSeeders(
   executeSeeders?: boolean,
   options?: Partial<ConnectionConfiguration>,
-): Promise<ClassConstructor<Seeder>[]>
+): Promise<Seeder[]>
 export async function useSeeders(
   executeSeeders?: boolean,
   seeders?: string[],
   options?: Partial<ConnectionConfiguration>,
-): Promise<ClassConstructor<Seeder>[]>
+): Promise<Seeder[]>
 
 export async function useSeeders(
   executeSeeders?: boolean,
@@ -33,13 +33,11 @@ export async function useSeeders(
     seederFiles = seederFiles.filter((factoryFile) => seedersDesired.includes(factoryFile))
   }
 
-  let seedersImported: ClassConstructor<Seeder>[]
+  let seedersImported: Seeder[]
   try {
     seedersImported = await Promise.all(
       seederFiles.map((seederFile) => import(seederFile).then((module) => module.default)),
-    ).then((importedElements) =>
-      Object.values(importedElements).filter((value) => Object.prototype.toString.call(value) === '[object Function]'),
-    )
+    ).then((elems) => elems.map((elem) => new elem()).filter((elem) => elem instanceof Seeder) as Seeder[])
 
     if (shouldExecuteSeeders) {
       for (const seeder of seedersImported) {

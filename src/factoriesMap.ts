@@ -1,28 +1,28 @@
 import { ObjectType } from 'typeorm'
 import { FactoryNotDefinedError } from './errors/FactoryNotDefinedError'
 import { Factory } from './factory'
-import { FactoryFunction, EntityFactory } from './types'
+import { FactoryFunction } from './types'
 import { getNameOfEntity } from './utils/getNameOfEntity'
 
 const factoriesMap: Map<string, FactoryFunction<any, any>> = new Map()
 
-export const define = <Entity, Context>(entity: ObjectType<Entity>, factoryFn: FactoryFunction<Entity, Context>) => {
+export function define<Entity, Context>(entity: ObjectType<Entity>, factoryFn: FactoryFunction<Entity, Context>) {
   factoriesMap.set(getNameOfEntity(entity), factoryFn)
 }
 
-export const factory: EntityFactory =
-  <Entity, Context>(entity: ObjectType<Entity>) =>
-  (context?: Context) => {
+export function factory<Entity, Context>(entity: ObjectType<Entity>) {
+  return (context?: Context) => {
     const name = getNameOfEntity(entity)
 
-    const factory = factoriesMap.get(name)
-    if (!factory) {
+    const factoryFunction = factoriesMap.get(name)
+    if (!factoryFunction) {
       throw new FactoryNotDefinedError(name)
     }
 
-    return new Factory<Entity, Context>(entity, factory, context)
+    return new Factory<Entity, Context>(entity, factoryFunction, context)
   }
+}
 
-export const clearFactories = () => {
+export function clearFactories() {
   factoriesMap.clear()
 }

@@ -1,3 +1,3 @@
-export { configureConnection } from './configureConnection'
-export { fetchConnection } from './fetchConnection'
-export { getConnectionOptions } from './getConnectionOptions'
+export * from './configureConnection'
+export * from './fetchConnection'
+export * from './getConnectionOptions'

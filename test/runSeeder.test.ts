@@ -18,12 +18,12 @@ describe(runSeeder, () => {
   })
 
   test('Should do nothing without proper seeder', async () => {
-    await runSeeder(class Test {})
+    await runSeeder(class Test {} as any)
     expect(mockFn).toHaveBeenCalledTimes(0)
   })
 
   test('Should seed', async () => {
-    await runSeeder(PetSeeder)
+    await runSeeder(new PetSeeder())
     expect(mockFn).toHaveBeenCalledTimes(1)
   })
 })

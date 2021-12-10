@@ -1,5 +1,12 @@
-import { define } from '../../src/factoriesMap'
+import { define, factory } from '../../src/factoriesMap'
 import { Pet } from '../entities/Pet.entity'
-import { petFactoryFn } from './PetFactoryFunction'
+import { User } from '../entities/User.entity'
 
-define(Pet, petFactoryFn)
+define(Pet, () => {
+  const pet = new Pet()
+
+  pet.name = 'Tobi'
+  pet.owner = factory(User)() as any
+
+  return pet
+})

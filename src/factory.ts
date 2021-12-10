@@ -44,10 +44,10 @@ export class Factory<Entity, Context> {
    * Create a new entity and persist it
    */
   public async create(overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity> {
-    const connection = await fetchConnection()
-    const em = connection.createEntityManager()
     const entity = await this.makeEntity(overrideParams, true)
-    return em.save<Entity>(entity, saveOptions)
+
+    const connection = await fetchConnection()
+    return connection.createEntityManager().save<Entity>(entity, saveOptions)
   }
 
   /**
