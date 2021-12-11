@@ -5,20 +5,23 @@ on:
     branches: [ master, next ]
 
 jobs:
-  build:
+  coverage:
+    name: Generate coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: lts/gallium
+      - uses: actions/cache@v2.1.6
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --frozen-lockfile
       - run: yarn format:ci
       - run: yarn lint:ci
       - run: yarn typecheck
-      - name: Test
-        run: yarn test:cov
-      - name: Coveralls
-        uses: coverallsapp/github-action@master
+      - run: yarn test:cov
+      - uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
