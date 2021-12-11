@@ -1,7 +1,7 @@
-name: Pull request checks
+name: Generate coverage on CI
 
 on:
-  pull_request:
+  push:
     branches: [ master, next ]
 
 jobs:
@@ -10,9 +10,7 @@ jobs:
     strategy:
       matrix:
         node_version:
-          - lts/erbium
           - lts/fermium
-    name: Node ${{ matrix.node_version }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
@@ -20,11 +18,12 @@ jobs:
           node-version: ${{ matrix.node_version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - name: Format check
-        run: yarn format:ci
-      - name: Linter
-        run: yarn lint:ci
-      - name: Typecheck
-        run: yarn typecheck
-      - name: Jest
-        run: yarn test
+      - run: yarn format:ci
+      - run: yarn lint:ci
+      - run: yarn typecheck
+      - name: Test
+        run: yarn test:cov
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}

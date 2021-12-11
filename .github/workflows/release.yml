@@ -16,10 +16,6 @@ jobs:
           node-version: ${{ matrix.node_version }}
           cache: yarn
       - run: yarn install --frozen-lockfile
-      - run: yarn format:ci
-      - run: yarn lint:ci
-      - run: yarn typecheck
-      - run: yarn test
       - name: Build package
         run: yarn build
       - name: Semantic Release
