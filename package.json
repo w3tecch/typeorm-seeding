@@ -1,5 +1,5 @@
 {
-  "name": "@jb/typeorm-seeding",
+  "name": "typeorm-seeding",
   "version": "1.6.2",
   "description": "🌱 A delightful way to seed test data into your database.",
   "license": "MIT",

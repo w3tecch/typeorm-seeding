@@ -1,26 +1,40 @@
 <p align="center">
   <img src="./logo.png" alt="logo" width="160" />
 </p>
-
 <h1 align="center" style="text-align: center;">TypeORM Seeding</h1>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/typeorm-seeding">
-    <img src="https://img.shields.io/npm/v/typeorm-seeding" alt="NPM package" />
+  <a href="https://www.npmjs.com/package/@jorgebodega/typeorm-seeding">
+    <img alt="NPM latest version" src="https://img.shields.io/npm/v/@jorgebodega/typeorm-seeding/latest?style=for-the-badge">
   </a>
-  <a href="https://travis-ci.org/w3tecch/typeorm-seeding">
-    <img src="https://travis-ci.org/w3tecch/typeorm-seeding.svg?branch=master" alt="Build Status" />
+  <a href="https://www.npmjs.com/package/@jorgebodega/typeorm-seeding/v/next">
+    <img alt="NPM next version" src="https://img.shields.io/npm/v/@jorgebodega/typeorm-seeding/next?style=for-the-badge">
   </a>
-  <a href="https://david-dm.org/w3tecch/typeorm-seeding">
-    <img src="https://david-dm.org/w3tecch/typeorm-seeding/status.svg?style=flat" alt="Dependency" />
+  <a href="https://github.com/semantic-release/semantic-release">
+    <img src="https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release&style=for-the-badge" alt="Semantic release" />
+  </a> 
+</p>
+
+<p align="center">
+  <a href='https://coveralls.io/github/jorgebodega/typeorm-seeding'>
+    <img alt="Coveralls master branch" src="https://img.shields.io/coveralls/github/jorgebodega/typeorm-seeding?style=for-the-badge&label=coverage%2Fmaster">
   </a>
-    <a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="Sematic-Release" /></a>
+  <a href='https://coveralls.io/github/jorgebodega/typeorm-seeding?branch=next'>
+    <img alt="Coveralls next branch" src="https://img.shields.io/coveralls/github/jorgebodega/typeorm-seeding/next?style=for-the-badge&label=coverage%2Fnext">
+  </a>
+</p>
+
+<p align="center">
+    <img alt="Checks for master branch" src="https://img.shields.io/github/checks-status/jorgebodega/typeorm-seeding/master?style=for-the-badge">
+  <a href='https://coveralls.io/github/jorgebodega/typeorm-seeding'>
+    <img alt="Checks for next branch" src="https://img.shields.io/github/checks-status/jorgebodega/typeorm-seeding/next?label=checks%40next&style=for-the-badge">
+  </a>
 </p>
 
 <p align="center">
   <b>A delightful way to seed test data into your database.</b></br>
   <span>Inspired by the awesome framework <a href="https://laravel.com/">laravel</a> in PHP and of the repositories from <a href="https://github.com/pleerock">pleerock</a></span></br>
-  <sub>Made with ❤️ by <a href="https://github.com/hirsch88">Gery Hirschfeld</a> and <a href="https://github.com/w3tecch/typeorm-seeding/graphs/contributors">contributors</a></sub>
+  <sub>Made with ❤️ by <a href="https://github.com/hirsch88">Gery Hirschfeld</a>, <a href="https://github.com/jorgebodega">Jorge Bodega</a> and <a href="https://github.com/w3tecch/typeorm-seeding/graphs/contributors">contributors</a></sub>
 </p>
 
 <br />
@@ -233,7 +247,7 @@ For all entities we want to create, we need to define a factory. To do so we giv
 
 | Types           | Description                                                                     |
 | --------------- | ------------------------------------------------------------------------------- |
-| `Entity`         | TypeORM Entity like the user or the pet in the samples.                          |
+| `Entity`        | TypeORM Entity like the user or the pet in the samples.                         |
 | `Context`       | Argument to pass some static data into the factory function.                    |
 | `EntityFactory` | This object is used to make new filled entities or create it into the database. |
 
