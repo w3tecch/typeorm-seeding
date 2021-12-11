@@ -93,7 +93,6 @@ export class Factory<Entity, Context> {
         entity[attribute] = await attributeValue
       }
 
-      console.error(Factory)
       if (attributeValue instanceof Factory) {
         if (isSeeding) {
           entity[attribute] = await attributeValue.create()

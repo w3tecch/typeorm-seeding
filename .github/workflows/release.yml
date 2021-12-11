@@ -1,20 +1,16 @@
 name: Release
 
-on: workflow_dispatch
+on: 
+  workflow_dispatch:
 
 jobs:
   release:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node_version:
-          - lts/gallium
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node_version }}
-          cache: yarn
+          node-version: lts/gallium
       - run: yarn install --frozen-lockfile
       - name: Build package
         run: yarn build

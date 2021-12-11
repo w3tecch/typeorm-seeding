@@ -16,3 +16,5 @@ jest.mock('../ormconfig.ts', () => [
     seeds: ['test/seeders/**/*.seed.ts'],
   },
 ])
+
+process.on('unhandledRejection', () => void 0)
