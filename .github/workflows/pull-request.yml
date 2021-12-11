@@ -10,8 +10,8 @@ jobs:
     strategy:
       matrix:
         node_version:
-          - lts/erbium
           - lts/fermium
+          - lts/gallium
     name: Node ${{ matrix.node_version }}
     steps:
       - uses: actions/checkout@v2
