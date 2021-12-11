@@ -1,0 +1,31 @@
+name: Release
+
+on: workflow_dispatch
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version:
+          - lts/gallium
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: yarn
+      - run: yarn install --frozen-lockfile
+      - run: yarn format:ci
+      - run: yarn lint:ci
+      - run: yarn typecheck
+      - run: yarn test
+      - name: Build package
+        run: yarn build
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        with:
+          dry_run: true
