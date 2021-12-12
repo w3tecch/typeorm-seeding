@@ -17,12 +17,13 @@
     "url": "https://github.com/jorgebodega/typeorm-seeding.git"
   },
   "scripts": {
-    "prebuild": "rimraf dist",
     "build": "tsc --project ./tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
     "format:ci": "prettier --check \"src/**/*.ts\" \"sample/**/*.ts\"",
     "lint": "eslint \"src/**/*.ts\" \"sample/**/*.ts\" --fix",
     "lint:ci": "eslint \"src/**/*.ts\" \"sample/**/*.ts\"",
+    "prebuild": "rimraf dist",
+    "prepack": "yarn build",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
     "schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log",
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",
