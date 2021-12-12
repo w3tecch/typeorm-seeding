@@ -1,6 +1,11 @@
 name: Release
 
-on: [workflow_dispatch]
+on: 
+  workflow_dispatch:
+    inputs:
+      dry-run:
+        required: false
+        default: false
 
 jobs:
   release:
@@ -23,4 +28,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
-          dry_run: true
+          dry_run: ${{ github.event.inputs.dry-run }}
