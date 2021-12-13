@@ -1,9 +1,9 @@
-~
-.github
-.vscode
-sample
-src
-test
+/~
+/.github
+/.vscode
+/sample
+/src
+/test
 .editorconfig
 .eslintrc.js
 .nvmrc
