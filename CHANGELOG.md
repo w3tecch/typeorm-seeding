@@ -1,3 +1,10 @@
+# [2.0.0-next.2](https://github.com/jorgebodega/typeorm-seeding/compare/v2.0.0-next.1...v2.0.0-next.2) (2021-12-13)
+
+
+### Bug Fixes
+
+* npmignore not working properly ([2d1d898](https://github.com/jorgebodega/typeorm-seeding/commit/2d1d8986351ec647f88df7f3a72c37b149826fa3))
+
 # [2.0.0-next.1](https://github.com/jorgebodega/typeorm-seeding/compare/v1.6.2...v2.0.0-next.1) (2021-12-12)
 
 
