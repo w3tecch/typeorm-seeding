@@ -1,6 +1,6 @@
 import { Arguments, Argv, CommandModule, exit } from 'yargs'
 import ora, { Ora } from 'ora'
-import { bold, gray } from 'chalk'
+import { gray } from 'chalk'
 import { configureConnection, fetchConnection } from '../connection'
 import { useFactories } from '../useFactories'
 import { Seeder } from '../seeder'
@@ -44,8 +44,6 @@ export class SeedCommand implements CommandModule {
   }
 
   async handler(args: SeedCommandArguments) {
-    const { default: pkg } = await import('../../package.json')
-    console.log('🌱  ' + bold(`TypeORM Seeding v${pkg.version}`))
     const spinner = ora('Loading ormconfig').start()
 
     // Get TypeORM config file

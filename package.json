@@ -23,7 +23,6 @@
     "lint": "eslint \"src/**/*.ts\" \"sample/**/*.ts\" --fix",
     "lint:ci": "eslint \"src/**/*.ts\" \"sample/**/*.ts\"",
     "prebuild": "rimraf dist",
-    "prepack": "yarn build",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
     "schema:log": "ts-node ./node_modules/typeorm/cli.js schema:log",
     "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",

@@ -1,5 +1,5 @@
 import { Argv, Arguments, CommandModule, exit } from 'yargs'
-import { bold, red } from 'chalk'
+import { red } from 'chalk'
 import { configureConnection, getConnectionOptions } from '../connection'
 
 interface ConfigCommandArguments extends Arguments {
@@ -33,8 +33,6 @@ export class ConfigCommand implements CommandModule {
   }
 
   async handler(args: ConfigCommandArguments) {
-    const { default: pkg } = await import('../../package.json')
-    console.log('🌱  ' + bold(`TypeORM Seeding v${pkg.version}`))
     try {
       configureConnection({
         root: args.root,
