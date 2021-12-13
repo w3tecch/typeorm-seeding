@@ -1,0 +1,15 @@
+{
+  "extends": [
+    "config:base",
+    ":assignAndReview(jorgebodega)",
+    ":automergeDisabled",
+    ":semanticCommits",
+    ":semanticCommitScopeDisabled",
+    ":timezone(UTC+1)"
+  ],
+  "baseBranches": ["next"],
+  "schedule": ["every weekend"],
+  "npm": {
+    "stabilityDays": 5
+  }
+}
