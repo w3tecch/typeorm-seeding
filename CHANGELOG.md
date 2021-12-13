@@ -1,3 +1,10 @@
+# [2.0.0-next.3](https://github.com/jorgebodega/typeorm-seeding/compare/v2.0.0-next.2...v2.0.0-next.3) (2021-12-13)
+
+
+### Bug Fixes
+
+* Npm package not handling correctly entrypoint ([b51a099](https://github.com/jorgebodega/typeorm-seeding/commit/b51a099d20a7df30f017693852b15ced7587f04a))
+
 # [2.0.0-next.2](https://github.com/jorgebodega/typeorm-seeding/compare/v2.0.0-next.1...v2.0.0-next.2) (2021-12-13)
 
 
