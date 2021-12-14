@@ -3,6 +3,7 @@
     "config:base",
     ":assignAndReview(jorgebodega)",
     ":automergeDisabled",
+    ":disableDependencyDashboard",
     ":semanticCommits",
     ":semanticCommitScopeDisabled",
     ":timezone(UTC+1)"
@@ -11,5 +12,11 @@
   "schedule": ["every weekend"],
   "npm": {
     "stabilityDays": 5
-  }
+  },
+  "packageRules": [
+    {
+      "matchPackageNames": ["chalk", "ora"],
+      "rangeStrategy": "replace"
+    }
+  ]
 }
