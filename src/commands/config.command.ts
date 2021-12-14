@@ -1,47 +1,50 @@
-import * as yargs from 'yargs'
-import * as chalk from 'chalk'
-import { printError } from '../utils/log.util'
+import { Argv, Arguments, CommandModule, exit } from 'yargs'
+import { red } from 'chalk'
 import { configureConnection, getConnectionOptions } from '../connection'
 
-export class ConfigCommand implements yargs.CommandModule {
+interface ConfigCommandArguments extends Arguments {
+  root?: string
+  configName?: string
+  connection?: string
+}
+
+export class ConfigCommand implements CommandModule {
   command = 'config'
   describe = 'Show the TypeORM config'
 
-  builder(args: yargs.Argv) {
+  builder(args: Argv) {
     return args
       .option('n', {
         alias: 'configName',
-        default: '',
+        type: 'string',
         describe: 'Name of the typeorm config file (json or js).',
       })
       .option('c', {
         alias: 'connection',
-        default: '',
+        type: 'string',
+        default: 'default',
         describe: 'Name of the typeorm connection',
       })
       .option('r', {
         alias: 'root',
-        default: process.cwd(),
+        type: 'string',
         describe: 'Path to your typeorm config file',
       })
   }
 
-  async handler(args: yargs.Arguments) {
-    const log = console.log
-    const pkg = require('../../package.json')
-    log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
+  async handler(args: ConfigCommandArguments) {
     try {
       configureConnection({
-        root: args.root as string,
-        configName: args.configName as string,
-        connection: args.connection as string,
+        root: args.root,
+        configName: args.configName,
+        connection: args.connection,
       })
-      const option = await getConnectionOptions()
-      log(option)
-    } catch (error) {
-      printError('Could not find the orm config file', error)
-      process.exit(1)
+      const options = await getConnectionOptions()
+      console.log(options)
+    } catch (error: any) {
+      console.log('\n❌ ', red('Could not find the orm config file'))
+      console.error(error)
+      exit(1, error as Error)
     }
-    process.exit(0)
   }
 }

@@ -1,17 +1,14 @@
 {
+  "extends": "@tsconfig/node16/tsconfig.json",
   "compilerOptions": {
-    "lib": ["es5", "es6"],
-    "target": "es5",
-    "module": "commonjs",
-    "outDir": "./dist",
+    "outDir": "dist",
+    "target": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
     "declaration": true,
-    "allowSyntheticDefaultImports": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "noImplicitAny": true
+    "resolveJsonModule": true
   },
-  "exclude": ["node_modules"]
 }

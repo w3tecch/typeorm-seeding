@@ -1,39 +1,111 @@
 <p align="center">
   <img src="./logo.png" alt="logo" width="160" />
 </p>
-
 <h1 align="center" style="text-align: center;">TypeORM Seeding</h1>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/typeorm-seeding">
-    <img src="https://img.shields.io/npm/v/typeorm-seeding" alt="NPM package" />
+  <img alt="NPM" src="https://img.shields.io/npm/l/@jorgebodega/typeorm-seeding?style=for-the-badge">
+  <a href="https://www.npmjs.com/package/@jorgebodega/typeorm-seeding">
+    <img alt="NPM latest version" src="https://img.shields.io/npm/v/@jorgebodega/typeorm-seeding/latest?style=for-the-badge">
   </a>
-  <a href="https://travis-ci.org/w3tecch/typeorm-seeding">
-    <img src="https://travis-ci.org/w3tecch/typeorm-seeding.svg?branch=master" alt="Build Status" />
+  <a href="https://www.npmjs.com/package/@jorgebodega/typeorm-seeding/v/next">
+    <img alt="NPM next version" src="https://img.shields.io/npm/v/@jorgebodega/typeorm-seeding/next?style=for-the-badge">
   </a>
-  <a href="https://david-dm.org/w3tecch/typeorm-seeding">
-    <img src="https://david-dm.org/w3tecch/typeorm-seeding/status.svg?style=flat" alt="Dependency" />
+  <a href="https://github.com/semantic-release/semantic-release">
+    <img src="https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release&style=for-the-badge" alt="Semantic release" />
+  </a> 
+</p>
+
+<p align="center">
+  <a href='https://coveralls.io/github/jorgebodega/typeorm-seeding'>
+    <img alt="Coveralls master branch" src="https://img.shields.io/coveralls/github/jorgebodega/typeorm-seeding/master?style=for-the-badge">
   </a>
-    <a href="https://github.com/semantic-release/semantic-release"><img src="https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg" alt="Sematic-Release" /></a>
+  <a href='https://coveralls.io/github/jorgebodega/typeorm-seeding?branch=next'>
+    <img alt="Coveralls next branch" src="https://img.shields.io/coveralls/github/jorgebodega/typeorm-seeding/next?style=for-the-badge&label=coverage%40next">
+  </a>
+</p>
+
+<p align="center">
+  <img alt="Checks for master branch" src="https://img.shields.io/github/checks-status/jorgebodega/typeorm-seeding/master?style=for-the-badge">
+  <a href='https://coveralls.io/github/jorgebodega/typeorm-seeding'>
+    <img alt="Checks for next branch" src="https://img.shields.io/github/checks-status/jorgebodega/typeorm-seeding/next?label=checks%40next&style=for-the-badge">
+  </a>
 </p>
 
 <p align="center">
   <b>A delightful way to seed test data into your database.</b></br>
   <span>Inspired by the awesome framework <a href="https://laravel.com/">laravel</a> in PHP and of the repositories from <a href="https://github.com/pleerock">pleerock</a></span></br>
-  <sub>Made with ❤️ by <a href="https://github.com/hirsch88">Gery Hirschfeld</a> and <a href="https://github.com/w3tecch/typeorm-seeding/graphs/contributors">contributors</a></sub>
+  <sub>Made with ❤️ by <a href="https://github.com/hirsch88">Gery Hirschfeld</a>, <a href="https://github.com/jorgebodega">Jorge Bodega</a> and <a href="https://github.com/w3tecch/typeorm-seeding/graphs/contributors">contributors</a></sub>
 </p>
 
 <br />
 
 ## ❯ Table of contents
 
-- [Introduction](#-introduction)
 - [Installation](#-installation)
+- [Introduction](#-introduction)
 - [Basic Seeder](#-basic-seeder)
 - [Using Entity Factory](#-using-entity-factory)
 - [Seeding Data in Testing](#-seeding-data-in-testing)
-- [Changelog](#-changelog)
-- [License](#-license)
+
+## ❯ Installation
+
+Before using this TypeORM extension please read the [TypeORM Getting Started](https://typeorm.io/#/) documentation. This explains how to setup a TypeORM project.
+
+After that install the extension with `npm` or `yarn`. Add development flag if you are not using seeders nor factories in production code.
+
+```bash
+npm i [-D] @jorgebodega/typeorm-seeding
+yarn add [-D] @jorgebodega/typeorm-seeding
+```
+
+Optional, install the type definitions of the `Faker` library.
+
+```bash
+npm install -D @types/faker
+```
+
+### Configuration
+
+To configure the path to your seeds and factories change the TypeORM config file or use environment variables like TypeORM. If both are used the environment variables will be prioritized.
+
+**ormconfig.js**
+
+```JavaScript
+module.exports = {
+  ...
+  seeds: ['src/seeds/**/*{.ts,.js}'],
+  factories: ['src/factories/**/*{.ts,.js}'],
+}
+```
+
+**.env**
+
+```
+TYPEORM_SEEDING_FACTORIES=src/factories/**/*{.ts,.js}
+TYPEORM_SEEDING_SEEDS=src/seeds/**/*{.ts,.js}
+```
+
+### CLI Configuration
+
+Add the following scripts to your `package.json` file to configure the seed cli commands.
+
+```
+"scripts": {
+  "seed:config": "typeorm-seeding config",
+  "seed:run": "typeorm-seeding seed",
+  ...
+}
+```
+
+#### CLI Options
+
+| Option                 | Default               | Description                                                                  |
+| ---------------------- | --------------------- | ---------------------------------------------------------------------------- |
+| `--seed` or `-s`       | null                  | Option to specify a seeder class to run individually. (Only on seed command) |
+| `--connection` or `-c` | TypeORM default value | Name of the TypeORM connection. Required if there are multiple connections.  |
+| `--configName` or `-n` | TypeORM default value | Name to the TypeORM config file.                                             |
+| `--root` or `-r`       | TypeORM default value | Path to the TypeORM config file.                                             |
 
 ## ❯ Introduction
 
@@ -122,96 +194,15 @@ export default class CreatePets implements Seeder {
 
 Until [this issue](https://github.com/w3tecch/typeorm-seeding/issues/119) is closed, seeder files must not contain any other export statement besides the one that exports the seeder class.
 
-## ❯ Installation
-
-Before using this TypeORM extension please read the [TypeORM Getting Started](https://typeorm.io/#/) documentation. This explains how to setup a TypeORM project.
-
-After that install the extension with `npm` or `yarn`.
-
-```bash
-npm i typeorm-seeding
-# or
-yarn add typeorm-seeding
-```
-
-Optional, install the type definitions of the `Faker` library.
-
-```bash
-npm install -D @types/faker
-```
-
-### Configuration
-
-To configure the path to your seeds and factories change the TypeORM config file (ormconfig.js or ormconfig.json).
-
-> The default paths are `src/database/{seeds,factories}/**/*{.ts,.js}`
-
-**ormconfig.js**
-
-```JavaScript
-module.exports = {
-  ...
-  seeds: ['src/seeds/**/*{.ts,.js}'],
-  factories: ['src/factories/**/*{.ts,.js}'],
-}
-```
-
-**.env**
-
-```
-TYPEORM_SEEDING_FACTORIES=src/factories/**/*{.ts,.js}
-TYPEORM_SEEDING_SEEDS=src/seeds/**/*{.ts,.js}
-```
-
-### CLI Configuration
-
-Add the following scripts to your `package.json` file to configure the seed cli commands.
-
-```
-"scripts": {
-  "seed:config": "ts-node ./node_modules/typeorm-seeding/dist/cli.js config",
-  "seed:run": "ts-node ./node_modules/typeorm-seeding/dist/cli.js seed",
-  ...
-}
-```
-
-To execute the seed run `npm run seed:run` in the terminal.
-
-> Note: More CLI options are [here](#cli-options)
-
-Add the following TypeORM cli commands to the package.json to drop and sync the database.
-
-```
-"scripts": {
-  ...
-  "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
-  "schema:sync": "ts-node ./node_modules/typeorm/cli.js schema:sync",
-  ...
-}
-```
-
-#### CLI Options
-
-| Option                 | Default         | Description                                                                 |
-| ---------------------- | --------------- | --------------------------------------------------------------------------- |
-| `--seed` or `-s`       | null            | Option to specify a seeder class to run individually.                       |
-| `--connection` or `-c` | null            | Name of the typeorm connection. Required if there are multiple connections. |
-| `--configName` or `-n` | `ormconfig.js`  | Name to the typeorm config file.                                            |
-| `--root` or `-r`       | `process.cwd()` | Path to the typeorm config file.                                            |
-
 ## ❯ Basic Seeder
 
-A seeder class only contains one method by default `run`. Within this method, you may insert data into your database. For manually insertion use the [Query Builder](https://typeorm.io/#/select-query-builder) or use the [Entity Factory](#-using-entity-factory)
+A seeder class only use `run` method. Within this method, you may insert data into your database. For manually insertion use the [Query Builder](https://typeorm.io/#/select-query-builder) or use the [Entity Factory](#-using-entity-factory)
 
 > Note. The seeder files will be executed alphabetically.
 
 ```typescript
-import { Factory, Seeder } from 'typeorm-seeding'
-import { Connection } from 'typeorm'
-import { User } from '../entities'
-
 export default class CreateUsers implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<any> {
+  public async run(factory: EntityFactory, connection: Connection): Promise<any> {
     await connection
       .createQueryBuilder()
       .insert()
@@ -233,7 +224,7 @@ For all entities we want to create, we need to define a factory. To do so we giv
 
 | Types           | Description                                                                     |
 | --------------- | ------------------------------------------------------------------------------- |
-| `Entity`         | TypeORM Entity like the user or the pet in the samples.                          |
+| `Entity`        | TypeORM Entity like the user or the pet in the samples.                         |
 | `Context`       | Argument to pass some static data into the factory function.                    |
 | `EntityFactory` | This object is used to make new filled entities or create it into the database. |
 
@@ -246,11 +237,11 @@ define: <Entity, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Con
 ```
 
 ```typescript
-import Faker from 'faker'
-import { define } from 'typeorm-seeding'
-import { User } from '../entities'
-
-define(User, (faker: typeof Faker, context: { roles: string[] }) => { ... })
+define(User, (faker: typeof Faker, context: { roles: string[] }) => {
+  const user = new User()
+  ...
+  return user
+})
 ```
 
 ### `factory`
@@ -258,7 +249,7 @@ define(User, (faker: typeof Faker, context: { roles: string[] }) => { ... })
 Factory retrieves the defined factory function and returns the EntityFactory to start creating new enities.
 
 ```typescript
-factory: (entity: Entity) => (context?: Context) => EntityFactory<Entity, Context>
+factory: (entity: Entity) => (context?: Context) => Factory<Entity, Context>
 ```
 
 ```typescript
@@ -266,14 +257,14 @@ factory(Pet)()
 factory(Pet)({ name: 'Balou' })
 ```
 
-### EntityFactory
+### Factory
 
 #### `map`
 
-Use the `.map()` function to alter the generated value before they get persisted.
+Use the `.map()` function to alter the generated value before they get processed.
 
 ```typescript
-map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Context>
+map(mapFunction: (entity: Entity) => Promise<Entity>): Factory<Entity, Context>
 ```
 
 ```typescript
@@ -282,6 +273,7 @@ await factory(User)()
     const pets: Pet[] = await factory(Pet)().createMany(2)
     const petIds = pets.map((pet: Pet) => pet.Id)
     await user.pets().attach(petIds)
+    return user
   })
   .createMany(5)
 ```
@@ -290,10 +282,11 @@ await factory(User)()
 
 Make and makeMany executes the factory functions and return a new instance of the given entity. The instance is filled with the generated values from the factory function, but not saved in the database.
 
-**overrideParams** - Override some of the attributes of the entity.
+- **overrideParams** - Override some of the attributes of the entity.
 
 ```typescript
-make(overrideParams: EntityProperty<Entity> = {}): Promise<Entity>
+make(overrideParams: Partial<Entity> = {}): Promise<Entity>
+makeMany(amount: number, overrideParams: Partial<Entity> = {}): Promise<Entity>
 ```
 
 ```typescript
@@ -307,14 +300,14 @@ await factory(User)().makeMany(10, { email: 'other@mail.com' })
 
 #### `create` & `createMany`
 
-the create and createMany method is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database.
+the create and createMany method is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database using TypeORM entity manager.
 
-**overrideParams** - Override some of the attributes of the entity.
-**saveOptions** - [Save options](https://github.com/typeorm/typeorm/blob/master/src/repository/SaveOptions.ts) from typeorm
+- **overrideParams** - Override some of the attributes of the entity.
+- **saveOptions** - [Save options](https://github.com/typeorm/typeorm/blob/master/src/repository/SaveOptions.ts) from TypeORM
 
 ```typescript
-create(overrideParams: EntityProperty<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
-createMany(amount: number, overrideParams: EntityProperty<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
+create(overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
+createMany(amount: number, overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
 ```
 
 ```typescript
@@ -330,52 +323,36 @@ await factory(User)().create({ email: 'other@mail.com' }, { listeners: false })
 await factory(User)().createMany(10, { email: 'other@mail.com' }, { listeners: false })
 ```
 
+#### Execution order
+
+As the order of execution can be complex, you can check it here:
+
+1. **Context**: The context is used when the entity is being created
+2. **Map function**: Map function alters the already existing entity.
+3. **Override params**: Alters the already existing entity.
+4. **Promises**: If some attribute is a promise, the promise will be resolved before the entity is created.
+5. **Factories**: If some attribute is a factory, the factory will be executed with `make`/`create` like the previous one.
+
 ## ❯ Seeding Data in Testing
 
-The entity factories can also be used in testing. To do so call the `useSeeding` function, which loads all the defined entity factories.
+The entity factories can also be used in testing. To do so call the `useFactories` or `useSeeders` function.
 
-Choose your test database wisley. We suggest to run your test in a sqlite in memory database.
-
-```json
-{
-  "type": "sqlite",
-  "name": "memory",
-  "database": ":memory:"
-}
-```
-
-However, if the test database is not in memory, than use the `--runInBand` flag to disable parallelizes runs.
-
-```typescript
-describe("UserService", () => {
-  let connection: Connection
-
-  beforeAll(async (done) => {
-    connection = await useRefreshDatabase({ connection: 'memory' })
-    await useSeeding()
-
-    const user = await factory(User)().make()
-    const createdUser = await factory(User)().create()
-
-    await runSeeder(CreateUserSeed)
-    done()
-  })
-
-  afterAll(async (done) => {
-    await tearDownDatabase()
-    done()
-  })
-
-  test('Should ...', () => { ... })
-})
-```
-
-### `useSeeding`
+### `useFactories`
 
 Loads the defined entity factories.
 
 ```typescript
-useSeeding(options: ConfigureOption = {}): Promise<void>
+useFactories(options?: Partial<ConnectionConfiguration>): Promise<void>
+useFactories(seeders?: string[], options?: Partial<ConnectionConfiguration>): Promise<void>
+```
+
+### `useSeeders`
+
+Loads the seeders, and could execute them.
+
+```typescript
+useSeeders(executeSeeders?: boolean, options?: Partial<ConnectionConfiguration>): Promise<Seeder[]>
+useSeeders(executeSeeders?: boolean, seeders?: string[], options?: Partial<ConnectionConfiguration>): Promise<Seeder[]>
 ```
 
 ### `runSeeder`
@@ -383,47 +360,15 @@ useSeeding(options: ConfigureOption = {}): Promise<void>
 Runs the given seeder class.
 
 ```typescript
-runSeeder(seed: SeederConstructor): Promise<void>
+runSeeder(seeder: Seeder): Promise<void>
 ```
 
-### `useRefreshDatabase`
-
-Connects to the database, drops it and recreates the schema.
+### `ConnectionConfiguration`
 
 ```typescript
-useRefreshDatabase(options: ConfigureOption = {}): Promise<Connection>
-```
-
-### `tearDownDatabase`
-
-Closes the open database connection.
-
-```typescript
-tearDownDatabase(): Promise<void>
-```
-
-### `ConfigureOption`
-
-```typescript
-interface ConfigureOption {
+interface ConnectionConfiguration {
   root?: string // path to the orm config file. Default = process.cwd()
   configName?: string // name of the config file. eg. ormconfig.js
-  connection?: string // name of the database connection.
+  connection = 'default' // name of the database connection.
 }
 ```
-
-## ❯ Example Projects
-
-> Please fill free to add your open-source project here. This helps others to better understand the seeding technology.
-
-| Project                                                                                  | Description                                                                                                                    |
-| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| [copa-ch/copa-backend](https://github.com/copa-ch/copa-backend/tree/master/src/database) | 🚀 Nest application written in TypeScript for the COPA project. This app manages your tournaments and generates the schedules. |
-
-## ❯ Changelog
-
-[Changelog](https://github.com/w3tecch/typeorm-seeding/releases)
-
-## ❯ License
-
-[MIT](LICENSE)

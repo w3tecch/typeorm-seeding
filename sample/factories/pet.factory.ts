@@ -1,5 +1,5 @@
 import Faker from 'faker'
-import { define, factory } from '../../src/typeorm-seeding'
+import { define, factory } from '../../src'
 import { Pet } from '../entities/Pet.entity'
 import { User } from '../entities/User.entity'
 
