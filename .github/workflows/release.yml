@@ -16,11 +16,13 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: lts/gallium
-      - uses: actions/cache@v2.1.7
+      - id: modules-cache
+        uses: actions/cache@v2.1.7
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --frozen-lockfile
+        if: steps.modules-cache.outputs.cache-hit != 'true'
       - name: Build package
         run: yarn build
       - uses: cycjimmy/semantic-release-action@v2

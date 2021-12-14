@@ -1,15 +1,12 @@
-name: Generate coverage on CI
+name: Install dependencies
 
-on:
-  push:
-    branches: [ master, next ]
+on: [workflow_call]
 
 jobs:
-  coverage:
-    name: Generate coverage
+  dependencies:
+    name: Install dependencies and cache them
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: lts/gallium
@@ -20,10 +17,3 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --frozen-lockfile
         if: steps.modules-cache.outputs.cache-hit != 'true'
-      - run: yarn format:ci
-      - run: yarn lint:ci
-      - run: yarn typecheck
-      - run: yarn test:cov
-      - uses: coverallsapp/github-action@master
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
