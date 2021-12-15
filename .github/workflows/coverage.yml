@@ -1,12 +1,12 @@
 name: Generate coverage on CI
-
 on:
+  pull_request:
+    branches: [ master, next ]
   push:
     branches: [ master, next ]
-
 jobs:
   coverage:
-    name: Generate coverage
+    name: Test coverage
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,9 +20,6 @@ jobs:
           key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - run: yarn install --frozen-lockfile
         if: steps.modules-cache.outputs.cache-hit != 'true'
-      - run: yarn format:ci
-      - run: yarn lint:ci
-      - run: yarn typecheck
       - run: yarn test:cov
       - uses: coverallsapp/github-action@master
         with:

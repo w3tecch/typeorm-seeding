@@ -1,5 +1,4 @@
 name: Quality checks
-description: Ensure that the code is well-written and follows best practices.
 on:
   push:
     branches: [ master, next ]

@@ -1,18 +1,18 @@
 name: Release
-
 on: 
   workflow_dispatch:
     inputs:
       dry-run:
         required: false
         default: false
-
 jobs:
   release:
     name: Generate a new release
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v2
         with:
           node-version: lts/gallium

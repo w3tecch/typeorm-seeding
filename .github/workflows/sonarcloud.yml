@@ -1,4 +1,4 @@
-name: Update code to SonarCloud
+name: SonarCloud
 on:
   pull_request:
     branches: [ master, next ]
@@ -6,7 +6,7 @@ on:
     branches: [ master, next ]
 jobs:
   sonarcloud:
-    name: Test coverage
+    name: Upload code to SonarCloud
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
