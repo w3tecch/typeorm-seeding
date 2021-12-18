@@ -42,7 +42,7 @@
     "@types/faker": "5.5.9",
     "@types/glob": "7.2.0",
     "@types/jest": "27.0.3",
-    "@types/node": "16.11.12",
+    "@types/node": "16.11.14",
     "@types/yargs": "17.0.7",
     "@typescript-eslint/eslint-plugin": "5.7.0",
     "@typescript-eslint/parser": "5.7.0",
