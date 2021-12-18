@@ -47,7 +47,7 @@
     "@typescript-eslint/eslint-plugin": "5.7.0",
     "@typescript-eslint/parser": "5.7.0",
     "bcryptjs": "2.4.3",
-    "eslint": "8.4.1",
+    "eslint": "8.5.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.25.3",
     "jest": "27.4.5",
