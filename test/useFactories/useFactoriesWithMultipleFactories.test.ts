@@ -6,7 +6,7 @@ import { User } from '../entities/User.entity'
 describe(useFactories, () => {
   test('Should import all factories', async () => {
     await useFactories()
-    expect(factory(User)()).toBeDefined()
-    expect(factory(Pet)()).toBeDefined()
+    expect(factory(User)).toBeDefined()
+    expect(factory(Pet)).toBeDefined()
   })
 })

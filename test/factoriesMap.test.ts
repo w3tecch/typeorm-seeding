@@ -15,11 +15,11 @@ describe('Factories map handler methods', () => {
 
     test('Should raise an error if there are no factory defined', () => {
       const TestEntity = (): any => void 0
-      expect(() => factory(TestEntity)()).toThrow(FactoryNotDefinedError)
+      expect(() => factory(TestEntity)).toThrow(FactoryNotDefinedError)
     })
 
     test('Should get factory defined for entity', () => {
-      const userFactory = factory(User)()
+      const userFactory = factory(User)
       expect(userFactory).toBeDefined()
     })
   })

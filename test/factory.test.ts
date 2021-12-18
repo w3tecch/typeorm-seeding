@@ -8,8 +8,8 @@ import { userFactoryFn } from './factories/UserFactoryFunction'
 
 describe(Factory, () => {
   let connection: Connection
-  let userFactory: Factory<User, any>
-  let petFactory: Factory<Pet, any>
+  let userFactory: Factory<User>
+  let petFactory: Factory<Pet>
   const petFn = () => {
     const pet = new Pet()
 
@@ -27,8 +27,8 @@ describe(Factory, () => {
   })
 
   beforeEach(() => {
-    userFactory = new Factory<User, any>(User, userFactoryFn)
-    petFactory = new Factory<Pet, any>(Pet, petFn)
+    userFactory = new Factory<User>(User, userFactoryFn)
+    petFactory = new Factory<Pet>(Pet, petFn)
   })
 
   afterAll(async () => {
@@ -38,7 +38,7 @@ describe(Factory, () => {
 
   describe(Factory.prototype.make, () => {
     test('Should raise an error if there are no factory defined', () => {
-      const nullishFactory = new Factory<User, any>(User, null as any)
+      const nullishFactory = new Factory<User>(User, null as any)
 
       expect(nullishFactory.make()).rejects.toThrow(Error)
     })

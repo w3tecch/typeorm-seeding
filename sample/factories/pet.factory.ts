@@ -10,6 +10,6 @@ define(Pet, (faker: typeof Faker) => {
   const pet = new Pet()
   pet.name = name
   pet.age = faker.datatype.number()
-  pet.user = factory(User)({ roles: ['admin'] }) as any
+  pet.user = factory(User) as any
   return pet
 })

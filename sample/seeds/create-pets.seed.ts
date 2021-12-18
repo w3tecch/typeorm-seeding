@@ -4,6 +4,6 @@ import { Pet } from '../entities/Pet.entity'
 
 export default class CreatePets extends Seeder {
   public async run(factory: EntityFactory): Promise<void> {
-    await factory(Pet)().create()
+    await factory(Pet).create()
   }
 }

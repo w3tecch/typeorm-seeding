@@ -5,14 +5,10 @@ import { EntityNotDefinedError } from './errors/EntityNotDefinedError'
 import { FactoryFunction } from './types'
 import { isPromiseLike } from './utils/isPromiseLike'
 
-export class Factory<Entity, Context> {
+export class Factory<Entity> {
   private mapFunction?: (entity: Entity) => Promise<Entity>
 
-  constructor(
-    public entity: ObjectType<Entity>,
-    private factory: FactoryFunction<Entity, Context>,
-    private context?: Context,
-  ) {}
+  constructor(public entity: ObjectType<Entity>, private factory: FactoryFunction<Entity>) {}
 
   /**
    * This function is used to alter the generated values of entity, before it
@@ -71,7 +67,7 @@ export class Factory<Entity, Context> {
       throw new EntityNotDefinedError(this.entity)
     }
 
-    let entity = this.factory(Faker, this.context)
+    let entity = this.factory(Faker)
 
     if (this.mapFunction) {
       entity = await this.mapFunction(entity)

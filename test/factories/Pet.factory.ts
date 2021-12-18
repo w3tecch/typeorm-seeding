@@ -6,7 +6,7 @@ define(Pet, () => {
   const pet = new Pet()
 
   pet.name = 'Tobi'
-  pet.owner = factory(User)() as any
+  pet.owner = factory(User) as any
 
   return pet
 })

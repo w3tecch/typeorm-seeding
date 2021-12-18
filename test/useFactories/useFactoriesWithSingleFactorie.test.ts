@@ -6,7 +6,7 @@ import { User } from '../entities/User.entity'
 describe(useFactories, () => {
   test('Should import selected factories by glob expression', async () => {
     await useFactories(['test/**/User.factory.ts'])
-    expect(factory(User)()).toBeDefined()
-    expect(() => factory(Pet)()).toThrowError(Error)
+    expect(factory(User)).toBeDefined()
+    expect(() => factory(Pet)).toThrowError(Error)
   })
 })

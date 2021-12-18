@@ -4,6 +4,6 @@ import { User } from '../entities/User.entity'
 
 export default class UserSeeder extends Seeder {
   public async run(factory: EntityFactory): Promise<void> {
-    await factory(User)().createMany(2)
+    await factory(User).createMany(2)
   }
 }
