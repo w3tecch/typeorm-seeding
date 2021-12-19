@@ -1,5 +1,4 @@
 export * from './connection'
-export * from './facade'
 export * from './runSeeder'
 export * from './seeder'
 export * from './types'
