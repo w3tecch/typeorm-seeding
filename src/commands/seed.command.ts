@@ -2,7 +2,6 @@ import { Arguments, Argv, CommandModule, exit } from 'yargs'
 import ora, { Ora } from 'ora'
 import { gray } from 'chalk'
 import { configureConnection, fetchConnection } from '../connection'
-import { useFactories } from '../useFactories'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../useSeeders'
 import { runSeeder } from '../runSeeder'
@@ -56,15 +55,6 @@ export class SeedCommand implements CommandModule {
       spinner.succeed('ORM Config loaded')
     } catch (error) {
       panic(spinner, error as Error, 'Could not load the config file!')
-    }
-
-    // Find all factories and seed with help of the config
-    spinner.start('Importing Factories')
-    try {
-      await useFactories()
-      spinner.succeed('Factories are imported')
-    } catch (error) {
-      panic(spinner, error as Error, 'Could not import factories!')
     }
 
     // Show seeds in the console
