@@ -1,6 +1,5 @@
 export * from './connection'
 export * from './facade'
-export * from './factoriesMap'
 export * from './runSeeder'
 export * from './seeder'
 export * from './types'
