@@ -1,5 +1,4 @@
-import * as Faker from 'faker'
-import { SaveOptions } from 'typeorm'
+import type { SaveOptions } from 'typeorm'
 import { fetchConnection } from './connection'
 import { isPromiseLike } from './utils/isPromiseLike'
 

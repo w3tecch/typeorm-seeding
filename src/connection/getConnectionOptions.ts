@@ -1,5 +1,5 @@
 import { ConnectionOptionsReader } from 'typeorm'
-import { ConnectionOptions } from '../types'
+import type { ConnectionOptions } from '../types'
 import { ConnectionConfigurationManager } from './ConnectionConfigurationManager'
 
 export async function getConnectionOptions(): Promise<ConnectionOptions> {

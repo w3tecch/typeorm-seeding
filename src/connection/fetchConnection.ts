@@ -1,4 +1,5 @@
-import { Connection, createConnection, getConnection } from 'typeorm'
+import type { Connection } from 'typeorm'
+import { createConnection, getConnection } from 'typeorm'
 import { ConnectionConfigurationManager } from './ConnectionConfigurationManager'
 import { getConnectionOptions } from './getConnectionOptions'
 

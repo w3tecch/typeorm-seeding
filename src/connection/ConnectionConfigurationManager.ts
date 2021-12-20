@@ -1,4 +1,4 @@
-import { ConnectionConfiguration } from '../types'
+import type { ConnectionConfiguration } from '../types'
 
 export class ConnectionConfigurationManager {
   private static _instance: ConnectionConfigurationManager
