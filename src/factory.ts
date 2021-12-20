@@ -5,7 +5,7 @@ import { isPromiseLike } from './utils/isPromiseLike'
 
 export abstract class Factory<Entity> {
   private mapFunction?: (entity: Entity) => void
-  protected abstract definition(faker: typeof Faker): Entity
+  protected abstract definition(): Entity
 
   /**
    * This function is used to alter the generated values of entity, before it
@@ -56,7 +56,7 @@ export abstract class Factory<Entity> {
   }
 
   private async makeEntity(overrideParams: Partial<Entity>, isSeeding: boolean) {
-    const entity = this.definition(Faker)
+    const entity = this.definition()
 
     if (this.mapFunction) this.mapFunction(entity)
 

@@ -1,16 +1,4 @@
-import * as Faker from 'faker'
-import { ConnectionOptions as TypeORMConnectionOptions, ObjectType } from 'typeorm'
-import { Factory } from './factory'
-
-/**
- * FactoryFunction is the function, which generate a new filled entity
- */
-export type FactoryFunction<Entity> = (faker: typeof Faker) => Entity
-
-/**
- * Factory gets the EntityFactory to the given Entity and pass the context along
- */
-export type EntityFactory = <Entity>(entity: ObjectType<Entity>) => Factory<Entity>
+import type { ConnectionOptions as TypeORMConnectionOptions } from 'typeorm'
 
 /**
  * Constructor of the seed class
