@@ -1,6 +1,5 @@
-import { configureConnection, getConnectionOptions } from './connection'
+import { configureConnection, fetchConnection, getConnectionOptions } from './connection'
 import { SeederImportationError } from './errors/SeederImportationError'
-import { runSeeder } from './runSeeder'
 import { Seeder } from './seeder'
 import type { ConnectionConfiguration } from './types'
 import { calculateFilePaths } from './utils/fileHandling'
@@ -35,13 +34,14 @@ export async function useSeeders(
 
   let seedersImported: Seeder[]
   try {
-    seedersImported = await Promise.all(
-      seederFiles.map((seederFile) => import(seederFile).then((module) => module.default)),
-    ).then((elems) => elems.map((elem) => new elem()).filter((elem) => elem instanceof Seeder) as Seeder[])
+    seedersImported = await Promise.all(seederFiles.map((seederFile) => import(seederFile)))
+      .then((elementsImported) => elementsImported.flatMap((e) => Object.values(e)))
+      .then((elems) => elems.map((elem) => new elem()).filter((elem) => elem instanceof Seeder) as Seeder[])
 
     if (shouldExecuteSeeders) {
+      const connection = await fetchConnection()
       for (const seeder of seedersImported) {
-        await runSeeder(seeder)
+        seeder.run(connection)
       }
     }
   } catch (error: any) {

@@ -4,7 +4,7 @@ import { gray } from 'chalk'
 import { configureConnection, fetchConnection } from '../connection'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../useSeeders'
-import { runSeeder } from '../runSeeder'
+import { Connection } from 'typeorm'
 
 interface SeedCommandArguments extends Arguments {
   root?: string
@@ -68,9 +68,10 @@ export class SeedCommand implements CommandModule {
     }
 
     // Get database connection and pass it to the seeder
+    let connection!: Connection
     spinner.start('Connecting to the database')
     try {
-      await fetchConnection()
+      connection = await fetchConnection()
       spinner.succeed('Database connected')
     } catch (error) {
       panic(spinner, error as Error, 'Database connection failed! Check your TypeORM config.')
@@ -80,7 +81,7 @@ export class SeedCommand implements CommandModule {
     for (const seeder of seeders) {
       spinner.start(`Executing ${seeder.constructor.name} Seeder`)
       try {
-        await runSeeder(seeder)
+        seeder.run(connection)
         spinner.succeed(`Seeder ${seeder.constructor.name} executed`)
       } catch (error) {
         panic(spinner, error as Error, `Could not run the seed ${seeder.constructor.name}!`)

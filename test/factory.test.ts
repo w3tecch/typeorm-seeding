@@ -1,6 +1,5 @@
 import { Connection } from 'typeorm'
-import { configureConnection, fetchConnection } from '../src/connection'
-import { Factory } from '../src/factory'
+import { configureConnection, Factory, fetchConnection } from '../src'
 import { Pet } from './entities/Pet.entity'
 import { User } from './entities/User.entity'
 import { PetFactory } from './factories/Pet.factory'

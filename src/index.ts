@@ -1,5 +1,5 @@
 export * from './connection'
-export * from './runSeeder'
+export * from './factory'
 export * from './seeder'
 export * from './types'
 export * from './useSeeders'
