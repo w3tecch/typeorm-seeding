@@ -27,7 +27,7 @@ export async function useSeeders(
   configureConnection(customOptions)
   const option = await getConnectionOptions()
 
-  let seederFiles = calculateFilePaths(option.seeds)
+  let seederFiles = calculateFilePaths(option.seeders)
   if (seeders) {
     const seedersDesired = calculateFilePaths(seeders)
     seederFiles = seederFiles.filter((factoryFile) => seedersDesired.includes(factoryFile))

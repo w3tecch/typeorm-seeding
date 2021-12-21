@@ -4,15 +4,13 @@ jest.mock('../ormconfig.ts', () => [
     type: 'sqlite',
     database: ':memory:',
     entities: ['test/entities/**/*.entity.ts'],
-    factories: ['test/factories/**/*.factory.ts'],
-    seeds: ['test/seeders/**/*.seed.ts'],
+    seeders: ['test/seeders/**/*.seeder.ts'],
   },
   {
     name: 'memory',
     type: 'sqlite',
     database: ':memory:',
     entities: ['test/entities/**/*.entity.ts'],
-    factories: ['test/factories/**/*.factory.ts'],
-    seeds: ['test/seeders/**/*.seed.ts'],
+    seeders: ['test/seeders/**/*.seeder.ts'],
   },
 ])

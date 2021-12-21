@@ -6,8 +6,7 @@ import type { ConnectionOptions as TypeORMConnectionOptions } from 'typeorm'
 export type ClassConstructor<T> = new () => T
 
 export type ConnectionOptions = TypeORMConnectionOptions & {
-  factories: string[]
-  seeds: string[]
+  seeders: string[]
 }
 
 export type ConnectionConfiguration = {

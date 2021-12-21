@@ -11,12 +11,10 @@ export async function getConnectionOptions(): Promise<ConnectionOptions> {
 
   const options = (await connectionReader.get(connection)) as ConnectionOptions
 
-  const factoriesFromEnv = process.env.TYPEORM_SEEDING_FACTORIES
   const seedersFromEnv = process.env.TYPEORM_SEEDING_SEEDS
 
   return {
     ...options,
-    factories: factoriesFromEnv ? [factoriesFromEnv] : options.factories || [],
-    seeds: seedersFromEnv ? [seedersFromEnv] : options.seeds || [],
+    seeders: seedersFromEnv ? [seedersFromEnv] : options.seeders || [],
   }
 }
