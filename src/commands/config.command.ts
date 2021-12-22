@@ -10,8 +10,11 @@ interface ConfigCommandArguments extends Arguments {
 
 export class ConfigCommand implements CommandModule {
   command = 'config'
-  describe = 'Show the TypeORM config'
+  describe = 'Show the TypeORM config with seeding values'
 
+  /**
+   * @inheritdoc
+   */
   builder(args: Argv) {
     return args
       .option('n', {
@@ -32,6 +35,9 @@ export class ConfigCommand implements CommandModule {
       })
   }
 
+  /**
+   * @inheritdoc
+   */
   async handler(args: ConfigCommandArguments) {
     try {
       configureConnection({

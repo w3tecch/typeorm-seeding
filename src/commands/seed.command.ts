@@ -1,10 +1,13 @@
 import { Arguments, Argv, CommandModule, exit } from 'yargs'
 import ora, { Ora } from 'ora'
 import { gray } from 'chalk'
-import { configureConnection, fetchConnection } from '../connection'
+import { configureConnection, getConnectionOptions } from '../connection'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../useSeeders'
-import { Connection } from 'typeorm'
+import { calculateFilePaths } from '../utils/fileHandling'
+import type { ConnectionOptions } from '../types'
+import { SeederImportationError } from '../errors/SeederImportationError'
+import { ClassConstructor } from '..'
 
 interface SeedCommandArguments extends Arguments {
   root?: string
@@ -17,6 +20,9 @@ export class SeedCommand implements CommandModule {
   command = 'seed'
   describe = 'Runs the seeds'
 
+  /**
+   * @inheritdoc
+   */
   builder(args: Argv) {
     return args
       .option('n', {
@@ -42,50 +48,52 @@ export class SeedCommand implements CommandModule {
       })
   }
 
+  /**
+   * @inheritdoc
+   */
   async handler(args: SeedCommandArguments) {
     const spinner = ora('Loading ormconfig').start()
 
     // Get TypeORM config file
+    let options!: ConnectionOptions
     try {
       configureConnection({
         root: args.root,
         configName: args.configName,
         connection: args.connection,
       })
+      options = await getConnectionOptions()
       spinner.succeed('ORM Config loaded')
     } catch (error) {
       panic(spinner, error as Error, 'Could not load the config file!')
     }
 
     // Show seeds in the console
-    spinner.start('Importing Seeders')
-    let seeders: Seeder[] = []
+    spinner.start('Importing Seeder')
+    let seeder!: ClassConstructor<Seeder>
     try {
-      seeders = await useSeeders()
-      spinner.succeed('Seeders are imported')
+      const seederFiles = calculateFilePaths(options.seeders)
+      const seedersImported = await Promise.all(seederFiles.map((seederFile) => import(seederFile)))
+      const allSeeders = seedersImported.reduce((prev, curr) => Object.assign(prev, curr))
+
+      const seederWanted = args.seed || options.defaultSeeder
+      seeder = allSeeders[seederWanted]
+
+      if (!seeder) {
+        throw new SeederImportationError(`Seeder ${seederWanted} does not exist`)
+      }
+      spinner.succeed('Seeder imported')
     } catch (error) {
       panic(spinner, error as Error, 'Could not import seeders!')
     }
 
-    // Get database connection and pass it to the seeder
-    let connection!: Connection
-    spinner.start('Connecting to the database')
-    try {
-      connection = await fetchConnection()
-      spinner.succeed('Database connected')
-    } catch (error) {
-      panic(spinner, error as Error, 'Database connection failed! Check your TypeORM config.')
-    }
-
     // Run seeds
-    for (const seeder of seeders) {
-      spinner.start(`Executing ${seeder.constructor.name} Seeder`)
-      try {
-        seeder.run(connection)
-        spinner.succeed(`Seeder ${seeder.constructor.name} executed`)
-      } catch (error) {
-        panic(spinner, error as Error, `Could not run the seed ${seeder.constructor.name}!`)
-      }
+    spinner.start(`Executing ${seeder.name} Seeder`)
+    try {
+      await useSeeders(seeder)
+      spinner.succeed(`Seeder ${seeder.name} executed`)
+    } catch (error) {
+      panic(spinner, error as Error, `Could not run the seed ${seeder.name}!`)
     }
 
     console.log('👍 ', gray.underline(`Finished Seeding`))
@@ -94,6 +102,6 @@ export class SeedCommand implements CommandModule {
 
 function panic(spinner: Ora, error: Error, message: string) {
   spinner.fail(message)
-  console.error(message)
+  console.error(error.message)
   exit(1, error)
 }
