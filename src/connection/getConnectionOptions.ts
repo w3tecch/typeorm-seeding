@@ -1,4 +1,5 @@
 import { ConnectionOptionsReader } from 'typeorm'
+import { DefaultSeederNotDefinedError } from '../errors/DefaultSeederNotDefinedError'
 import type { ConnectionOptions } from '../types'
 import { ConnectionConfigurationManager } from './ConnectionConfigurationManager'
 
@@ -11,10 +12,17 @@ export async function getConnectionOptions(): Promise<ConnectionOptions> {
 
   const options = (await connectionReader.get(connection)) as ConnectionOptions
 
-  const seedersFromEnv = process.env.TYPEORM_SEEDING_SEEDS
+  const seedersFromEnv = process.env.TYPEORM_SEEDING_SEEDERS
+  const defaultSeederFromEnv = process.env.TYPEORM_SEEDING_DEFAULT_SEEDER
+  const defaultSeeder = defaultSeederFromEnv || options.defaultSeeder
+
+  if (!defaultSeeder) {
+    throw new DefaultSeederNotDefinedError()
+  }
 
   return {
     ...options,
     seeders: seedersFromEnv ? [seedersFromEnv] : options.seeders || [],
+    defaultSeeder,
   }
 }

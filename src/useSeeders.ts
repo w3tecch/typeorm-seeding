@@ -1,52 +1,23 @@
-import { configureConnection, fetchConnection, getConnectionOptions } from './connection'
-import { SeederImportationError } from './errors/SeederImportationError'
+import { configureConnection, fetchConnection } from './connection'
 import { Seeder } from './seeder'
-import type { ConnectionConfiguration } from './types'
-import { calculateFilePaths } from './utils/fileHandling'
+import type { ClassConstructor, ConnectionConfiguration } from './types'
+
+export async function useSeeders(entrySeeders: ClassConstructor<Seeder> | ClassConstructor<Seeder>[]): Promise<void>
+export async function useSeeders(
+  entrySeeders: ClassConstructor<Seeder> | ClassConstructor<Seeder>[],
+  customOptions: Partial<ConnectionConfiguration>,
+): Promise<void>
 
 export async function useSeeders(
-  executeSeeders?: boolean,
-  options?: Partial<ConnectionConfiguration>,
-): Promise<Seeder[]>
-export async function useSeeders(
-  executeSeeders?: boolean,
-  seeders?: string[],
-  options?: Partial<ConnectionConfiguration>,
-): Promise<Seeder[]>
+  entrySeeders: ClassConstructor<Seeder> | ClassConstructor<Seeder>[],
+  customOptions?: Partial<ConnectionConfiguration>,
+): Promise<void> {
+  if (customOptions) configureConnection(customOptions)
 
-export async function useSeeders(
-  executeSeeders?: boolean,
-  seedersOrOptions?: string[] | Partial<ConnectionConfiguration>,
-  options?: Partial<ConnectionConfiguration>,
-) {
-  const shouldExecuteSeeders = Boolean(executeSeeders)
-  const seeders = Array.isArray(seedersOrOptions) ? seedersOrOptions : undefined
-  const customOptions = Array.isArray(seedersOrOptions) ? options : seedersOrOptions
+  const connection = await fetchConnection()
 
-  configureConnection(customOptions)
-  const option = await getConnectionOptions()
-
-  let seederFiles = calculateFilePaths(option.seeders)
-  if (seeders) {
-    const seedersDesired = calculateFilePaths(seeders)
-    seederFiles = seederFiles.filter((factoryFile) => seedersDesired.includes(factoryFile))
+  const seeders = Array.isArray(entrySeeders) ? entrySeeders : [entrySeeders]
+  for (const seeder of seeders) {
+    await new seeder().run(connection)
   }
-
-  let seedersImported: Seeder[]
-  try {
-    seedersImported = await Promise.all(seederFiles.map((seederFile) => import(seederFile)))
-      .then((elementsImported) => elementsImported.flatMap((e) => Object.values(e)))
-      .then((elems) => elems.map((elem) => new elem()).filter((elem) => elem instanceof Seeder) as Seeder[])
-
-    if (shouldExecuteSeeders) {
-      const connection = await fetchConnection()
-      for (const seeder of seedersImported) {
-        seeder.run(connection)
-      }
-    }
-  } catch (error: any) {
-    throw new SeederImportationError(error.message)
-  }
-
-  return seedersImported
 }
