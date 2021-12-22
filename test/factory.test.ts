@@ -1,4 +1,4 @@
-import { Connection } from 'typeorm'
+import type { Connection } from 'typeorm'
 import { configureConnection, Factory, fetchConnection } from '../src'
 import { Pet } from './entities/Pet.entity'
 import { User } from './entities/User.entity'
@@ -10,14 +10,14 @@ describe(Factory, () => {
   const userFactory = new UserFactory()
   const petFactory = new PetFactory()
 
-  beforeAll(async () => {
+  beforeEach(async () => {
     configureConnection({ connection: 'memory' })
     connection = await fetchConnection()
 
     await connection.synchronize()
   })
 
-  afterAll(async () => {
+  afterEach(async () => {
     await connection.dropDatabase()
     await connection.close()
   })

@@ -5,7 +5,8 @@ module.exports = [
     database: 'test.db',
     entities: ['sample/entities/**/*{.ts,.js}'],
     factories: ['sample/factories/**/*{.ts,.js}'],
-    seeds: ['sample/seeds/**/*{.ts,.js}'],
+    seeders: ['sample/seeds/**/*{.ts,.js}'],
+    defaultSeeder: 'test',
   },
   {
     name: 'memory',
@@ -13,6 +14,7 @@ module.exports = [
     database: ':memory:',
     entities: ['sample/entities/**/*{.ts,.js}'],
     factories: ['sample/factories/**/*{.ts,.js}'],
-    seeds: ['sample/seeds/**/*{.ts,.js}'],
+    seeders: ['sample/seeds/**/*{.ts,.js}'],
+    defaultSeeder: 'test',
   },
 ]

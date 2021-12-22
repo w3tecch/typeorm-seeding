@@ -5,6 +5,7 @@ jest.mock('../ormconfig.ts', () => [
     database: ':memory:',
     entities: ['test/entities/**/*.entity.ts'],
     seeders: ['test/seeders/**/*.seeder.ts'],
+    defaultSeeder: 'UserSeeder',
   },
   {
     name: 'memory',
@@ -12,5 +13,6 @@ jest.mock('../ormconfig.ts', () => [
     database: ':memory:',
     entities: ['test/entities/**/*.entity.ts'],
     seeders: ['test/seeders/**/*.seeder.ts'],
+    defaultSeeder: 'UserSeeder',
   },
 ])
