@@ -7,7 +7,7 @@ import { useSeeders } from '../useSeeders'
 import { calculateFilePaths } from '../utils/fileHandling'
 import type { ConnectionOptions } from '../types'
 import { SeederImportationError } from '../errors/SeederImportationError'
-import { ClassConstructor } from '..'
+import { ClassConstructor } from '../types'
 
 interface SeedCommandArguments extends Arguments {
   root?: string

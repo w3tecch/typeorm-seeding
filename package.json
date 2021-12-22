@@ -19,8 +19,9 @@
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",
     "format": "prettier --write \"src/**/*.ts\"",
-    "format:ci": "prettier --check \"src/**/*.ts\" \"sample/**/*.ts\"",
-    "lint": "eslint \"src/**/*.ts\" \"sample/**/*.ts\" --fix",
+    "format:ci": "prettier --check \"{src,test,sample}/**/*.ts\"",
+    "lint": "eslint \"{src,test,sample}/**/*.ts\"",
+    "lint:fix": "yarn lint --fix",
     "lint:ci": "eslint \"src/**/*.ts\" \"sample/**/*.ts\"",
     "prebuild": "rimraf dist",
     "schema:drop": "ts-node ./node_modules/typeorm/cli.js schema:drop",
@@ -29,7 +30,7 @@
     "seed:run": "ts-node ./src/cli.ts seed",
     "seed:config": "ts-node ./src/cli.ts config",
     "test": "jest",
-    "test:cov": "jest --coverage --silent",
+    "test:cov": "jest --coverage",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit"
   },
