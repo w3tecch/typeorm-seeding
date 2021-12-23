@@ -30,7 +30,7 @@
     "seed:run": "ts-node ./src/cli.ts seed",
     "seed:config": "ts-node ./src/cli.ts config",
     "test": "jest",
-    "test:cov": "jest --coverage",
+    "test:ci": "jest --silent",
     "test:cov": "jest --coverage --silent",
     "test:watch": "jest --watch",
     "typecheck": "tsc --noEmit"

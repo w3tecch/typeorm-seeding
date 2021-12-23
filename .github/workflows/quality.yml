@@ -23,4 +23,4 @@ jobs:
       - run: yarn format:ci
       - run: yarn lint:ci
       - run: yarn typecheck
-      - run: yarn test
+      - run: yarn test:ci
