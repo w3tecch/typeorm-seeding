@@ -334,7 +334,7 @@ await factory(User)().createMany(10, { email: 'other@mail.com' }, { listeners: f
 
 The entity factories can also be used in testing. To do so call the `useSeeding` function, which loads all the defined entity factories.
 
-Choose your test database wisley. We suggest to run your test in a sqlite in memory database.
+Choose your test database wisely. We suggest to run your test in a sqlite in memory database.
 
 ```json
 {
