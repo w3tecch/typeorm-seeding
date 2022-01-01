@@ -343,7 +343,7 @@ Loads the defined entity factories.
 
 ```typescript
 useFactories(options?: Partial<ConnectionConfiguration>): Promise<void>
-useFactories(seeders?: string[], options?: Partial<ConnectionConfiguration>): Promise<void>
+useFactories(factories?: string[], options?: Partial<ConnectionConfiguration>): Promise<void>
 ```
 
 ### `useSeeders`
