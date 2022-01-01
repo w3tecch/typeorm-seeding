@@ -43,7 +43,7 @@
     "@types/chalk": "2.2.0",
     "@types/faker": "5.5.9",
     "@types/glob": "7.2.0",
-    "@types/jest": "27.0.3",
+    "@types/jest": "27.4.0",
     "@types/node": "16.11.17",
     "@types/yargs": "17.0.8",
     "@typescript-eslint/eslint-plugin": "5.8.0",
