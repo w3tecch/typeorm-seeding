@@ -35,17 +35,19 @@
 <p align="center">
   <b>A delightful way to seed test data into your database.</b></br>
   <span>Inspired by the awesome framework <a href="https://laravel.com/">laravel</a> in PHP and of the repositories from <a href="https://github.com/pleerock">pleerock</a></span></br>
+</p>
+
+<p align="center">
   <sub>Made with ❤️ by <a href="https://github.com/hirsch88">Gery Hirschfeld</a>, <a href="https://github.com/jorgebodega">Jorge Bodega</a> and <a href="https://github.com/w3tecch/typeorm-seeding/graphs/contributors">contributors</a></sub>
 </p>
 
 <br />
 
-## ❯ Table of contents
+## ❯ Additional contents
 
-- [Installation](#-installation)
-- [Introduction](#-introduction)
 - [Seeder](docs/seeder.md)
 - [Factory](docs/factory.md)
+- [CLI](docs/cli.md)
 - [Testing features](docs/testing.md)
 
 ## ❯ Installation
@@ -59,137 +61,70 @@ npm i [-D] @jorgebodega/typeorm-seeding
 yarn add [-D] @jorgebodega/typeorm-seeding
 ```
 
-Optional, install the type definitions of the `Faker` library.
-
-```bash
-npm install -D @types/faker
-```
-
 ### Configuration
 
-To configure the path to your seeds and factories change the TypeORM config file or use environment variables like TypeORM. If both are used the environment variables will be prioritized.
+To configure the path to your seeders change the TypeORM config file or use environment variables like TypeORM. If both are used the environment variables will be prioritized.
 
 **ormconfig.js**
 
-```JavaScript
+```typescript
 module.exports = {
   ...
-  seeds: ['src/seeds/**/*{.ts,.js}'],
-  factories: ['src/factories/**/*{.ts,.js}'],
+  seeders: ['src/seeds/**/*{.ts,.js}'],
+  defaultSeeder: RootSeeder,
+  ...
 }
 ```
 
 **.env**
 
 ```
-TYPEORM_SEEDING_FACTORIES=src/factories/**/*{.ts,.js}
-TYPEORM_SEEDING_SEEDS=src/seeds/**/*{.ts,.js}
+TYPEORM_SEEDING_SEEDERS=src/seeds/**/*{.ts,.js}
+TYPEORM_SEEDING_DEFAULT_SEEDER=RootSeeder
 ```
 
-### CLI Configuration
-
-Add the following scripts to your `package.json` file to configure the seed cli commands.
-
-```
-"scripts": {
-  "seed:config": "typeorm-seeding config",
-  "seed:run": "typeorm-seeding seed",
-  ...
-}
-```
-
-#### CLI Options
-
-| Option                 | Default               | Description                                                                  |
-| ---------------------- | --------------------- | ---------------------------------------------------------------------------- |
-| `--seed` or `-s`       | null                  | Option to specify a seeder class to run individually. (Only on seed command) |
-| `--connection` or `-c` | TypeORM default value | Name of the TypeORM connection. Required if there are multiple connections.  |
-| `--configName` or `-n` | TypeORM default value | Name to the TypeORM config file.                                             |
-| `--root` or `-r`       | TypeORM default value | Path to the TypeORM config file.                                             |
-
-## ❯ Introduction
+## Introduction
 
 Isn't it exhausting to create some sample data for your database, well this time is over!
 
-How does it work? Just create a entity factory for your entities (models) and a seed script.
+How does it work? Just create a entity factory and/or seed script.
 
 ### Entity
 
-First create your TypeORM entities.
-
 ```typescript
-// user.entity.ts
 @Entity()
-export class User {
+class User {
   @PrimaryGeneratedColumn('uuid') id: string
-  @Column({ nullable: true }) name: string
-  @Column({ type: 'varchar', length: 100, nullable: false }) password: string
-  @OneToMany((type) => Pet, (pet) => pet.user) pets: Pet[]
 
-  @BeforeInsert()
-  async setPassword(password: string) {
-    const salt = await bcrypt.genSalt()
-    this.password = await bcrypt.hash(password || this.password, salt)
-  }
-}
-
-// pet.entity.ts
-@Entity()
-export class Pet {
-  @PrimaryGeneratedColumn('uuid') id: string
   @Column() name: string
-  @Column() age: number
-  @ManyToOne((type) => User, (user) => user.pets)
-  @JoinColumn({ name: 'user_id' })
-  user: User
+
+  @Column() lastname: string
 }
 ```
 
 ### Factory
 
-Then for each entity define a factory. The purpose of a factory is to create new entites with generate data.
-
-> Note: Factories can also be used to generate data for testing.
-
 ```typescript
-// user.factory.ts
-define(User, (faker: typeof Faker) => {
-  const gender = faker.datatype.number(1)
-  const firstName = faker.name.firstName(gender)
-  const lastName = faker.name.lastName(gender)
+class UserFactory extends Factory<User> {
+  protected definition(): User {
+    const user = new User()
 
-  const user = new User()
-  user.name = `${firstName} ${lastName}`
-  user.password = faker.random.word()
-  return user
-})
+    user.name = 'John'
+    user.lastname = 'Doe'
 
-// pet.factory.ts
-define(Pet, (faker: typeof Faker) => {
-  const gender = faker.datatype.number(1)
-  const name = faker.name.firstName(gender)
-
-  const pet = new Pet()
-  pet.name = name
-  pet.age = faker.datatype.number()
-  pet.user = factory(User)() as any
-  return pet
-})
-```
-
-### Seeder
-
-And last but not least, create a seeder. The seeder can be called by the configured cli command `seed:run`. In this case it generates 10 pets with a owner (User).
-
-> Note: `seed:run` must be configured first. Go to [CLI Configuration](#cli-configuration).
-
-```typescript
-// create-pets.seed.ts
-export default class CreatePets implements Seeder {
-  public async run(factory: Factory, connection: Connection): Promise<any> {
-    await factory(Pet)().createMany(10)
+    return user
   }
 }
 ```
 
-Until [this issue](https://github.com/w3tecch/typeorm-seeding/issues/119) is closed, seeder files must not contain any other export statement besides the one that exports the seeder class.
+### Seeder
+
+```typescript
+export class UserExampleSeeder extends Seeder {
+  async run() {
+    await new UserFactory().create({
+      name: 'Jane',
+    })
+  }
+}
+```
