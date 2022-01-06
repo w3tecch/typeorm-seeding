@@ -1,7 +1,6 @@
 /~
 /.github
 /.vscode
-/docs
 /src
 /test
 .editorconfig
@@ -16,3 +15,4 @@ ormconfig.ts
 test.db
 tsconfig.build.json
 tsconfig.json
+seeders.png
