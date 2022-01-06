@@ -12,7 +12,7 @@ class UserFactory extends Factory<User> {
 
 ### `definition`
 
-The definition function is the one that need to be defined when extending the class. It is called to instantiate the entity and the result will be used on the rest of factory lifecycle.
+This function is the one that needs to be defined when extending the class. It is called to instantiate the entity and the result will be used on the rest of factory lifecycle.
 
 ```typescript
 protected definition(): User {

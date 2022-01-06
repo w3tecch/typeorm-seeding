@@ -44,9 +44,9 @@
 
 - [Installation](#-installation)
 - [Introduction](#-introduction)
-- [Basic Seeder](#-basic-seeder)
+- [Seeder](docs/seeder.md)
 - [Factory](docs/factory.md)
-- [Seeding Data in Testing](#-seeding-data-in-testing)
+- [Testing features](docs/testing.md)
 
 ## ❯ Installation
 
@@ -193,65 +193,3 @@ export default class CreatePets implements Seeder {
 ```
 
 Until [this issue](https://github.com/w3tecch/typeorm-seeding/issues/119) is closed, seeder files must not contain any other export statement besides the one that exports the seeder class.
-
-## ❯ Basic Seeder
-
-A seeder class only use `run` method. Within this method, you may insert data into your database. For manually insertion use the [Query Builder](https://typeorm.io/#/select-query-builder) or use the [Entity Factory](#-using-entity-factory)
-
-> Note. The seeder files will be executed alphabetically.
-
-```typescript
-export default class CreateUsers implements Seeder {
-  public async run(factory: EntityFactory, connection: Connection): Promise<any> {
-    await connection
-      .createQueryBuilder()
-      .insert()
-      .into(User)
-      .values([
-        { firstName: 'Timber', lastName: 'Saw' },
-        { firstName: 'Phantom', lastName: 'Lancer' },
-      ])
-      .execute()
-  }
-}
-```
-
-## ❯ Seeding Data in Testing
-
-The entity factories can also be used in testing. To do so call the `useFactories` or `useSeeders` function.
-
-### `useFactories`
-
-Loads the defined entity factories.
-
-```typescript
-useFactories(options?: Partial<ConnectionConfiguration>): Promise<void>
-useFactories(factories?: string[], options?: Partial<ConnectionConfiguration>): Promise<void>
-```
-
-### `useSeeders`
-
-Loads the seeders, and could execute them.
-
-```typescript
-useSeeders(executeSeeders?: boolean, options?: Partial<ConnectionConfiguration>): Promise<Seeder[]>
-useSeeders(executeSeeders?: boolean, seeders?: string[], options?: Partial<ConnectionConfiguration>): Promise<Seeder[]>
-```
-
-### `runSeeder`
-
-Runs the given seeder class.
-
-```typescript
-runSeeder(seeder: Seeder): Promise<void>
-```
-
-### `ConnectionConfiguration`
-
-```typescript
-interface ConnectionConfiguration {
-  root?: string // path to the orm config file. Default = process.cwd()
-  configName?: string // name of the config file. eg. ormconfig.js
-  connection = 'default' // name of the database connection.
-}
-```
