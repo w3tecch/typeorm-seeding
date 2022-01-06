@@ -34,7 +34,7 @@
 
 <p align="center">
   <b>A delightful way to seed test data into your database.</b></br>
-  <span>Inspired by the awesome framework <a href="https://laravel.com/">laravel</a> in PHP and of the repositories from <a href="https://github.com/pleerock">pleerock</a></span></br>
+  <span>Inspired by the awesome framework <a href="https://laravel.com/">laravel</a> in PHP, <a href="https://mikro-orm.io/docs/next/seeding/">MikroORM seeding</a>  and the repositories from <a href="https://github.com/pleerock">pleerock</a></span></br>
 </p>
 
 <p align="center">
