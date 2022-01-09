@@ -1,3 +1,10 @@
+# [3.1.0-next.1](https://github.com/jorgebodega/typeorm-seeding/compare/v3.0.1...v3.1.0-next.1) (2022-01-09)
+
+
+### Features
+
+* add support to async definition on factory ([5fcca0e](https://github.com/jorgebodega/typeorm-seeding/commit/5fcca0e8d2016c68fda18fe1b202739558b07466))
+
 ## [3.0.1](https://github.com/jorgebodega/typeorm-seeding/compare/v3.0.0...v3.0.1) (2022-01-08)
 
 
