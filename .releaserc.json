@@ -31,7 +31,7 @@
       "@semantic-release/git",
       {
         "assets": ["package.json", "yarn.lock", "CHANGELOG.md"],
-        "message": "chore: Release ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        "message": "chore: release ${nextRelease.version}\n\n${nextRelease.notes}"
       }
     ],
     "@semantic-release/github"
