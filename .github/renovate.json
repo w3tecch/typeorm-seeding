@@ -1,22 +1,15 @@
 {
   "extends": [
     "config:base",
+    "group:allNonMajor",
     ":assignAndReview(jorgebodega)",
-    ":automergeDisabled",
+    ":automergePatch",
     ":disableDependencyDashboard",
     ":semanticCommits",
     ":semanticCommitScopeDisabled",
+    ":separatePatchReleases",
     ":timezone(UTC+1)"
   ],
   "baseBranches": ["next"],
-  "schedule": ["every weekend"],
-  "npm": {
-    "stabilityDays": 5
-  },
-  "packageRules": [
-    {
-      "matchPackageNames": ["chalk", "ora"],
-      "rangeStrategy": "replace"
-    }
-  ]
+  "schedule": ["every sunday"]
 }
