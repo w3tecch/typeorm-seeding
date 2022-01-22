@@ -10,5 +10,5 @@
     "experimentalDecorators": true,
     "sourceMap": true,
     "resolveJsonModule": true
-  },
+  }
 }

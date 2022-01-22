@@ -246,7 +246,7 @@ define(User, (faker: typeof Faker) => {
 You can do:
 
 ```typescript
-import * as faker from 'faker'
+import faker from '@faker-js/faker'
 
 class UserFactory extends Factory<User> {
   protected definition(): User {

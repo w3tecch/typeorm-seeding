@@ -1,4 +1,4 @@
-import * as faker from 'faker'
+import faker from '@faker-js/faker'
 import { Factory } from '../../src/factory'
 import { Pet } from '../entities/Pet.entity'
 import { UserFactory } from './User.factory'
