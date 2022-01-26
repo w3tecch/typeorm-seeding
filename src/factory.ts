@@ -1,6 +1,7 @@
 import type { SaveOptions } from 'typeorm'
 import { fetchConnection } from './connection'
 import { LazyAttribute } from './lazyAttribute'
+import { Subfactory } from './subfactory'
 import type { Constructable, FactorizedAttrs } from './types'
 
 export abstract class Factory<T> {
@@ -72,8 +73,10 @@ export abstract class Factory<T> {
     return entity
   }
 
-  private static resolveValue(value: unknown) {
-    if (value instanceof Function) {
+  private static resolveValue(value: unknown, shouldPersist = true) {
+    if (value instanceof Subfactory) {
+      return shouldPersist ? value.create() : value.make()
+    } else if (value instanceof Function) {
       return value()
     } else {
       return value

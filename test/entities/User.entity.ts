@@ -10,4 +10,7 @@ export class User {
 
   @Column()
   lastName!: string
+
+  @Column()
+  phone!: number
 }
