@@ -9,6 +9,9 @@ export class Pet {
   @Column()
   name!: string
 
+  @Column()
+  lastName!: string
+
   @ManyToOne(() => User)
   @JoinColumn({ name: 'user_id' })
   owner!: User
