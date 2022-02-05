@@ -52,7 +52,7 @@
     "eslint": "8.8.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-plugin-import": "2.25.4",
-    "jest": "27.4.7",
+    "jest": "27.5.0",
     "prettier": "2.5.1",
     "rimraf": "3.0.2",
     "semantic-release": "19.0.2",
