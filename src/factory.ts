@@ -3,14 +3,14 @@ import { fetchConnection } from './connection'
 import { isPromiseLike } from './utils/isPromiseLike'
 
 export abstract class Factory<Entity> {
-  private mapFunction?: (entity: Entity) => void
+  private mapFunction?: (entity: Entity) => Promise<void> | void
   protected abstract definition(): Promise<Entity>
 
   /**
    * This function is used to alter the generated values of entity, before it
    * is persist into the database
    */
-  map(mapFunction: (entity: Entity) => void) {
+  map(mapFunction: (entity: Entity) => Promise<void> | void) {
     this.mapFunction = mapFunction
     return this
   }
@@ -57,7 +57,9 @@ export abstract class Factory<Entity> {
   private async makeEntity(overrideParams: Partial<Entity>, isSeeding: boolean) {
     const entity = await this.definition()
 
-    if (this.mapFunction) this.mapFunction(entity)
+    if (this.mapFunction) {
+      await this.mapFunction(entity)
+    }
 
     for (const key in overrideParams) {
       const actualValue = entity[key]
