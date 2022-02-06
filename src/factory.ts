@@ -1,6 +1,7 @@
 import type { SaveOptions } from 'typeorm'
 import { fetchConnection } from './connection'
-import { LazyAttribute } from './lazyAttribute'
+import { InstanceAttribute } from './instanceAttribute'
+import { LazyInstanceAttribute } from './lazyInstanceAttribute'
 import { Subfactory } from './subfactory'
 import type { Constructable, FactorizedAttrs } from './types'
 
@@ -38,11 +39,11 @@ export abstract class Factory<T> {
     const attrs = { ...this.attrs, ...overrideParams }
     const entity = await this.makeEntity(attrs, true)
 
-    const connection = await fetchConnection()
-    const savedEntity = await connection.createEntityManager().save<T>(entity, saveOptions)
-    await this.applyLazyAttributes(savedEntity, attrs, true)
+    const em = (await fetchConnection()).createEntityManager()
+    const savedEntity = await em.save<T>(entity, saveOptions)
 
-    return savedEntity
+    await this.applyLazyAttributes(savedEntity, attrs, true)
+    return em.save<T>(savedEntity, saveOptions)
   }
 
   /**
@@ -69,13 +70,22 @@ export abstract class Factory<T> {
       }),
     )
 
+    await Promise.all(
+      Object.entries(attrs).map(async ([key, value]) => {
+        if (value instanceof InstanceAttribute) {
+          const newAttrib = value.resolve(entity)
+          Object.assign(entity, { [key]: await Factory.resolveValue(newAttrib, shouldPersist) })
+        }
+      }),
+    )
+
     return entity
   }
 
   private async applyLazyAttributes(entity: T, attrs: FactorizedAttrs<T>, shouldPersist: boolean) {
     await Promise.all(
       Object.entries(attrs).map(async ([key, value]) => {
-        if (value instanceof LazyAttribute) {
+        if (value instanceof LazyInstanceAttribute) {
           const newAttrib = value.resolve(entity)
           Object.assign(entity, { [key]: await Factory.resolveValue(newAttrib, shouldPersist) })
         }
