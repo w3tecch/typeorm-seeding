@@ -22,7 +22,7 @@ export class Subfactory<T> {
   }
 
   create() {
-    if (this.count) {
+    if (this.count !== undefined) {
       return this.factoryInstance.createMany(this.count, this.values)
     }
 
@@ -30,7 +30,7 @@ export class Subfactory<T> {
   }
 
   make() {
-    if (this.count) {
+    if (this.count !== undefined) {
       return this.factoryInstance.makeMany(this.count, this.values)
     }
 
