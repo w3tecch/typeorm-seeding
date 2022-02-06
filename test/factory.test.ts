@@ -1,5 +1,6 @@
 import type { Connection } from 'typeorm'
 import { configureConnection, Factory, fetchConnection } from '../src'
+import { Subfactory } from '../src/subfactory'
 import { Pet } from './entities/Pet.entity'
 import { User } from './entities/User.entity'
 import { PetFactory } from './factories/Pet.factory'
@@ -29,6 +30,25 @@ describe(Factory, () => {
       expect(userMaked).toBeInstanceOf(User)
       expect(userMaked.id).toBeUndefined()
       expect(userMaked.name).toBeDefined()
+      expect(userMaked.lastName).toBeDefined()
+      expect(userMaked.address).toBeDefined()
+      expect(userMaked.email).toBeDefined()
+      expect(userMaked.pets).toBeUndefined()
+    })
+
+    test('Should make a new entity related with multiple other factories', async () => {
+      const subfactory = new Subfactory(PetFactory, 2)
+      const userMaked = await userFactory.make({
+        pets: new Subfactory(PetFactory, 2),
+      })
+
+      expect(userMaked).toBeInstanceOf(User)
+      expect(userMaked.id).toBeUndefined()
+      expect(userMaked.name).toBeDefined()
+      expect(userMaked.lastName).toBeDefined()
+      expect(userMaked.address).toBeDefined()
+      expect(userMaked.email).toBeDefined()
+      expect(userMaked.pets).toBeUndefined()
     })
 
     test('Should make a new entity related with another factory', async () => {
@@ -36,16 +56,12 @@ describe(Factory, () => {
 
       expect(petMaked).toBeInstanceOf(Pet)
       expect(petMaked.owner).toBeInstanceOf(User)
-      expect(petMaked.owner.name).toBeDefined()
-    })
-
-    test('Should make a new entity with map function', async () => {
-      const mockFn = jest.fn()
-      const userMaked = await userFactory.map(mockFn).make()
-
-      expect(userMaked).toBeInstanceOf(User)
-      expect(userMaked.name).toBeDefined()
-      expect(mockFn).toHaveBeenCalled()
+      expect(petMaked.owner.id).toBeUndefined()
+      expect(petMaked.id).toBeUndefined()
+      expect(petMaked.name).toBeDefined()
+      expect(petMaked.lastName).toBeDefined()
+      expect(petMaked.address).toBeDefined()
+      expect(petMaked.email).toBeDefined()
     })
 
     test('Should make a new entity overriding params', async () => {

@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm'
+import { Pet } from './Pet.entity'
 
 @Entity()
 export class User {
@@ -12,5 +13,13 @@ export class User {
   lastName!: string
 
   @Column()
-  phone!: number
+  address!: string
+
+  @Column()
+  email!: string
+
+  @OneToMany(() => Pet, (pet) => pet.owner, {
+    nullable: true,
+  })
+  pets?: Pet[]
 }

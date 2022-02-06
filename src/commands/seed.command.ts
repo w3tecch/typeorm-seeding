@@ -5,9 +5,8 @@ import { configureConnection, getConnectionOptions } from '../connection'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../useSeeders'
 import { calculateFilePaths } from '../utils/fileHandling'
-import type { ConnectionOptions } from '../types'
+import type { ConnectionOptions, Constructable } from '../types'
 import { SeederImportationError } from '../errors/SeederImportationError'
-import { ClassConstructor } from '../types'
 
 interface SeedCommandArguments extends Arguments {
   root?: string
@@ -71,7 +70,7 @@ export class SeedCommand implements CommandModule {
 
     // Show seeder in console
     spinner.start('Importing Seeder')
-    let seeder!: ClassConstructor<Seeder>
+    let seeder!: Constructable<Seeder>
     try {
       const seederFiles = calculateFilePaths(options.seeders)
       const seedersImported = await Promise.all(seederFiles.map((seederFile) => import(seederFile)))

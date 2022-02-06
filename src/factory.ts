@@ -12,7 +12,12 @@ export abstract class Factory<T> {
    * Make a new entity without persisting it
    */
   async make(overrideParams: Partial<FactorizedAttrs<T>> = {}): Promise<T> {
-    return this.makeEntity(overrideParams)
+    const attrs = { ...this.attrs, ...overrideParams }
+
+    const entity = await this.makeEntity(attrs, false)
+    await this.applyLazyAttributes(entity, attrs, false)
+
+    return entity
   }
 
   /**
@@ -30,10 +35,14 @@ export abstract class Factory<T> {
    * Create a new entity and persist it
    */
   async create(overrideParams: Partial<FactorizedAttrs<T>> = {}, saveOptions?: SaveOptions): Promise<T> {
-    const entity = await this.makeEntity(overrideParams)
+    const attrs = { ...this.attrs, ...overrideParams }
+    const entity = await this.makeEntity(attrs, true)
 
     const connection = await fetchConnection()
-    return connection.createEntityManager().save<T>(entity, saveOptions)
+    const savedEntity = await connection.createEntityManager().save<T>(entity, saveOptions)
+    await this.applyLazyAttributes(savedEntity, attrs, true)
+
+    return savedEntity
   }
 
   /**
@@ -51,29 +60,30 @@ export abstract class Factory<T> {
     return list
   }
 
-  private async makeEntity(overrideParams: Partial<FactorizedAttrs<T>>) {
+  private async makeEntity(attrs: FactorizedAttrs<T>, shouldPersist: boolean) {
     const entity = new this.entity()
-    const attrs = { ...this.attrs, ...overrideParams }
 
     await Promise.all(
       Object.entries(attrs).map(async ([key, value]) => {
-        Object.assign(entity, { [key]: await Factory.resolveValue(value) })
-      }),
-    )
-
-    await Promise.all(
-      Object.entries(attrs).map(async ([key, value]) => {
-        if (value instanceof LazyAttribute) {
-          const newAttrib = value.resolve(entity)
-          Object.assign(entity, { [key]: await Factory.resolveValue(newAttrib) })
-        }
+        Object.assign(entity, { [key]: await Factory.resolveValue(value, shouldPersist) })
       }),
     )
 
     return entity
   }
 
-  private static resolveValue(value: unknown, shouldPersist = true) {
+  private async applyLazyAttributes(entity: T, attrs: FactorizedAttrs<T>, shouldPersist: boolean) {
+    await Promise.all(
+      Object.entries(attrs).map(async ([key, value]) => {
+        if (value instanceof LazyAttribute) {
+          const newAttrib = value.resolve(entity)
+          Object.assign(entity, { [key]: await Factory.resolveValue(newAttrib, shouldPersist) })
+        }
+      }),
+    )
+  }
+
+  private static resolveValue(value: unknown, shouldPersist: boolean) {
     if (value instanceof Subfactory) {
       return shouldPersist ? value.create() : value.make()
     } else if (value instanceof Function) {

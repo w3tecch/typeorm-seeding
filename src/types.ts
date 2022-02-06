@@ -12,7 +12,7 @@ export type ConnectionConfiguration = {
   connection: string
 }
 export type Constructable<T> = new () => T
-export type FactorizedAttr<V> = V | (() => V | Promise<V>) | Subfactory<V>
+export type FactorizedAttr<V> = V | (() => V | Promise<V>) | Subfactory<V extends Array<infer U> ? U : V>
 export type FactorizedAttrs<T> = {
   [K in keyof Partial<T>]: FactorizedAttr<T[K]> | LazyAttribute<T, T[K]>
 }
