@@ -37,7 +37,9 @@ export abstract class Factory<T> {
    */
   async create(overrideParams: Partial<FactorizedAttrs<T>> = {}, saveOptions?: SaveOptions): Promise<T> {
     const attrs = { ...this.attrs, ...overrideParams }
-    const entity = await this.makeEntity(attrs, true)
+    const preloadedAttrs = Object.entries(attrs).filter(([, value]) => !(value instanceof LazyInstanceAttribute))
+
+    const entity = await this.makeEntity(Object.fromEntries(preloadedAttrs) as FactorizedAttrs<T>, true)
 
     const em = (await fetchConnection()).createEntityManager()
     const savedEntity = await em.save<T>(entity, saveOptions)
