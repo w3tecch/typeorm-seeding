@@ -1,5 +1,5 @@
 name: Release
-on: 
+on:
   workflow_dispatch:
     inputs:
       dry-run:

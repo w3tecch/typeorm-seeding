@@ -1,3 +1,17 @@
+# [3.2.0](https://github.com/jorgebodega/typeorm-seeding/compare/v3.1.0...v3.2.0) (2022-02-06)
+
+
+### Features
+
+* Allow async map function ([2d2c27b](https://github.com/jorgebodega/typeorm-seeding/commit/2d2c27bfb6d208a4507169a9e9fa41e8e3680072))
+
+# [3.1.0](https://github.com/jorgebodega/typeorm-seeding/compare/v3.0.1...v3.1.0) (2022-01-13)
+
+
+### Features
+
+* add support to async definition on factory ([9432089](https://github.com/jorgebodega/typeorm-seeding/commit/9432089394b027552c12dc0a1dcb5f706cb6c107))
+
 # [3.1.0-next.1](https://github.com/jorgebodega/typeorm-seeding/compare/v3.0.1...v3.1.0-next.1) (2022-01-09)
 
 
