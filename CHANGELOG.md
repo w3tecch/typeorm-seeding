@@ -1,3 +1,24 @@
+# [4.0.0-next.1](https://github.com/jorgebodega/typeorm-seeding/compare/v3.2.0...v4.0.0-next.1) (2022-02-12)
+
+
+### Bug Fixes
+
+* add type check on subfactories creation ([2b2883b](https://github.com/jorgebodega/typeorm-seeding/commit/2b2883b48ea08173a032b219266b1fece937e753))
+* attrs failing with lazy instances ([c8ddda8](https://github.com/jorgebodega/typeorm-seeding/commit/c8ddda841f9e65d7081e419d2d2e662c6d6a78df))
+
+
+### Features
+
+* add factorized attrs ([4a2ce08](https://github.com/jorgebodega/typeorm-seeding/commit/4a2ce08e1be1d79df8f1c0450ba4b315ebca8c46))
+* add lazyattribute and subfactory as options in attribs ([48a3630](https://github.com/jorgebodega/typeorm-seeding/commit/48a3630b8c606ff5189c05dc51908dc09f142184))
+* add subfactory as valid factorized attr ([0f4b37e](https://github.com/jorgebodega/typeorm-seeding/commit/0f4b37e0f8c3e93aedbd109ddb8f33ac0127a2dc))
+* separate different types of lazy attributes ([3efe94e](https://github.com/jorgebodega/typeorm-seeding/commit/3efe94ea140643ccb12dbf8858968a5866fd7577))
+
+
+### BREAKING CHANGES
+
+* definition function has been substituted with attrs
+
 # [3.2.0](https://github.com/jorgebodega/typeorm-seeding/compare/v3.1.0...v3.2.0) (2022-02-06)
 
 

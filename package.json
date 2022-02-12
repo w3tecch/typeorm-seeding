@@ -1,6 +1,6 @@
 {
   "name": "@jorgebodega/typeorm-seeding",
-  "version": "3.2.0",
+  "version": "4.0.0-next.1",
   "description": "🌱 A delightful way to seed test data into your database.",
   "license": "MIT",
   "author": "Gery Hirschfeld <gery.hirschfeld@w3tec.ch> (https://github.com/hirsch88)",
