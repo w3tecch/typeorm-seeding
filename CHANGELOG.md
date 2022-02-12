@@ -1,3 +1,5 @@
+# [4.0.0-next.2](https://github.com/jorgebodega/typeorm-seeding/compare/v4.0.0-next.1...v4.0.0-next.2) (2022-02-12)
+
 # [4.0.0-next.1](https://github.com/jorgebodega/typeorm-seeding/compare/v3.2.0...v4.0.0-next.1) (2022-02-12)
 
 
