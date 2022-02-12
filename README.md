@@ -13,7 +13,7 @@
   </a>
   <a href="https://github.com/semantic-release/semantic-release">
     <img src="https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release&style=for-the-badge" alt="Semantic release" />
-  </a> 
+  </a>
 </p>
 
 <p align="center">
@@ -43,14 +43,27 @@
 
 <br />
 
-## Additional contents
+# Contents
 
 - [Factory](#factory-1)
+  - [attrs](#attrs)
+    - [Simple value](#simple-value)
+    - [Function](#function)
+    - [InstanceAttribute](#instanceattribute)
+    - [LazyInstanceAttribute](#lazyinstanceattribute)
+    - [Subfactory](#subfactory)
+  - [make & makeMany](#make--makemany)
+  - [create & createMany](#create--createmany)
+  - [faker](#faker)
 - [Seeder](#seeder-1)
+  - [run](#run)
+  - [call](#call)
 - [CLI](#cli-configuration)
+  - [config](#config)
+  - [seed](#seed)
 - [Testing features](#testing-features)
 
-## Installation
+# Installation
 
 Before using this TypeORM extension please read the [TypeORM Getting Started](https://typeorm.io/#/) documentation. This explains how to setup a TypeORM project.
 
@@ -61,9 +74,9 @@ npm i [-D] @jorgebodega/typeorm-seeding
 yarn add [-D] @jorgebodega/typeorm-seeding
 ```
 
-### Configuration
+## Configuration
 
-To configure the path to your seeders change the TypeORM config file or use environment variables like TypeORM. If both are used the environment variables will be prioritized.
+To configure the path to your seeders extends the TypeORM config file or use environment variables like TypeORM. If both are used the environment variables will be prioritized.
 
 **ormconfig.js**
 
@@ -83,7 +96,7 @@ TYPEORM_SEEDING_SEEDERS=src/seeds/**/*{.ts,.js}
 TYPEORM_SEEDING_DEFAULT_SEEDER=RootSeeder
 ```
 
-## Introduction
+# Introduction
 
 Isn't it exhausting to create some sample data for your database, well this time is over!
 
@@ -94,11 +107,24 @@ How does it work? Just create a entity factory and/or seed script.
 ```typescript
 @Entity()
 class User {
-  @PrimaryGeneratedColumn('uuid') id: string
+  @PrimaryGeneratedColumn('increment')
+  id!: number
 
-  @Column() name: string
+  @Column()
+  name!: string
 
-  @Column() lastname: string
+  @Column()
+  lastName!: string
+
+  @Column()
+  email!: string
+
+  @OneToMany(() => Pet, (pet) => pet.owner)
+  pets?: Pet[]
+
+  @ManyToOne(() => Country, (country) => country.users, { nullable: false })
+  @JoinColumn()
+  country!: Country
 }
 ```
 
@@ -106,13 +132,14 @@ class User {
 
 ```typescript
 class UserFactory extends Factory<User> {
-  protected definition(): User {
-    const user = new User()
-
-    user.name = 'John'
-    user.lastname = 'Doe'
-
-    return user
+  protected entity = User
+  protected attrs: FactorizedAttrs<User> = {
+    name: faker.name.firstName(),
+    lastName: async () => faker.name.lastName(),
+    email: new InstanceAttribute((instance) =>
+      [instance.name.toLowerCase(), instance.lastName.toLowerCase(), '@email.com'].join(''),
+    ),
+    country: new Subfactory(CountryFactory),
   }
 }
 ```
@@ -120,67 +147,164 @@ class UserFactory extends Factory<User> {
 ### Seeder
 
 ```typescript
-export class UserExampleSeeder extends Seeder {
-  async run() {
-    await new UserFactory().create({
-      name: 'Jane',
-    })
+class UserSeeder extends Seeder {
+  async run(connection: Connection) {
+    await new UserFactory().createMany(10)
+
+    await this.call(connection, [PetSeeder])
   }
 }
 ```
 
-## Factory
+# Factory
 
 Factory is how we provide a way to simplify entities creation, implementing a [factory creational pattern](https://refactoring.guru/design-patterns/factory-method). It is defined as an abstract class with generic typing, so you have to extend over it.
 
 ```typescript
 class UserFactory extends Factory<User> {
-  protected definition(): User {
+  protected entity = User
+  protected attrs: FactorizedAttrs<User> = {
     ...
   }
 }
 ```
 
-### `definition`
+## `attrs`
 
-This function is the one that needs to be defined when extending the class. It is called to instantiate the entity and the result will be used on the rest of factory lifecycle.
+Attributes objects are superset from the original entity attributes.
 
 ```typescript
-protected definition(): User {
-    const user = new User()
-
-    user.name = 'John'
-    user.lastname = 'Doe'
-
-    return user
+protected attrs: FactorizedAttrs<User> = {
+  name: faker.name.firstName(),
+  lastName: async () => faker.name.lastName(),
+  email: new InstanceAttribute((instance) =>
+    [instance.name.toLowerCase(), instance.lastName.toLowerCase(), '@email.com'].join(''),
+  ),
+  country: new Subfactory(CountryFactory),
 }
 ```
 
-It is possible to create more than one factory related to a single entity, with different definition functions.
+Those factorized attributes resolves to the value of the original attribute, and could be one of the following types:
 
-### `map`
+- [Simple value](#simple-value)
+- [Function](#function)
+- [InstanceAttribute](#instanceattribute)
+- [LazyInstanceAttribute](#lazyinstanceattribute)
+- [Subfactory](#subfactory)
 
-Use the `.map()` function to alter the generated value before they get processed.
+### Simple value
+
+Nothing special, just a value with same type.
 
 ```typescript
-map(mapFunction: (entity: Entity) => void): Factory
+protected attrs: FactorizedAttrs<User> = {
+  name: faker.name.firstName(),
+}
 ```
+
+### Function
+
+Function that could be sync or async, and return a value of the same type. This function will be executed once per entity.
 
 ```typescript
-new UserFactory().map((user) => {
-  user.name = 'Jane'
-})
+protected attrs: FactorizedAttrs<User> = {
+  lastName: async () => faker.name.lastName(),
+}
 ```
 
-### `make` & `makeMany`
+### `InstanceAttribute`
+
+```typescript
+class InstanceAttribute<T, V> {
+  constructor(private callback: (entity: T) => V) {}
+
+  ...
+}
+```
+
+Class with a function that receive the current instance and returns a value of the same type. It is ideal for attributes that could depend on some others to be computed.
+
+Will be executed after the entity has been created and the rest of the attributes have been calculated, but before persistance (in case of `create` or `createMany`).
+
+```typescript
+protected attrs: FactorizedAttrs<User> = {
+  name: faker.name.firstName(),
+  lastName: async () => faker.name.lastName(),
+  email: new InstanceAttribute((instance) =>
+    [instance.name.toLowerCase(), instance.lastName.toLowerCase(), '@email.com'].join(''),
+  ),
+}
+```
+
+In this simple case, if `name` or `lastName` override the value in any way, the `email` attribute will be affected too.
+
+### `LazyInstanceAttribute`
+
+```typescript
+class LazyInstanceAttribute<T, V> {
+  constructor(private callback: (entity: T) => V) {}
+
+  ...
+}
+```
+
+Class with similar functionality than `InstanceAttribute`, but it will be executed only after persistance. This is useful for attributes that depends on the database id, like relations.
+
+Just remember that, if you use `make` or `makeMany`, the only difference between `InstanceAttribute` and `LazyInstanceAttribute` is that `LazyInstanceAttribute` will be processed the last.
+
+```typescript
+protected attrs: FactorizedAttrs<User> = {
+  name: faker.name.firstName(),
+  email: new LazyInstanceAttribute((instance) =>
+    [instance.name.toLowerCase(), instance.id, '@email.com'].join(''),
+  ),
+}
+```
+
+### `Subfactory`
+
+```typescript
+export class Subfactory<T> {
+  constructor(factory: Constructable<Factory<T>>)
+  constructor(factory: Constructable<Factory<T>>, values?: Partial<FactorizedAttrs<T>>)
+  constructor(factory: Constructable<Factory<T>>, count?: number)
+  constructor(factory: Constructable<Factory<T>>, values?: Partial<FactorizedAttrs<T>>, count?: number)
+
+  ...
+}
+```
+
+Subfactories are just a wrapper of another factory, to avoid explicit operations that could lead to unexpected results over that factory, like
+
+```typescript
+protected attrs: FactorizedAttrs<User> = {
+  country: async () => new CountryFactory().create({
+    name: faker.address.country(),
+  }),
+}
+```
+
+instead of
+
+```typescript
+protected attrs: FactorizedAttrs<User> = {
+  country: new Subfactory(CountryFactory, {
+    name: faker.address.country(),
+  }),
+}
+```
+
+Subfactory just execute the same kind of operation (`make` or `create`) over the factory. If `count` param is provided, it will execute `makeMany`/`createMany` instead of `make`/`create`, and returns an array.
+
+## `make` & `makeMany`
 
 Make and makeMany executes the factory functions and return a new instance of the given entity. The instance is filled with the generated values from the factory function, but not saved in the database.
 
 - **overrideParams** - Override some of the attributes of the entity.
 
 ```typescript
-make(overrideParams: Partial<Entity> = {}): Promise<Entity>
-makeMany(amount: number, overrideParams: Partial<Entity> = {}): Promise<Entity>
+make(overrideParams: Partial<FactorizedAttrs<T>> = {}): Promise<T>
+makeMany(amount: number, overrideParams: Partial<FactorizedAttrs<T>> = {}): Promise<T[]>
 ```
 
 ```typescript
@@ -192,7 +316,7 @@ new UserFactory().make({ email: 'other@mail.com' })
 new UserFactory().makeMany(10, { email: 'other@mail.com' })
 ```
 
-### `create` & `createMany`
+## `create` & `createMany`
 
 the create and createMany method is similar to the make and makeMany method, but at the end the created entity instance gets persisted in the database using TypeORM entity manager.
 
@@ -200,8 +324,8 @@ the create and createMany method is similar to the make and makeMany method, but
 - **saveOptions** - [Save options](https://github.com/typeorm/typeorm/blob/master/src/repository/SaveOptions.ts) from TypeORM
 
 ```typescript
-create(overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
-createMany(amount: number, overrideParams: Partial<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity>
+create(overrideParams: Partial<FactorizedAttrs<T>> = {}, saveOptions?: SaveOptions): Promise<T>
+createMany(amount: number, overrideParams: Partial<FactorizedAttrs<T>> = {}, saveOptions?: SaveOptions): Promise<T[]>
 ```
 
 ```typescript
@@ -217,50 +341,24 @@ new UserFactory().create({ email: 'other@mail.com' }, { listeners: false })
 new UserFactory().createMany(10, { email: 'other@mail.com' }, { listeners: false })
 ```
 
-### Execution order
+## faker
 
-As the order of execution can be complex, you can check it here:
+[Faker](https://github.com/faker-js/faker) package has been removed from `dependencies`. If you want to use it, please install it manually and just import when needed.
 
-2. **Map function**: Map function alters the already existing entity.
-3. **Override params**: Alters the already existing entity.
-4. **Promises**: If some attribute is a promise, the promise will be resolved before the entity is created.
-5. **Factories**: If some attribute is a factory, the factory will be executed with `make`/`create` like the previous one.
-
-### Faker
-
-[Faker](https://github.com/marak/Faker.js/) package was previously a dependency of the project, but now it is optional due to its size. If you want to use faker, you may need to install it and import it.
-
-Instead of the previous example:
-
-```typescript
-define(User, (faker: typeof Faker) => {
-  const firstName = faker.name.firstName()
-  const lastName = faker.name.lastName()
-
-  const user = new User()
-  user.name = `${firstName} ${lastName}`
-  return user
-})
+```bash
+npm i [-D] @faker-js/faker
+yarn add [-D] @faker-js/faker
 ```
 
-You can do:
-
 ```typescript
-import faker from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 class UserFactory extends Factory<User> {
-  protected definition(): User {
-    const user = new User()
-
-    user.name = faker.name.firstName()
-    user.lastname = faker.name.lastName()
-
-    return user
-  }
+  ...
 }
 ```
 
-## Seeder
+# Seeder
 
 Seeder class is how we provide a way to insert data into databases, and could be executed by the command line or by helper method. Is an abstract class with one method to be implemented, and a helper function to run some more seeder sequentially.
 
@@ -272,7 +370,7 @@ class UserSeeder extends Seeder {
 }
 ```
 
-### `run`
+## `run`
 
 This function is the one that needs to be defined when extending the class. Could use `call` to run some other seeders.
 
@@ -288,7 +386,7 @@ async run(connection: Connection) {
 }
 ```
 
-### `call`
+## `call`
 
 This function allow to run some other seeders in a sequential way.
 
@@ -298,7 +396,7 @@ In order to use seeders from cli command, a default seeder class must be provide
   <img src="./seeders.png" alt="logo" />
 </p>
 
-## CLI Configuration
+# CLI Configuration
 
 There are two possible commands to execute, one to see the current configuration and one to run a seeder.
 
@@ -312,7 +410,7 @@ Add the following scripts to your `package.json` file to configure them.
 }
 ```
 
-### `config`
+## `config`
 
 This command just print the connection configuration.
 
@@ -342,7 +440,7 @@ Example result
 | `--configName` or `-n` | TypeORM default value | Name to the TypeORM config file.                                             |
 | `--root` or `-r`       | TypeORM default value | Path to the TypeORM config file.                                             |
 
-### `seed`
+## `seed`
 
 This command execute a seeder, that could be specified as a parameter.
 
@@ -359,12 +457,12 @@ typeorm-seeding seed
 | `--configName` or `-n` | TypeORM default value                | Name to the TypeORM config file.                                            |
 | `--root` or `-r`       | TypeORM default value                | Path to the TypeORM config file.                                            |
 
-## Testing features
+# Testing features
 
 We provide some testing features that we already use to test this package, like connection configuration.
 The entity factories can also be used in testing. To do so call the `useFactories` or `useSeeders` function.
 
-### `useSeeders`
+## `useSeeders`
 
 Execute one or more seeders.
 
@@ -375,7 +473,3 @@ useSeeders(
   customOptions: Partial<ConnectionConfiguration>,
 ): Promise<void>
 ```
-
-### Factories
-
-If factories are being used to create entities, just remember to clean up fake data after every execution.

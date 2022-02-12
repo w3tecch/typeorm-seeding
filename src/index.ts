@@ -1,6 +1,5 @@
 export * from './connection'
 export * from './factory'
-export * from './lazyAttribute'
 export * from './instanceAttribute'
 export * from './lazyInstanceAttribute'
 export * from './seeder'
