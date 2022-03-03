@@ -23,10 +23,10 @@ jobs:
         if: steps.modules-cache.outputs.cache-hit != 'true'
       - name: Build package
         run: yarn build
-      - uses: cycjimmy/semantic-release-action@v2
+      - uses: cycjimmy/semantic-release-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         with:
-          semantic_version: 18
+          semantic_version: 19
           dry_run: ${{ github.event.inputs.dry-run }}
