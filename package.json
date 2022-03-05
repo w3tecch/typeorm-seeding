@@ -45,7 +45,7 @@
     "@types/glob": "7.2.0",
     "@types/jest": "27.4.1",
     "@types/node": "17.0.17",
-    "@types/yargs": "17.0.8",
+    "@types/yargs": "17.0.9",
     "@typescript-eslint/eslint-plugin": "5.13.0",
     "@typescript-eslint/parser": "5.13.0",
     "bcryptjs": "2.4.3",
