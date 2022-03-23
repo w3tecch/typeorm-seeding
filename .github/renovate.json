@@ -3,7 +3,7 @@
     "config:base",
     "group:allNonMajor",
     ":assignAndReview(jorgebodega)",
-    ":automergePatch",
+    ":automergeDisabled",
     ":disableDependencyDashboard",
     ":semanticCommits",
     ":semanticCommitScopeDisabled",
