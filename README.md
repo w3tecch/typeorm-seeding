@@ -448,6 +448,8 @@ This command execute a seeder, that could be specified as a parameter.
 typeorm-seeding seed
 ```
 
+The name of the seeder to execute (either set with the `--seed` option or with default in [configs](#configuration)) must be the seeder's class name, and thus, the seeder must be exported with a named export. Please avoid default export for seeders: it may imply unwanted behavior. (See [\#75](https://github.com/jorgebodega/typeorm-seeding/issues/75)).
+
 ##### Options
 
 | Option                 | Default                              | Description                                                                 |
