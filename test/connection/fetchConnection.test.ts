@@ -1,5 +1,5 @@
 import { Connection } from 'typeorm'
-import { fetchConnection } from '../../src/connection'
+import { fetchConnection } from '../../src'
 
 describe(fetchConnection, () => {
   let connection: Connection

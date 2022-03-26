@@ -1,5 +1,5 @@
 import { ConnectionOptionsReader } from 'typeorm'
-import { DefaultSeederNotDefinedError } from '../errors/DefaultSeederNotDefinedError'
+import { DefaultSeederNotDefinedError } from '../errors'
 import type { ConnectionOptions } from '../types'
 import { ConnectionConfigurationManager } from './ConnectionConfigurationManager'
 

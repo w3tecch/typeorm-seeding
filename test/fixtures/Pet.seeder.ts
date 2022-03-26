@@ -1,5 +1,5 @@
 import { Seeder } from '../../src'
-import { PetFactory } from '../factories/Pet.factory'
+import { PetFactory } from './Pet.factory'
 
 export class PetSeeder extends Seeder {
   async run() {

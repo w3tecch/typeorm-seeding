@@ -1,4 +1,4 @@
-import { configureConnection } from '../../src/connection'
+import { configureConnection } from '../../src'
 import { ConnectionConfigurationManager } from '../../src/connection/ConnectionConfigurationManager'
 
 describe(configureConnection, () => {

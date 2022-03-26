@@ -1,4 +1,5 @@
 export * from './connection'
+export * from './errors'
 export * from './factory'
 export * from './instanceAttribute'
 export * from './lazyInstanceAttribute'

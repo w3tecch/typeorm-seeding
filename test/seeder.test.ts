@@ -1,21 +1,20 @@
 import type { Connection } from 'typeorm'
 import { configureConnection, fetchConnection, Seeder } from '../src'
-import { Country } from './entities/Country.entity'
-import { Pet } from './entities/Pet.entity'
-import { User } from './entities/User.entity'
-import { UserSeeder } from './seeders/User.seeder'
+import { Pet } from './fixtures/Pet.entity'
+import { User } from './fixtures/User.entity'
+import { UserSeeder } from './fixtures/User.seeder'
 
 describe(Seeder, () => {
   let connection: Connection
 
-  beforeEach(async () => {
+  beforeAll(async () => {
     configureConnection({ connection: 'memory' })
     connection = await fetchConnection()
 
     await connection.synchronize()
   })
 
-  afterEach(async () => {
+  afterAll(async () => {
     await connection.dropDatabase()
     await connection.close()
   })
@@ -25,15 +24,10 @@ describe(Seeder, () => {
       await new UserSeeder().run(connection)
 
       const em = connection.createEntityManager()
-      const [totalUsers, totalPets, totalCountries] = await Promise.all([
-        em.count(User),
-        em.count(Pet),
-        em.count(Country),
-      ])
+      const [totalUsers, totalPets] = await Promise.all([em.count(User), em.count(Pet)])
 
       expect(totalUsers).toBe(20)
-      expect(totalPets).toBe(10)
-      expect(totalCountries).toBe(20)
+      expect(totalPets).toBe(60)
     })
   })
 })

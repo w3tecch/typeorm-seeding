@@ -1,7 +1,7 @@
-import type { Connection } from 'typeorm'
+import { Connection } from 'typeorm'
 import { Seeder } from '../../src'
-import { UserFactory } from '../factories/User.factory'
 import { PetSeeder } from './Pet.seeder'
+import { UserFactory } from './User.factory'
 
 export class UserSeeder extends Seeder {
   async run(connection: Connection) {

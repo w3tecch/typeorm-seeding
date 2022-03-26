@@ -9,7 +9,7 @@ export class Pet {
   @Column()
   name!: string
 
-  @ManyToOne(() => User, (user) => user.pets, { nullable: false })
-  @JoinColumn()
+  @ManyToOne(() => User, (user) => user.pets)
+  @JoinColumn({ name: 'owner_id' })
   owner!: User
 }

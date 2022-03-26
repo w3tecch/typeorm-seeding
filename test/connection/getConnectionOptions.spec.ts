@@ -1,7 +1,10 @@
 import { ConnectionOptionsReader } from 'typeorm'
-import { configureConnection, getConnectionOptions } from '../../src/connection'
-import { DefaultSeederNotDefinedError } from '../../src/errors/DefaultSeederNotDefinedError'
-import type { ConnectionOptions } from '../../src/types'
+import {
+  configureConnection,
+  type ConnectionOptions,
+  DefaultSeederNotDefinedError,
+  getConnectionOptions,
+} from '../../src'
 
 describe(getConnectionOptions, () => {
   test('Should get default connection', async () => {
