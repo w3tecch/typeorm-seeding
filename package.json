@@ -58,7 +58,7 @@
   },
   "dependencies": {
     "chalk": "^4.0.0",
-    "faker": "5.5.3",
+    "@faker-js/faker": "5.5.3",
     "glob": "7.1.6",
     "ora": "4.0.3",
     "reflect-metadata": "0.1.13",
