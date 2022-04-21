@@ -49,7 +49,7 @@ export class EntityFactory<Entity, Context> {
       } catch (error) {
         const message = 'Could not save entity'
         printError(message, error)
-        throw new Error(message)
+        throw error;
       }
     } else {
       const message = 'No db connection is given'
