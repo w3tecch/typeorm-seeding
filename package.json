@@ -49,7 +49,7 @@
     "jest": "^25.3.0",
     "prettier": "^2.0.4",
     "rimraf": "^3.0.2",
-    "semantic-release": "^17.0.4",
+    "semantic-release": "^19.0.3",
     "sqlite": "^4.0.6",
     "sqlite3": "^4.1.1",
     "ts-jest": "^25.3.1",
