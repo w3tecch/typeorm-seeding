@@ -36,7 +36,7 @@
     "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
-    "@faker-js/faker": "7.1.0",
+    "@faker-js/faker": "7.2.0",
     "@semantic-release/changelog": "6.0.1",
     "@semantic-release/git": "10.0.1",
     "@tsconfig/node16": "1.0.2",
@@ -46,8 +46,8 @@
     "@types/jest": "28.1.1",
     "@types/node": "17.0.17",
     "@types/yargs": "17.0.10",
-    "@typescript-eslint/eslint-plugin": "5.27.0",
-    "@typescript-eslint/parser": "5.27.0",
+    "@typescript-eslint/eslint-plugin": "5.28.0",
+    "@typescript-eslint/parser": "5.28.0",
     "bcryptjs": "2.4.3",
     "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
