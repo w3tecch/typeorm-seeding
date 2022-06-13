@@ -70,7 +70,7 @@
     "yargs": "17.5.1"
   },
   "peerDependencies": {
-    "typeorm": "^0.2.41 || ^0.3.0"
+    "typeorm": "^0.3.0"
   },
   "resolutions": {
     "mem": ">=4.0.0"

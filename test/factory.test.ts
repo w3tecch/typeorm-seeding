@@ -1,18 +1,17 @@
-import type { Connection } from 'typeorm'
-import { configureConnection, Factory, fetchConnection, Subfactory } from '../src'
+import { Factory, InstanceAttribute, LazyInstanceAttribute, Subfactory, useDataSource } from '../src'
+import { dataSource } from './fixtures/dataSource'
 import { Pet } from './fixtures/Pet.entity'
 import { PetFactory } from './fixtures/Pet.factory'
 import { User } from './fixtures/User.entity'
 import { UserFactory } from './fixtures/User.factory'
 
 describe(Factory, () => {
-  const userFactory = new UserFactory()
-  const petFactory = new PetFactory()
-
   describe(Factory.prototype.make, () => {
     describe(UserFactory, () => {
+      const factory = new UserFactory()
+
       test('Should make a new entity', async () => {
-        const userMaked = await userFactory.make()
+        const userMaked = await factory.make()
 
         expect(userMaked).toBeInstanceOf(User)
         expect(userMaked.id).toBeUndefined()
@@ -22,30 +21,82 @@ describe(Factory, () => {
         expect(userMaked.email).toBeDefined()
 
         expect(userMaked.pets).toBeInstanceOf(Array)
-        userMaked.pets.forEach((pet) => {
-          expect(pet).toBeInstanceOf(Pet)
+        expect(userMaked.pets).toHaveLength(0)
+      })
+
+      test('Should make a new entity with attribute overrided', async () => {
+        const userMaked = await factory.make({
+          name: 'john',
+        })
+
+        expect(userMaked.name).toBe('john')
+      })
+
+      test('Should make a new entity with function as attribute', async () => {
+        const userMaked = await factory.make({
+          name: () => 'john',
+        })
+
+        expect(userMaked.name).toBe('john')
+      })
+
+      test('Should make a new entity with async function as attribute', async () => {
+        const userMaked = await factory.make({
+          name: async () => 'john',
+        })
+
+        expect(userMaked.name).toBe('john')
+      })
+
+      test('Should make a new entity with instance attributes', async () => {
+        const userMaked = await factory.make({
+          email: new InstanceAttribute((instance) =>
+            [instance.name.toLowerCase(), instance.lastName.toLowerCase(), '@email.com'].join(''),
+          ),
+        })
+
+        expect(userMaked.email).toMatch(userMaked.name.toLowerCase())
+        expect(userMaked.email).toMatch(userMaked.lastName.toLowerCase())
+      })
+
+      test('Should make a new entity with lazy instance attributes', async () => {
+        const userMaked = await factory.make({
+          email: new InstanceAttribute((instance) =>
+            [instance.name.toLowerCase(), instance.lastName.toLowerCase(), '@email.com'].join(''),
+          ),
+        })
+
+        expect(userMaked.email).toMatch(userMaked.name.toLowerCase())
+        expect(userMaked.email).toMatch(userMaked.lastName.toLowerCase())
+      })
+
+      test('Should make a new entity with multiple subfactories', async () => {
+        const userMaked = await factory.make({
+          pets: new LazyInstanceAttribute((instance) => new Subfactory(PetFactory, { owner: instance }, 1)),
+        })
+
+        expect(userMaked.pets).toBeInstanceOf(Array)
+        expect(userMaked.pets).toHaveLength(1)
+        userMaked.pets.forEach(async (pet) => {
           expect(pet.id).toBeUndefined()
-          expect(pet.owner).toBeDefined()
           expect(pet.owner).toBeInstanceOf(User)
-          expect(pet.owner).toEqual(userMaked)
+          expect(pet.owner.id).toBeUndefined()
         })
       })
 
-      test('Should make a new entity with name overrided', async () => {
-        const providedName = 'john'
-        const userMaked = await userFactory.make({
-          name: providedName,
-        })
+      test('Should make two entities with different attributes', async () => {
+        const userMaked1 = await factory.make()
+        const userMaked2 = await factory.make()
 
-        expect(userMaked).toBeInstanceOf(User)
-        expect(userMaked.name).toBe(providedName)
-        expect(userMaked.email).toMatch(providedName)
+        expect(userMaked1).not.toStrictEqual(userMaked2)
       })
     })
 
     describe(PetFactory, () => {
-      test('Should make a new entity', async () => {
-        const petMaked = await petFactory.make()
+      const factory = new PetFactory()
+
+      test('Should make a new entity with single subfactory', async () => {
+        const petMaked = await factory.make()
 
         expect(petMaked).toBeInstanceOf(Pet)
         expect(petMaked.id).toBeUndefined()
@@ -54,25 +105,13 @@ describe(Factory, () => {
         expect(petMaked.owner).toBeInstanceOf(User)
         expect(petMaked.owner.id).toBeUndefined()
       })
-
-      test('Should make a new entity with name overrided', async () => {
-        const petName = 'Fido'
-        const petMaked = await petFactory.make({
-          name: petName,
-        })
-
-        expect(petMaked).toBeInstanceOf(Pet)
-        expect(petMaked.name).toBe(petName)
-      })
     })
   })
 
   describe(Factory.prototype.makeMany, () => {
-    test.each([
-      [UserFactory.name, userFactory],
-      [PetFactory.name, petFactory],
-    ])('Should make many new entities of %s', async (_, factory) => {
+    test('Should make many new entities', async () => {
       const count = 2
+      const factory = new UserFactory()
       const entitiesMaked = await factory.makeMany(count)
 
       expect(entitiesMaked).toHaveLength(count)
@@ -83,23 +122,19 @@ describe(Factory, () => {
   })
 
   describe(Factory.prototype.create, () => {
-    let connection: Connection
-
-    beforeEach(async () => {
-      configureConnection({ connection: 'memory' })
-      connection = await fetchConnection()
-
-      await connection.synchronize()
+    beforeAll(async () => {
+      await useDataSource(dataSource, { synchronize: true }, true)
     })
 
-    afterEach(async () => {
-      await connection.dropDatabase()
-      await connection.close()
+    afterAll(async () => {
+      await dataSource.destroy()
     })
 
     describe(UserFactory, () => {
+      const factory = new UserFactory()
+
       test('Should create a new entity', async () => {
-        const userCreated = await userFactory.create()
+        const userCreated = await factory.create()
 
         expect(userCreated).toBeInstanceOf(User)
         expect(userCreated.id).toBeDefined()
@@ -109,43 +144,83 @@ describe(Factory, () => {
         expect(userCreated.email).toBeDefined()
 
         expect(userCreated.pets).toBeInstanceOf(Array)
-        userCreated.pets.forEach((pet) => {
-          expect(pet).toBeInstanceOf(Pet)
-          expect(pet.id).toBeDefined()
-          expect(pet.owner).toBeDefined()
-          expect(pet.owner).toBeInstanceOf(User)
-          expect(pet.owner.id).toEqual(userCreated.id)
-        })
+        expect(userCreated.pets).toHaveLength(0)
       })
 
-      test('Should create a new entity with name overrided', async () => {
-        const providedName = 'john'
-        const userCreated = await userFactory.create({
-          name: providedName,
+      test('Should create a new entity with attribute overrided', async () => {
+        const userCreated = await factory.create({
+          name: 'john',
         })
 
-        expect(userCreated).toBeInstanceOf(User)
-        expect(userCreated.name).toBe(providedName)
-        expect(userCreated.email).toMatch(providedName)
+        expect(userCreated.name).toBe('john')
       })
 
-      test('Should create a new entity with pets overrided', async () => {
-        const userCreated = await userFactory.create({
-          pets: new Subfactory(PetFactory, 5),
+      test('Should create a new entity with function as attribute', async () => {
+        const userCreated = await factory.create({
+          name: () => 'john',
+        })
+
+        expect(userCreated.name).toBe('john')
+      })
+
+      test('Should create a new entity with async function as attribute', async () => {
+        const userCreated = await factory.create({
+          name: async () => 'john',
+        })
+
+        expect(userCreated.name).toBe('john')
+      })
+
+      test('Should create a new entity with instance attributes', async () => {
+        const userCreated = await factory.create({
+          email: new InstanceAttribute((instance) =>
+            [instance.name.toLowerCase(), instance.lastName.toLowerCase(), '@email.com'].join(''),
+          ),
+        })
+
+        expect(userCreated.email).toMatch(userCreated.name.toLowerCase())
+        expect(userCreated.email).toMatch(userCreated.lastName.toLowerCase())
+      })
+
+      test('Should create a new entity with lazy instance attributes', async () => {
+        const userCreated = await factory.create({
+          email: new InstanceAttribute((instance) =>
+            [instance.name.toLowerCase(), instance.lastName.toLowerCase(), '@email.com'].join(''),
+          ),
+        })
+
+        expect(userCreated.email).toMatch(userCreated.name.toLowerCase())
+        expect(userCreated.email).toMatch(userCreated.lastName.toLowerCase())
+      })
+
+      test('Should create a new entity with multiple subfactories', async () => {
+        const userCreated = await factory.create({
+          pets: new LazyInstanceAttribute((instance) => new Subfactory(PetFactory, { owner: instance }, 1)),
         })
 
         expect(userCreated.pets).toBeInstanceOf(Array)
-        userCreated.pets.forEach((pet) => {
-          expect(pet).toBeInstanceOf(Pet)
+        expect(userCreated.pets).toHaveLength(1)
+        userCreated.pets.forEach(async (pet) => {
+          expect(pet.id).toBeDefined()
           expect(pet.owner).toBeInstanceOf(User)
-          expect(pet.owner.id).not.toEqual(userCreated.id)
+          expect(pet.owner.id).toBeDefined()
+          expect(pet.owner.id).toBe(userCreated.id)
         })
+      })
+
+      test('Should create two entities with different attributes', async () => {
+        const userCreated1 = await factory.create()
+        const userCreated2 = await factory.create()
+
+        expect(userCreated1).not.toStrictEqual(userCreated2)
       })
     })
 
     describe(PetFactory, () => {
-      test('Should create a new entity', async () => {
-        const petCreated = await petFactory.create()
+      const factory = new PetFactory()
+
+      test('Should create a new entity with single subfactory', async () => {
+        const petCreated = await factory.create()
 
         expect(petCreated).toBeInstanceOf(Pet)
         expect(petCreated.id).toBeDefined()
@@ -154,39 +229,21 @@ describe(Factory, () => {
         expect(petCreated.owner).toBeInstanceOf(User)
         expect(petCreated.owner.id).toBeDefined()
       })
-
-      test('Should create a new entity with name overrided and owner affected', async () => {
-        const petName = 'Fido'
-        const petCreated = await petFactory.create({
-          name: petName,
-        })
-
-        expect(petCreated).toBeInstanceOf(Pet)
-        expect(petCreated.name).toBe(petName)
-      })
     })
   })
 
   describe(Factory.prototype.createMany, () => {
-    let connection: Connection
-
-    beforeEach(async () => {
-      configureConnection({ connection: 'memory' })
-      connection = await fetchConnection()
-
-      await connection.synchronize()
+    beforeAll(async () => {
+      await useDataSource(dataSource, { synchronize: true }, true)
     })
 
-    afterEach(async () => {
-      await connection.dropDatabase()
-      await connection.close()
+    afterAll(async () => {
+      await dataSource.destroy()
     })
 
-    test.each([
-      [UserFactory.name, userFactory],
-      [PetFactory.name, petFactory],
-    ])('Should create many new entities of %s', async (_, factory) => {
+    test('Should create many new entities', async () => {
       const count = 2
+      const factory = new UserFactory()
       const entitiesCreated = await factory.createMany(count)
 
       expect(entitiesCreated).toHaveLength(count)
