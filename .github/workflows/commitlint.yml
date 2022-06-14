@@ -1,0 +1,13 @@
+name: Commitlint
+on:
+  [push, pull_request]
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v4
+        with: 
+          configFile: .commitlintrc

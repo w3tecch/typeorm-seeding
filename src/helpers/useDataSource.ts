@@ -1,7 +1,6 @@
 import type { DataSource, DataSourceOptions } from 'typeorm'
 import { configureDataSource } from '../datasource'
 
-
 export async function useDataSource(dataSource: DataSource): Promise<void>
 export async function useDataSource(dataSource: DataSource, overrideOptions: Partial<DataSourceOptions>): Promise<void>
 export async function useDataSource(dataSource: DataSource, forceInitialization: boolean): Promise<void>
