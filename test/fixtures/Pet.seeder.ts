@@ -3,6 +3,6 @@ import { PetFactory } from './Pet.factory'
 
 export class PetSeeder extends Seeder {
   async run() {
-    await new PetFactory().createMany(10)
+    await new PetFactory().create()
   }
 }
