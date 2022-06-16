@@ -1,11 +1,10 @@
 import { Arguments, Argv, CommandModule, exit } from 'yargs'
 import ora, { Ora } from 'ora'
 import { gray } from 'chalk'
-import { configureConnection, getConnectionOptions } from '../connection'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../helpers/useSeeders'
 import { calculateFilePaths } from '../utils/fileHandling'
-import type { ConnectionOptions, Constructable } from '../types'
+import type { Constructable } from '../types'
 import { SeederImportationError } from '../errors/SeederImportationError'
 
 interface SeedCommandArguments extends Arguments {
