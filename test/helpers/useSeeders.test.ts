@@ -26,10 +26,9 @@ describe(useSeeders, () => {
     await useSeeders(UserSeeder)
 
     const em = dataSource.createEntityManager()
-    const [totalUsers, totalPets] = await Promise.all([em.count(User), em.count(Pet)])
+    const [totalUsers] = await Promise.all([em.count(User)])
 
-    expect(totalUsers).toBe(2)
-    expect(totalPets).toBe(1)
+    expect(totalUsers).toBe(1)
   })
 
   test(`Should seed with multiple seeders provided`, async () => {
@@ -38,7 +37,7 @@ describe(useSeeders, () => {
     const em = dataSource.createEntityManager()
     const [totalUsers, totalPets] = await Promise.all([em.count(User), em.count(Pet)])
 
-    expect(totalUsers).toBe(3)
-    expect(totalPets).toBe(2)
+    expect(totalUsers).toBe(2)
+    expect(totalPets).toBe(1)
   })
 })

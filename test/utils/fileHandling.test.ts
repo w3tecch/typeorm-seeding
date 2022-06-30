@@ -1,8 +1,8 @@
-import { calculateFilePaths } from '../../src/utils/fileHandling'
+import { calculateFilePath } from '../../src/utils/fileHandling'
 
-describe(calculateFilePaths, () => {
+describe(calculateFilePath, () => {
   test('Should return a flat array', () => {
-    const results = calculateFilePaths(['*.ts'])
+    const results = calculateFilePath(['*.ts'])
 
     expect(results.length).toBeGreaterThan(0)
     expect(results.some((result) => result.includes('ormconfig.ts'))).toBeTruthy()

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /* istanbul ignore file */
 import 'reflect-metadata'
-import * as yargs from 'yargs'
+import yargs from 'yargs'
 import { SeedCommand } from './commands/seed.command'
 
 yargs

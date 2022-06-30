@@ -1,6 +1,6 @@
 import { resolve } from 'path'
 import { sync } from 'glob'
 
-export const calculateFilePaths = (filePattern: string[]): string[] => {
-  return filePattern.flatMap((pattern) => sync(resolve(process.cwd(), pattern)))
+export const calculateFilePath = (filePattern: string): string[] => {
+  return sync(resolve(process.cwd(), filePattern), { ignore: '**/node_modules/**' })
 }
