@@ -43,7 +43,8 @@ export class SeedCommand implements CommandModule {
 
       spinner.succeed('Datasource loaded')
     } catch (error) {
-      await SeedCommand.handleDatasourceError(spinner, error as Error, dataSource)
+      spinner.fail('Could not load the data source!')
+      await SeedCommand.handleError(error as Error, dataSource)
     }
 
     spinner.start('Importing seeders')
@@ -56,7 +57,8 @@ export class SeedCommand implements CommandModule {
 
       spinner.succeed('Seeder imported')
     } catch (error) {
-      await SeedCommand.handleSeedersError(spinner, error as Error, dataSource)
+      spinner.fail('Could not load seeders!')
+      await SeedCommand.handleError(error as Error, dataSource)
     }
 
     // Run seeder
@@ -67,15 +69,15 @@ export class SeedCommand implements CommandModule {
         spinner.succeed(`Seeder ${seeder.name} executed`)
       }
     } catch (error) {
-      await SeedCommand.handleSeederExecutionError(spinner, error as Error, dataSource)
+      spinner.fail('Could not execute seeder!')
+      await SeedCommand.handleError(error as Error, dataSource)
     }
 
     spinner.succeed('Finished seeding')
     await dataSource.destroy()
   }
 
-  static async handleDatasourceError(spinner: ora.Ora, error: Error, dataSource: DataSource | undefined) {
-    spinner.fail('Could not load the data source!')
+  static async handleError(error: Error, dataSource: DataSource | undefined) {
     console.error(error.message)
     if (dataSource) {
       await dataSource.destroy()
@@ -122,13 +124,6 @@ export class SeedCommand implements CommandModule {
     return dataSource
   }
 
-  static async handleSeedersError(spinner: ora.Ora, error: Error, dataSource: DataSource) {
-    spinner.fail('Could not load seeders!')
-    console.error(error.message)
-    await dataSource.destroy()
-    exit(1, error)
-  }
-
   static async loadSeeders(seederPaths: string[]): Promise<Constructable<Seeder>[]> {
     let defaultSeeders
     try {
@@ -140,12 +135,5 @@ export class SeedCommand implements CommandModule {
     }
 
     return defaultSeeders
-  }
-
-  static async handleSeederExecutionError(spinner: ora.Ora, error: Error, dataSource: DataSource) {
-    spinner.fail('Could not execute seeder!')
-    console.error(error.message)
-    await dataSource.destroy()
-    exit(1, error)
   }
 }
