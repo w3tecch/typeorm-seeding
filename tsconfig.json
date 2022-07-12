@@ -1,5 +1,5 @@
 {
-  "extends": "@tsconfig/node16/tsconfig.json",
+  "extends": "@tsconfig/node16",
   "compilerOptions": {
     "outDir": "dist",
     "target": "es2020",
