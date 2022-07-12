@@ -5,6 +5,6 @@ describe(calculateFilePath, () => {
     const results = calculateFilePath('*.ts')
 
     expect(results.length).toBeGreaterThan(0)
-    expect(results.some((result) => result.includes('ormconfig.ts'))).toBeTruthy()
+    expect(results.some((result) => result.includes('jest.config.ts'))).toBeTruthy()
   })
 })

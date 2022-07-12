@@ -1,7 +1,7 @@
 import { resolve } from 'node:path'
 import ora from 'ora'
 import { DataSource } from 'typeorm'
-import { Arguments, Argv, CommandModule, exit } from 'yargs'
+import { Arguments, Argv, CommandModule, showHelp } from 'yargs'
 import { Seeder } from '../seeder'
 import { useSeeders } from '../helpers/useSeeders'
 import { calculateFilePath } from '../utils/fileHandling'
@@ -20,12 +20,20 @@ export class SeedCommand implements CommandModule {
    * @inheritdoc
    */
   builder(args: Argv) {
-    return args.option('d', {
-      alias: 'dataSource',
-      type: 'string',
-      describe: 'Path to the file where your DataSource instance is defined.',
-      required: true,
-    })
+    return args
+      .option('d', {
+        alias: 'dataSource',
+        type: 'string',
+        describe: 'Path to the file where your DataSource instance is defined.',
+        required: true,
+      })
+      .fail((message, error: Error) => {
+        if (error) throw error // preserve stack
+        else {
+          console.error(message)
+          showHelp()
+        }
+      })
   }
 
   /**
@@ -44,7 +52,7 @@ export class SeedCommand implements CommandModule {
       spinner.succeed('Datasource loaded')
     } catch (error) {
       spinner.fail('Could not load the data source!')
-      await SeedCommand.handleError(error as Error, dataSource)
+      throw error
     }
 
     spinner.start('Importing seeders')
@@ -58,7 +66,8 @@ export class SeedCommand implements CommandModule {
       spinner.succeed('Seeder imported')
     } catch (error) {
       spinner.fail('Could not load seeders!')
-      await SeedCommand.handleError(error as Error, dataSource)
+      await dataSource.destroy()
+      throw error
     }
 
     // Run seeder
@@ -70,19 +79,12 @@ export class SeedCommand implements CommandModule {
       }
     } catch (error) {
       spinner.fail('Could not execute seeder!')
-      await SeedCommand.handleError(error as Error, dataSource)
+      await dataSource.destroy()
+      throw error
     }
 
     spinner.succeed('Finished seeding')
     await dataSource.destroy()
-  }
-
-  static async handleError(error: Error, dataSource: DataSource | undefined) {
-    console.error(error.message)
-    if (dataSource) {
-      await dataSource.destroy()
-    }
-    exit(1, error)
   }
 
   static async loadDataSource(dataSourceFilePath: string): Promise<DataSource> {
@@ -125,15 +127,30 @@ export class SeedCommand implements CommandModule {
   }
 
   static async loadSeeders(seederPaths: string[]): Promise<Constructable<Seeder>[]> {
-    let defaultSeeders
+    let seederFileExports
     try {
-      defaultSeeders = await Promise.all(seederPaths.map((seederFile) => import(seederFile))).then((seederExports) => {
-        return seederExports.map((seederExport) => seederExport.default)
-      })
+      seederFileExports = await Promise.all(seederPaths.map((seederFile) => import(seederFile))).then(
+        (seederExports) => {
+          return seederExports.map((seederExport) => seederExport.default)
+        },
+      )
     } catch (err) {
       throw new Error(`Unable to open files ${(err as Error).message}`)
     }
 
-    return defaultSeeders
+    if (seederFileExports.length === 0) {
+      throw new Error(`No default seeders found`)
+    }
+
+    const seeders: Constructable<Seeder>[] = []
+    for (const fileExport in seederFileExports) {
+      const seederExport = seederFileExports[fileExport]
+      const instance = new seederExport()
+      if (instance instanceof DataSource) {
+        seeders.push(seederExport)
+      }
+    }
+
+    return seeders
   }
 }
