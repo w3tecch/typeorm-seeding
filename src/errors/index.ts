@@ -1,2 +1,2 @@
+export * from './DataSourceNotProvidedError'
 export * from './SeederImportationError'
-export * from './DefaultSeederNotDefinedError'

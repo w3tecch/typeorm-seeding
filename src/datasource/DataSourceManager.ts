@@ -1,5 +1,5 @@
 import type { DataSource } from 'typeorm'
-import { DataSourceNotProvidedError } from '../errors/DataSourceNotProvidedError'
+import { DataSourceNotProvidedError } from '../errors'
 
 export class DataSourceManager {
   private static _instance: DataSourceManager
