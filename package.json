@@ -57,6 +57,7 @@
     "typescript": "^3.8.3"
   },
   "dependencies": {
+    "@faker-js/faker": "^7.3.0",
     "chalk": "^4.0.0",
     "faker": "5.5.3",
     "glob": "7.1.6",
