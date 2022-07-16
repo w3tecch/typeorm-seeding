@@ -246,11 +246,11 @@ define: <Entity, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Con
 ```
 
 ```typescript
-import Faker from 'faker'
+import type { Faker } from '@faker-js/faker'
 import { define } from 'typeorm-seeding'
 import { User } from '../entities'
 
-define(User, (faker: typeof Faker, context: { roles: string[] }) => { ... })
+define(User, (faker: Faker, context: { roles: string[] }) => { ... })
 ```
 
 ### `factory`
