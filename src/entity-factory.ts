@@ -1,11 +1,11 @@
 import * as Faker from 'faker'
-import { ObjectType, SaveOptions } from 'typeorm'
+import { ObjectLiteral, ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
 import { printError, printWarning } from './utils/log.util'
 import { getConnectionOptions, createConnection } from './connection'
 
-export class EntityFactory<Entity, Context> {
+export class EntityFactory<Entity extends ObjectLiteral, Context> {
   private mapFunction: (entity: Entity) => Promise<Entity>
 
   constructor(
@@ -59,7 +59,7 @@ export class EntityFactory<Entity, Context> {
   }
 
   public async makeMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
-    const list = []
+    const list: Entity[] = []
     for (let index = 0; index < amount; index++) {
       list[index] = await this.make(overrideParams)
     }
@@ -71,7 +71,7 @@ export class EntityFactory<Entity, Context> {
     overrideParams: EntityProperty<Entity> = {},
     saveOptions?: SaveOptions,
   ): Promise<Entity[]> {
-    const list = []
+    const list: Entity[] = []
     for (let index = 0; index < amount; index++) {
       list[index] = await this.create(overrideParams, saveOptions)
     }
