@@ -1,11 +1,17 @@
 import 'reflect-metadata'
-import { ObjectType, getConnection, Connection } from 'typeorm'
+import { ObjectType, DataSource } from 'typeorm'
 
 import { EntityFactory } from './entity-factory'
 import { EntityFactoryDefinition, Factory, FactoryFunction, SeederConstructor, Seeder } from './types'
 import { getNameOfEntity } from './utils/factory.util'
 import { loadFiles, importFiles } from './utils/file.util'
-import { ConfigureOption, configureConnection, getConnectionOptions, createConnection } from './connection'
+import {
+  ConfigureOption,
+  configureConnection,
+  getConnectionOptions,
+  loadDataSource,
+  resetDataSource,
+} from './connection'
 
 // -------------------------------------------------------------------------
 // Handy Exports
@@ -34,35 +40,35 @@ export const define = <Entity, Context>(entity: ObjectType<Entity>, factoryFn: F
   })
 }
 
-export const factory: Factory = <Entity, Context>(entity: ObjectType<Entity>) => (context?: Context) => {
-  const name = getNameOfEntity(entity)
-  const entityFactoryObject = (global as any).seeder.entityFactories.get(name)
-  return new EntityFactory<Entity, Context>(name, entity, entityFactoryObject.factory, context)
-}
+export const factory: Factory =
+  <Entity, Context>(entity: ObjectType<Entity>) =>
+  (context?: Context) => {
+    const name = getNameOfEntity(entity)
+    const entityFactoryObject = (global as any).seeder.entityFactories.get(name)
+    return new EntityFactory<Entity, Context>(name, entity, entityFactoryObject.factory, context)
+  }
 
 export const runSeeder = async (clazz: SeederConstructor): Promise<any> => {
   const seeder: Seeder = new clazz()
-  const connection = await createConnection()
-  return seeder.run(factory, connection)
+  const dataSource = await loadDataSource()
+  return seeder.run(factory, dataSource)
 }
 
 // -------------------------------------------------------------------------
 // Facade functions for testing
 // -------------------------------------------------------------------------
-export const useRefreshDatabase = async (options: ConfigureOption = {}): Promise<Connection> => {
+export const useRefreshDatabase = async (options: ConfigureOption = {}): Promise<DataSource> => {
   configureConnection(options)
-  const option = await getConnectionOptions()
-  const connection = await createConnection(option)
-  if (connection && connection.isConnected) {
-    await connection.dropDatabase()
-    await connection.synchronize()
+  const dataSource = await loadDataSource()
+  if (dataSource && dataSource.isInitialized) {
+    await dataSource.dropDatabase()
+    await dataSource.synchronize()
   }
-  return connection
+  return dataSource
 }
 
 export const tearDownDatabase = async (): Promise<void> => {
-  const connection = await createConnection()
-  return connection && connection.isConnected ? connection.close() : undefined
+  return resetDataSource()
 }
 
 export const useSeeding = async (options: ConfigureOption = {}): Promise<void> => {

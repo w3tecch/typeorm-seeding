@@ -4,7 +4,8 @@ import * as chalk from 'chalk'
 import { importSeed } from '../importer'
 import { loadFiles, importFiles } from '../utils/file.util'
 import { runSeeder } from '../typeorm-seeding'
-import { configureConnection, getConnectionOptions, ConnectionOptions, createConnection } from '../connection'
+import { DataSource } from 'typeorm'
+import { configureConnection, getConnectionOptions, ConnectionOptions, loadDataSource } from '../connection'
 
 export class SeedCommand implements yargs.CommandModule {
   command = 'seed'
@@ -12,20 +13,10 @@ export class SeedCommand implements yargs.CommandModule {
 
   builder(args: yargs.Argv) {
     return args
-      .option('n', {
-        alias: 'configName',
-        default: '',
-        describe: 'Name of the typeorm config file (json or js).',
-      })
-      .option('c', {
-        alias: 'connection',
-        default: '',
-        describe: 'Name of the typeorm connection',
-      })
-      .option('r', {
-        alias: 'root',
-        default: process.cwd(),
-        describe: 'Path to your typeorm config file',
+      .option('d', {
+        alias: 'dataSource',
+        demandOption: true,
+        describe: 'Path to the file where your DataSource instance is defined.',
       })
       .option('seed', {
         alias: 's',
@@ -39,16 +30,16 @@ export class SeedCommand implements yargs.CommandModule {
     log('🌱  ' + chalk.bold(`TypeORM Seeding v${(pkg as any).version}`))
     const spinner = ora('Loading ormconfig').start()
     const configureOption = {
-      root: args.root as string,
-      configName: args.configName as string,
-      connection: args.connection as string,
+      dataSourcePath: args.dataSource as string,
     }
 
+    let dataSource: DataSource | null = null
     // Get TypeORM config file
     let option: ConnectionOptions
     try {
       configureConnection(configureOption)
       option = await getConnectionOptions()
+      dataSource = await loadDataSource()
       spinner.succeed('ORM Config loaded')
     } catch (error) {
       panic(spinner, error, 'Could not load the config file!')
@@ -81,7 +72,7 @@ export class SeedCommand implements yargs.CommandModule {
     // Get database connection and pass it to the seeder
     spinner.start('Connecting to the database')
     try {
-      await createConnection()
+      await loadDataSource()
       spinner.succeed('Database connected')
     } catch (error) {
       panic(spinner, error, 'Database connection failed! Check your typeORM config file.')

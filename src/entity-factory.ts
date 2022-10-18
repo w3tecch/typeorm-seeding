@@ -3,7 +3,7 @@ import { ObjectLiteral, ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
 import { printError, printWarning } from './utils/log.util'
-import { getConnectionOptions, createConnection } from './connection'
+import { getConnectionOptions, loadDataSource } from './connection'
 
 export class EntityFactory<Entity extends ObjectLiteral, Context> {
   private mapFunction: (entity: Entity) => Promise<Entity>
@@ -39,10 +39,9 @@ export class EntityFactory<Entity extends ObjectLiteral, Context> {
    * Create makes a new entity and does persist it
    */
   public async create(overrideParams: EntityProperty<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity> {
-    const option = await getConnectionOptions()
-    const connection = await createConnection(option)
-    if (connection && connection.isConnected) {
-      const em = connection.createEntityManager()
+    const dataSource = await loadDataSource()
+    if (dataSource && dataSource.isInitialized) {
+      const em = dataSource.createEntityManager()
       try {
         const entity = await this.makeEnity(overrideParams, true)
         return await em.save<Entity>(entity, saveOptions)
@@ -52,6 +51,7 @@ export class EntityFactory<Entity extends ObjectLiteral, Context> {
         throw new Error(message)
       }
     } else {
+      console.warn('No db connection is given: ', dataSource.isInitialized, dataSource)
       const message = 'No db connection is given'
       printError(message)
       throw new Error(message)
