@@ -51,7 +51,6 @@ export class EntityFactory<Entity extends ObjectLiteral, Context> {
         throw new Error(message)
       }
     } else {
-      console.warn('No db connection is given: ', dataSource.isInitialized, dataSource)
       const message = 'No db connection is given'
       printError(message)
       throw new Error(message)
