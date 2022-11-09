@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { ObjectType, DataSource } from 'typeorm'
+import { ObjectType, DataSource, ObjectLiteral } from 'typeorm'
 
 import { EntityFactory } from './entity-factory'
 import { EntityFactoryDefinition, Factory, FactoryFunction, SeederConstructor, Seeder } from './types'
@@ -33,7 +33,10 @@ export { times } from './helpers'
 // Facade functions
 // -------------------------------------------------------------------------
 
-export const define = <Entity, Context>(entity: ObjectType<Entity>, factoryFn: FactoryFunction<Entity, Context>) => {
+export const define = <Entity extends ObjectLiteral, Context>(
+  entity: ObjectType<Entity>,
+  factoryFn: FactoryFunction<Entity, Context>,
+) => {
   ;(global as any).seeder.entityFactories.set(getNameOfEntity(entity), {
     entity,
     factory: factoryFn,
@@ -41,7 +44,7 @@ export const define = <Entity, Context>(entity: ObjectType<Entity>, factoryFn: F
 }
 
 export const factory: Factory =
-  <Entity, Context>(entity: ObjectType<Entity>) =>
+  <Entity extends ObjectLiteral, Context>(entity: ObjectType<Entity>) =>
   (context?: Context) => {
     const name = getNameOfEntity(entity)
     const entityFactoryObject = (global as any).seeder.entityFactories.get(name)
