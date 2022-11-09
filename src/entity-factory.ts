@@ -3,7 +3,7 @@ import { ObjectLiteral, ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
 import { printError, printWarning } from './utils/log.util'
-import { getConnectionOptions, loadDataSource } from './connection'
+import { loadDataSource } from './connection'
 
 export class EntityFactory<Entity extends ObjectLiteral, Context> {
   private mapFunction: (entity: Entity) => Promise<Entity>
@@ -102,8 +102,8 @@ export class EntityFactory<Entity extends ObjectLiteral, Context> {
     }
 
     for (const key in overrideParams) {
-      if (overrideParams.hasOwnProperty(key)) {
-        entity[key] = overrideParams[key]
+      if (overrideParams.hasOwnProperty(key) && overrideParams[key]) {
+        entity[key] = overrideParams[key]!
       }
     }
 
