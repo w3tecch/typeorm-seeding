@@ -1,11 +1,11 @@
 import * as Faker from 'faker'
-import { ObjectType, SaveOptions } from 'typeorm'
+import { ObjectLiteral, ObjectType, SaveOptions } from 'typeorm'
 import { FactoryFunction, EntityProperty } from './types'
 import { isPromiseLike } from './utils/factory.util'
 import { printError, printWarning } from './utils/log.util'
-import { getConnectionOptions, createConnection } from './connection'
+import { loadDataSource } from './connection'
 
-export class EntityFactory<Entity, Context> {
+export class EntityFactory<Entity extends ObjectLiteral, Context> {
   private mapFunction: (entity: Entity) => Promise<Entity>
 
   constructor(
@@ -39,10 +39,9 @@ export class EntityFactory<Entity, Context> {
    * Create makes a new entity and does persist it
    */
   public async create(overrideParams: EntityProperty<Entity> = {}, saveOptions?: SaveOptions): Promise<Entity> {
-    const option = await getConnectionOptions()
-    const connection = await createConnection(option)
-    if (connection && connection.isConnected) {
-      const em = connection.createEntityManager()
+    const dataSource = await loadDataSource()
+    if (dataSource && dataSource.isInitialized) {
+      const em = dataSource.createEntityManager()
       try {
         const entity = await this.makeEnity(overrideParams, true)
         return await em.save<Entity>(entity, saveOptions)
@@ -59,7 +58,7 @@ export class EntityFactory<Entity, Context> {
   }
 
   public async makeMany(amount: number, overrideParams: EntityProperty<Entity> = {}): Promise<Entity[]> {
-    const list = []
+    const list: Entity[] = []
     for (let index = 0; index < amount; index++) {
       list[index] = await this.make(overrideParams)
     }
@@ -71,7 +70,7 @@ export class EntityFactory<Entity, Context> {
     overrideParams: EntityProperty<Entity> = {},
     saveOptions?: SaveOptions,
   ): Promise<Entity[]> {
-    const list = []
+    const list: Entity[] = []
     for (let index = 0; index < amount; index++) {
       list[index] = await this.create(overrideParams, saveOptions)
     }
@@ -103,8 +102,8 @@ export class EntityFactory<Entity, Context> {
     }
 
     for (const key in overrideParams) {
-      if (overrideParams.hasOwnProperty(key)) {
-        entity[key] = overrideParams[key]
+      if (overrideParams.hasOwnProperty(key) && overrideParams[key]) {
+        entity[key] = overrideParams[key]!
       }
     }
 

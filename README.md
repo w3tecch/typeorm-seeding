@@ -233,7 +233,7 @@ For all entities we want to create, we need to define a factory. To do so we giv
 
 | Types           | Description                                                                     |
 | --------------- | ------------------------------------------------------------------------------- |
-| `Entity`         | TypeORM Entity like the user or the pet in the samples.                          |
+| `Entity`        | TypeORM Entity like the user or the pet in the samples.                         |
 | `Context`       | Argument to pass some static data into the factory function.                    |
 | `EntityFactory` | This object is used to make new filled entities or create it into the database. |
 
@@ -242,7 +242,7 @@ For all entities we want to create, we need to define a factory. To do so we giv
 The define function creates a new entity factory.
 
 ```typescript
-define: <Entity, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Context>) => void;
+define: <Entity extends ObjectLiteral, Context>(entity: Entity, factoryFn: FactoryFunction<Entity, Context>) => void;
 ```
 
 ```typescript
@@ -258,7 +258,7 @@ define(User, (faker: typeof Faker, context: { roles: string[] }) => { ... })
 Factory retrieves the defined factory function and returns the EntityFactory to start creating new enities.
 
 ```typescript
-factory: (entity: Entity) => (context?: Context) => EntityFactory<Entity, Context>
+factory: (entity: Entity extends ObjectLiteral) => (context?: Context) => EntityFactory<Entity, Context>
 ```
 
 ```typescript
@@ -273,7 +273,7 @@ factory(Pet)({ name: 'Balou' })
 Use the `.map()` function to alter the generated value before they get persisted.
 
 ```typescript
-map(mapFunction: (entity: Entity) => Promise<Entity>): EntityFactory<Entity, Context>
+map(mapFunction: (entity: Entity extends ObjectLiteral) => Promise<Entity>): EntityFactory<Entity, Context>
 ```
 
 ```typescript

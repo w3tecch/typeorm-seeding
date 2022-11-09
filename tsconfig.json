@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "lib": ["es5", "es6"],
-    "target": "es5",
+    "lib": ["dom", "es5", "es6"],
+    "target": "es2019",
     "module": "commonjs",
     "outDir": "./dist",
     "moduleResolution": "node",
@@ -11,6 +11,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
+    "strictNullChecks": true,
     "noImplicitAny": true
   },
   "exclude": ["node_modules"]
