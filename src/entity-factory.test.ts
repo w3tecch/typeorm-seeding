@@ -18,7 +18,7 @@ describe('make', () => {
     expect(newUser.name).toBe('Steve')
   })
 
-  test('Should override the enitys props', async () => {
+  test('Should override the entity props', async () => {
     const mockUserFactory = jest.fn()
     const userFactory = new EntityFactory('User', User, mockUserFactory)
     mockUserFactory.mockReturnValue(new User('Steve'))
