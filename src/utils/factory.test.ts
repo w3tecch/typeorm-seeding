@@ -1,19 +1,19 @@
 import { getNameOfEntity, isPromiseLike } from './factory.util'
 
 describe('getNameOfClass', () => {
-  test('Passing UserEnity class should return the name of the class', () => {
+  test('Passing UserEntity class should return the name of the class', () => {
     class UserEntity {}
     expect(getNameOfEntity(UserEntity)).toBe('UserEntity')
   })
-  test('Passing UserEnity function should return the name of the function', () => {
+  test('Passing UserEntity function should return the name of the function', () => {
     const UserEntity = (): any => void 0
     expect(getNameOfEntity(UserEntity)).toBe('UserEntity')
   })
-  test('Passing undefinde as a enity-class should throw an error', () => {
+  test('Passing undefinde as a entity-class should throw an error', () => {
     try {
       getNameOfEntity(undefined)
     } catch (error) {
-      expect(error.message).toBe('Enity is not defined')
+      expect(error.message).toBe('Entity is not defined')
     }
   })
 })

@@ -6,7 +6,7 @@ export const getNameOfEntity = <T>(entity: ObjectType<T>): string => {
   } else if (entity) {
     return new (entity as any)().constructor.name
   }
-  throw new Error('Enity is not defined')
+  throw new Error('Entity is not defined')
 }
 
 export const isPromiseLike = (o: any): boolean =>
